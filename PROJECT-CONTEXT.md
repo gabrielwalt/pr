@@ -1,5 +1,6 @@
 ## Environment
 
+- **Preview server:** `aem up` (Franklin/EDS local dev) on port 3000, launched by a supervisor (`/app/dist/server.js`, PID 1) with `--html-folder content --prefer-plain-html`. Serves local `content/` and proxies missing files from `https://main--pr--gabrielwalt.aem.page` (repo `github.com/gabrielwalt/pr`). `/workspace/current` symlinks to this repo (`/backups/gabrielwalt/pr/repo`). No `fstab.yaml` in the repo — the proxy origin is derived from the git remote, not fstab. If the preview shows the wrong project, the server is running from a stale/deleted cwd (happened 2026-07-08: it was still bound to the previous `semrush3` project after project switch) — restart with `aem up` from this repo dir. Verified working 2026-07-08.
 - **Figma source file key: `6WyrWzRXskdPTcPtQ296CQ`** — the working `[INT] Prada Index Website Design (Copy)` file. All frame node IDs in `PROJECT-IMPORT.md` are keyed to this file. Supersedes the base-file URL (`r3Na8h9qDALXzvTBZAbQGL`) recorded in orientation (PROJECT-DESIGN.md #7); use the Copy key for all frame work. Verified accessible via Figma MCP 2026-07-08.
 
 ## Constraints

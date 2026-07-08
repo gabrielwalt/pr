@@ -23,7 +23,7 @@
   .columns > div {
     align-items: center;
     flex-direction: unset;
-    gap: 24px;
+    gap: var(--space-s);
   }
 
   .columns > div > div {
@@ -33,15 +33,15 @@
 }
 
 /* Issue banner — columns inside a dark section (Prada Index Home).
-   The section's own vertical padding is zeroed so the image reaches the section
-   edges; the text column carries the 40px-top / 80px-bottom inset instead. */
-.section.dark .columns > div {
-  gap: 40px;
-}
-
+   The dark SECTION supplies the symmetric editorial insets (top = --page-padding
+   = 40, matching the horizontal gutter; bottom = --space-2xl = 80) — see
+   styles.css. So the block itself only owns the column gap and its internal
+   rhythm; the image reaches the top/bottom/right of the padded content box, its
+   top inset equalling its right inset. The text column carries a --page-padding
+   (40) right inset from the image, matching the Figma frame's pr-40 (1:13138). */
 .section.dark .columns > div > div:not(.columns-img-col) {
   display: block;
-  padding: 40px 0 80px;
+  padding-right: var(--page-padding);
 }
 
 /* headings: same weight, per-line tracking per Figma (Issue 1 −0.01em looser,
@@ -51,37 +51,42 @@
   font-synthesis: none;
 }
 
-/* second heading (Fall 2026) sits 20px under the first, tighter tracking */
+/* second heading (Fall 2026) sits --space-m (20) under the first, tighter
+   tracking, and LIGHTER weight than "Issue 1" (regular vs bold) per direction. */
 .section.dark .columns h2 + h2 {
-  margin-top: 20px;
+  margin-top: var(--space-m);
+  font-weight: var(--weight-regular);
   letter-spacing: -0.03em;
 }
 
-/* description = lead size (32/38), 48px below the heading group */
+/* description = lead size (32/38), --space-xl (48) below the heading group */
 .section.dark .columns p:not(.button-wrapper) {
-  margin-top: 48px;
+  margin-top: var(--space-xl);
   font-size: var(--heading-font-size-m);
   line-height: var(--line-height-heading);
   letter-spacing: var(--tracking-heading);
 }
 
-/* About button — 36px below the description; square, 20px padding per Figma */
+/* About button — --space-l (36) below the description; square, --space-m (20) padding per Figma */
 .section.dark .columns p.button-wrapper {
-  margin-top: 36px;
+  margin-top: var(--space-l);
 }
 
 .section.dark .columns p.button-wrapper a.button {
-  padding: 20px;
+  padding: var(--space-m);
 }
 
-/* magazine mockup — a tall cover that fills the image column top-to-bottom,
-   reaching the dark section's lower edge (per Figma). The section height is
-   driven by the TEXT column; the image is taken out of flow (absolute) so its
-   intrinsic aspect doesn't inflate the row, then it crops to fill the column,
-   clipping from the top. */
+/* magazine mockup — a tall cover. Its TOP keeps the 40 inset (= section pad-top
+   = its right inset, symmetric), but its BOTTOM runs past the section's 80px
+   bottom padding down to the section's bottom EDGE (per direction). The negative
+   bottom margin (= --space-2xl, the section's pad-bottom) cancels that padding
+   for the image only; the text column still ends 80 above the edge. The section
+   height is driven by the TEXT column; the image is out of flow (absolute) so
+   its intrinsic aspect doesn't inflate the row, then crops to fill, clipping top. */
 .section.dark .columns .columns-img-col {
   align-self: stretch;
   position: relative;
+  margin-bottom: calc(-1 * var(--space-2xl));
   overflow: hidden;
 }
 
@@ -97,9 +102,9 @@
 
 @media (width >= 900px) {
   /* row items stretch to equal height so the image matches the text column and
-     reaches the section bottom; text column stays top-aligned via its own flow */
+     reaches the section's padded bottom edge */
   .section.dark .columns > div {
     align-items: stretch;
-    gap: 40px;
+    gap: var(--space-s);
   }
 }

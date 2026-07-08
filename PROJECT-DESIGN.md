@@ -69,7 +69,23 @@ Strictly monochrome: pure black `#000` on white `#fff`, plus a small grey scale 
 
 ## Spacing
 
-Base rhythm from Figma: page padding 40px (frame edge), header pt40/pr40/pb20/pl40, content-block gaps 48px, entry-module bottom 40px, entry inner gap 12px, label-container gap 7px. Distilled to a two-token vertical system (`--section-padding` 30 / `--block-padding` 24, halved-ish on mobile) via the `* + *` sibling rule; per-block specifics (e.g. 48px credit gaps) handled additively in block CSS later.
+Base rhythm from Figma: page padding 40px (frame edge), header pt40/pr40/pb20/pl40, content-block gaps 48px, entry-module bottom 40px, entry inner gap 12px, label-container gap 7px. Distilled to a two-token vertical system (`--section-padding` 30 / `--block-padding` 24, halved-ish on mobile) via the `* + *` sibling rule.
+
+**Spacing scale (tokenized 2026-07-08).** The site reuses a tight, recurring set of gaps — so they're a named scale in `styles.css :root`, and every block draws from it instead of one-off px. Measured from the Figma frames:
+
+| Token | Value | Role (source) |
+|-------|-------|---------------|
+| `--space-2xs` | 8px | metadata-ribbon cell pad; entry-label line gap |
+| `--space-xs` | 10px | grid label right-inset; search-bar pad |
+| `--space-s` | 12px | **all grid & column gutters**; entry image→label |
+| `--space-m` | 20px | stacked-heading gap; CTA pad; nav + hero content gaps; rule-break gap |
+| `--space-l` | 36px | banner description→CTA |
+| `--space-xl` | 48px | banner heading-group→body |
+| `--space-2xl` | 80px | dark-banner bottom breathing (2× base module) |
+| `--page-padding` | 40px | base module: horizontal content gutter **and** section top inset |
+| `--block-padding` | 24px | generic sibling spacing (`* + *`) |
+
+**Symmetric-inset rule (the flagship fix):** where a block sits inside a padded section, insets that read as "the same gap" in Figma must BE the same token. The dark Issue banner (node 1:13138) is `pt-40 / pr-40 / pb-80`: the magazine image's top gap = its right gap = `--page-padding` (40), bottom = `--space-2xl` (80). Achieved by giving the dark section symmetric padding (`--page-padding 0 --space-2xl`) rather than zeroing it and faking edge-to-edge — the image then reaches the section's *padded* box top/right/bottom, so top inset == right inset by construction. Leave only true component geometry (icon dims, 1px hairlines, the 18px display-line gap, table cell `6px 8px`) as raw px.
 
 ## Breakpoints
 

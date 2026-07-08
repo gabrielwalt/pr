@@ -71,11 +71,32 @@
 
   /* layout */
   --content-max-width: 1440px;
-  --page-padding: 40px;
+  --page-padding: 40px;      /* base module: horizontal content gutter + section top inset */
 
   /* vertical spacing system */
   --section-padding: 30px;
   --block-padding: 24px;
+
+  /*
+   * SPACING SCALE — the editorial rhythm, measured from Figma
+   * (file 6WyrWzRXskdPTcPtQ296CQ). The site reuses a tight set of gaps; these
+   * tokens ARE that set, so every block draws from the same rhythm instead of
+   * one-off px. Use a token for any gap/inset that recurs; leave only true
+   * component geometry (icon dims, hairlines) as raw px.
+   * Sources: 2xs=metadata-ribbon cell pad (8) + entry-label line gap (~7→8);
+   * xs=grid label inset / image gap / search-bar pad (10); s=all grid & column
+   * gutters + entry image→label (12); m=stacked-heading gap / CTA pad / nav +
+   * hero content gaps (20); l=banner desc→CTA (36); xl=banner heading-group→
+   * body (48); 2xl=dark-banner bottom breathing room (80 = 2× base module).
+   * The 40 base module lives in --page-padding; 24 in --block-padding.
+   */
+  --space-2xs: 8px;
+  --space-xs: 10px;
+  --space-s: 12px;
+  --space-m: 20px;
+  --space-l: 36px;
+  --space-xl: 48px;
+  --space-2xl: 80px;
 
   /* nav height */
   --nav-height: 99px;
@@ -401,7 +422,12 @@ main:has(.hero-cover) > .section:first-child {
   position: sticky;
   top: 0;
   z-index: 0;
-  padding-top: 0; /* hero sits flush at the viewport top; the relocated nav rides in the sheet above it */
+
+  /* the hero is full-bleed: kill BOTH the section's top and bottom
+     --section-padding. Top: hero sits flush at the viewport top (nav rides in
+     the sheet above it). Bottom: the 30px pad would otherwise show as a black
+     band below the hero image and before the white sheet rises over it. */
+  padding-block: 0;
 }
 
 /* Content is capped at max-width and centered; BLACK fills the sides at wider
@@ -441,13 +467,15 @@ main:has(.hero-cover) > .section:first-child ~ .section:not(.dark) > div {
       nav (z:4, header.css) and climbs over it — same overlay mechanic the grid
       uses on the hero. The nav stays put; the dark layer covers it as it rises.
       z:5 > nav z:4 > grid z:1 > hero z:0.
-   2. No section vertical padding so its image reaches the section's top/bottom
-      edges; the text column supplies its own inset.
+   2. Symmetric editorial insets (Figma node 1:13138): top inset = the base
+      module (40 = --page-padding), matching the horizontal content gutter so
+      the image's top gap equals its right gap; bottom breathes at --space-2xl
+      (80). The section's `> div` supplies the 40 horizontal gutter.
    Selector mirrors the generic `~ .section` rule's shape (incl. `:first-child
    ~`) so it out-specifies the z:1 default rather than losing the tie. */
 main:has(.hero-cover) > .section:first-child ~ .section.dark {
   z-index: 5;
-  padding: 0;
+  padding: var(--page-padding) 0 var(--space-2xl);
 }
 
 /* hero content column is capped + centered too, matching the sheet's OUTER

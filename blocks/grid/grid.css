@@ -8,13 +8,13 @@
   padding: 0;
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 20px 12px;
+  gap: var(--space-m) var(--space-s);
 }
 
 .grid > ul > li {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--space-s);
   background-color: var(--background-color);
 }
 
@@ -38,7 +38,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 20px;
+  padding: var(--space-m);
   background-color: var(--text-color);
   color: var(--background-color);
   font-family: var(--heading-font-family);
@@ -59,7 +59,7 @@
 
 /* label cell — title + description body, type-tag muted grey; no gap between lines */
 .grid .grid-card-body {
-  padding-right: 10px;
+  padding-right: var(--space-xs);
 }
 
 .grid .grid-card-body p {
@@ -86,6 +86,6 @@
 @media (width <= 900px) {
   .grid > ul {
     grid-template-columns: repeat(2, 1fr);
-    row-gap: 20px;
+    row-gap: var(--space-m);
   }
 }

@@ -1,6 +1,5 @@
 import {
   loadHeader,
-  loadFooter,
   decorateIcons,
   decorateSections,
   decorateBlocks,
@@ -168,7 +167,7 @@ async function loadLazy(doc) {
   const element = hash ? doc.getElementById(hash.substring(1)) : false;
   if (hash && element) element.scrollIntoView();
 
-  loadFooter(doc.querySelector('footer'));
+  // no footer yet — leave the <footer> landmark empty (loadFooter disabled)
 
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();

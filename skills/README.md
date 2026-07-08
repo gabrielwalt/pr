@@ -107,20 +107,15 @@ The *positive method* for building each foundation dimension well, from impeccab
 
 ---
 
-## Import & Migration
+## Build & Migration Process
 
 | Skill | Load when... |
 |-------|-------------|
 | [bootstrap-project](bootstrap-project/SKILL.md) | Project uninitialized — no PROJECT-STATUS.md / PROJECT-PLAN.md yet; scaffold the PROJECT-* stubs and verify the toolchain before `migration-orientation` |
 | [migration-orientation](migration-orientation/SKILL.md) | **First thing on any new project** — user says "let's migrate X / start a new site / start a migration"; `PROJECT-DESIGN.md` has no `## Migration Strategy` section. Runs the setup conversation (authoring model, scope, analysis approach, starting page, sources, fidelity, resources, overrides, constraints) and records the strategy before anything else happens |
-| [import-content-scoping](import-content-scoping/SKILL.md) | Scoping which pages to import; site discovery returns tens of thousands of URLs; one URL group dwarfs all others; deciding marketing vs database-backed vs documentation content |
-| [import-template-consolidation](import-template-consolidation/SKILL.md) | Catalog discovery returns >~10 templates or drift-suffix names (foo, foo-b, foo-c); planning bulk import; deciding if a "new" page type is really new — collapse raw templates into a handful of canonical ones, normalizing drift |
-| [global-style-foundation](global-style-foundation/SKILL.md) | Right after orientation, before any block styling; building the global *workbench* (brand tokens, type scale, spacing, default-content styling) from the visual gist of ≥3 representative pages; global foundation missing or weak |
+| [global-style-foundation](global-style-foundation/SKILL.md) | Right after orientation, before any block styling; building the global *workbench* (brand tokens, type scale, spacing, default-content styling) from the visual gist of ≥3 representative frames/pages; global foundation missing or weak |
 | [craft-floor](craft-floor/SKILL.md) | Building or auditing the global foundation at Refined/Reimagined fidelity; something looks like AI output (flat color, twin font sizes, arbitrary spacing, no focus rings). NOT for Faithful — mirror the source. Pair with `quality-tooling` to run the `[auto]` checks |
-| [marker-driven-import](marker-driven-import/SKILL.md) | User validated a page's content; designing ONE generic marker-driven parser; adding detection for a new block/variant/section-style/template; import doesn't reproduce validated content |
-| [importer-parser-patterns](importer-parser-patterns/SKILL.md) | Writing a block parser; parser validation failing; content structure questions (low-level table/DOM mechanics) |
-| [importer-diff-workflow](importer-diff-workflow/SKILL.md) | After a parser/import change — diffing a re-imported page against its remote reference to catch content loss; `marker-driven-import` says "diff against reference" and you need the bash tooling |
-| [eds-migration-process](eds-migration-process/SKILL.md) | Migration already oriented (strategy exists in `PROJECT-DESIGN.md`) — deciding what phase or page comes next, running content/design validation gates, checking progress. **Not for new projects** — load `migration-orientation` first |
+| [eds-migration-process](eds-migration-process/SKILL.md) | Build already oriented (strategy exists in `PROJECT-DESIGN.md`) — deciding what screen/page comes next, running content/design validation gates, checking progress. **Not for new projects** — load `migration-orientation` first |
 
 ---
 
@@ -151,9 +146,8 @@ These ship with the agent (the `excat:`, `edge-delivery-services:`, `forms-excat
 
 | Native skill | Reach for it when... | Project skill that takes precedence |
 |--------------|----------------------|--------------------------------------|
-| `excat-site-scope`, `excat-site-catalog`, `excat-url-discovery`, `excat-site-analysis`, `excat-page-analysis` | Scoping a new site: discover URLs, group pages into templates, analyze one page's structure | `import-content-scoping` (triage marketing vs programmatic vs docs), `import-template-consolidation` (collapse raw templates before bulk import) |
-| `excat-site-migration` | Orchestrating a full multi-page migration | `migration-orientation` (runs first — authoring model, scope, sources, fidelity); then `eds-migration-process` (the 2-gate per-page flow) |
-| `excat-import-infrastructure`, `excat-import-script`, `excat-content-import` | Generating/running parsers + transformers, bulk import | `marker-driven-import`, `importer-parser-patterns` |
+| `excat-figma:excat-figma-migration` | **Primary content-creation path on this project** — build ONE block/component from a Figma node (screenshot → tokens → variant → plain HTML → verify). Run once per new block encountered while working through a Figma frame | `eds-content-modeling` (naming + variant tiers before you create a new one), `measure-then-implement` (Faithful means measure) |
+| `excat-figma-critique` (companion to the migration skill, invoked as `/excat-figma-critique`) | Automated Figma-vs-preview visual comparison with scoring, after a block migration | Pairs with `block-visual-iteration` for closing surfaced deltas |
 | `block-mapping-manager`, `block-variant-manager` | Tracking block variants/mappings across many pages | `eds-content-modeling` (naming + variant tiers) |
 | `excat-complete-design-expert`, `excat-block-design-expert` | Extracting design tokens / styling a block from the source | `measure-then-implement`, `block-visual-iteration` |
 | `excat-visual-critique` | **Aggressively, at the START of (and after) ANY styling pass** — extraction-based similarity % + categorized diffs vs original; Block/Section/Page/Site modes (site = parallel per-template sub-agents) | **Discovery engine** — discovers + scores gaps (never writes CSS); pairs with `block-visual-iteration` (Step 0) / `styling-additively` / GATE 2, which close them |
@@ -162,8 +156,9 @@ These ship with the agent (the `excat:`, `edge-delivery-services:`, `forms-excat
 | `excat-xwalk-expert` | Converting HTML → JCR XML for Universal Editor / AEM authoring | — |
 | `forms-excat:excat-form-migration` | Migrating an HTML form to an EDS Form block | — |
 | `excat-commerce:*` | Migrating a PDP or PLP (Adobe Commerce) | — |
-| `excat-figma:excat-figma-migration` | Building a block from a Figma design | — |
 | `edge-delivery-services:docs-search`, `block-collection-and-party` | Looking up an aem.live feature or a reference block implementation | `eds-dom-structure` (has a docs-lookup recipe) |
 | `edge-delivery-services:content-modeling`, `building-blocks`, `content-driven-development`, `testing-blocks`, `preview-import` | Generic EDS authoring/dev guidance | `eds-content-modeling`, `eds-code-conventions` |
 | `excat-ui-tour` | User asks how to use the Console UI | — |
 | `project-management:handover` (`admin`/`authoring`/`development`/`whitepaper`) | Generating handover/admin/author/dev docs or a branded PDF | — |
+
+Site-scraping natives (`excat-site-scope`, `excat-site-catalog`, `excat-url-discovery`, `excat-site-analysis`, `excat-site-migration`, `excat-page-analysis`, `excat-import-infrastructure`, `excat-import-script`, `excat-content-import`) are **not relevant on this project** — there is no live source site to crawl or scrape. The source is a Figma prototype; content is authored screen-by-screen via `excat-figma:excat-figma-migration`, not discovered by URL.

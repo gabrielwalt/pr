@@ -39,8 +39,8 @@ Assert the authoring model immediately. For scope, if the user mentioned a URL o
 
 | # | Input | Default if not stated |
 |---|-------|-----------------------|
-| **5** | **Content source** — live source site, an export/crawl, another URL, or author-supplied content? | **Live source site** at the URL provided |
-| **6** | **Design source** — same site (most common), a different site, or a Figma file? | **Same as content source** |
+| **5** | **Content source** — live source site, an export/crawl, a Figma file only (no live site), or author-supplied content? | **Live source site** at the URL provided; if the only source offered is a Figma file, assert **Figma-only** |
+| **6** | **Design source** — same as content source (most common), a different site, or a Figma file? | **Same as content source** |
 | **7** | **Additional resources** — Figma links, brand guidelines, style guides, reference EDS implementations, fonts, icon sets, existing token files? | None — ask explicitly: "Do you have a Figma file, brand guidelines, or any reference to share before we build the foundation?" |
 | **8** | **Fidelity** — site-wide default on the Faithful / Refined / Reimagined scale (defined below) | **Faithful** for a strong, modern-looking source; **Refined** if the source looks dated or uneven; assert based on inspection |
 | **9** | **Templates or content to improve** — are any pages/templates meant to be enhanced or redesigned in the process, rather than just copied? | None — pure migration, unless the user signals otherwise |
@@ -68,8 +68,11 @@ Settle in Round 1 — shapes everything downstream.
 | **Content lives in** | Word / Google Docs via da.live | AEM repository (JCR XML) |
 | **Block authoring** | Tables in docs → `.plain.html` | Component definitions + models JSON |
 | **Import target** | `.plain.html` files in `content/` | JCR XML via `excat-xwalk-expert` |
-| **Key skill** | `marker-driven-import`, `importer-parser-patterns` | `excat-xwalk-expert` |
+| **Key skill — live-site source** | `marker-driven-import`, `importer-parser-patterns` (only relevant once this project also has a live site to scrape) | `excat-xwalk-expert` |
+| **Key skill — Figma-only source** | `excat-figma:excat-figma-migration` — per-block, writes `.plain.html` directly, no source DOM to parse | `excat-xwalk-expert` |
 | **Default** | ✓ yes | Only if explicitly confirmed |
+
+**This project's source is a Figma prototype with no live site** — content source is Figma-only (Input 5), so the Figma-only row applies throughout; skip `marker-driven-import`/`importer-parser-patterns` (removed from this project's `skills/` — they assume a scrapeable source DOM that doesn't exist here).
 
 If the user says XWalk, load `excat-xwalk-expert`. If unclear, assert DA — cost of being wrong is low.
 
@@ -91,8 +94,8 @@ Verify before claiming done (**Bookend-Verification**): section exists, all inpu
 
 ## What comes next
 
-- **Full-site scope + catalog first** → run `excat-site-scope` / `excat-site-catalog` / `excat-url-discovery` to inventory pages and group into templates, then `import-content-scoping` to triage. Report back before touching any page.
-- **Single-page or skip catalog** → go directly to `global-style-foundation` (the workbench) → first page content → gates → per-block styling.
+- **Live-site source, full scope** → run `excat-site-scope` / `excat-site-catalog` / `excat-url-discovery` to inventory pages and group into templates. Report back before touching any page.
+- **Figma-only source (this project)** → inventory the Figma file's frames/screens directly (no URL discovery needed — the frame list IS the scope), then go straight to `global-style-foundation` (the workbench) → first frame's content → gates → per-block styling via `excat-figma:excat-figma-migration`.
 
 Orientation sets direction. It does not import, style, or commit anything itself.
 
@@ -103,4 +106,4 @@ Orientation sets direction. It does not import, style, or commit anything itself
 - Recording a single fidelity and forgetting per-page overrides — a weak legacy template copied Faithfully drags the whole migration.
 - Assuming no additional resources without asking — a Figma file found in Round 2 can save days.
 
-See also: `global-style-foundation` (next step), `eds-migration-process` (full workflow this gates), `import-content-scoping` (URL triage for full-site scope), `excat-xwalk-expert` (if XWalk), `measure-then-implement` (Faithful means measure).
+See also: `global-style-foundation` (next step), `eds-migration-process` (full workflow this gates), `excat-xwalk-expert` (if XWalk), `measure-then-implement` (Faithful means measure).

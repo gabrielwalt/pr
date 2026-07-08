@@ -13,9 +13,9 @@ Once style is validated, the page's blocks/variants/section-styles/templates are
 
 ## Flow
 0. **Orient the migration** (new site, before anything) — run `migration-orientation`: settle scope, content source, design source, **fidelity** (Faithful / Refined / Reimagined), reuse strategy, per-page overrides, and constraints. Record them in `PROJECT-DESIGN.md`'s `## Migration Strategy`. **Gate: no import until this exists.**
-1. **Scope the site** — discover URLs and group pages into templates so you know the full scope and which pages are representative. See EMA skills below. Two scope gates apply here: (a) **what to import** — triage marketing vs database-backed vs documentation (`import-content-scoping`); (b) **how few templates** — collapse the raw discovered templates into a handful of canonical ones before any bulk import (`import-template-consolidation`, **The Entropy-Reduction Rule**). Catalog discovery over-splits; do not mint one EDS template per raw template.
-2. **Build the global design foundation** (the *workbench*, once per site) — run `global-style-foundation`: capture the visual gist across ≥3 representative pages and formalize brand tokens, type scale, spacing system, and default-content styling, at the recorded fidelity. **Blocks are not styled until the workbench is level.**
-3. **Pick a representative page** — prefer one that introduces new blocks.
+1. **Scope the build.** For a **live-site source**: discover URLs and group pages into templates so you know the full scope and which pages are representative — two scope gates apply (what to import, how few templates); see EMA native site-scope skills. For a **Figma-only source** (this project): list the frames/screens directly from the Figma file — the frame list IS the scope, no URL discovery or template-consolidation crawl needed. Note which frames are reused templates (e.g. an "Entry Cover Templates" set) vs one-off screens.
+2. **Build the global design foundation** (the *workbench*, once per project) — run `global-style-foundation`: capture the visual gist across ≥3 representative pages/frames and formalize brand tokens, type scale, spacing system, and default-content styling, at the recorded fidelity. **Blocks are not styled until the workbench is level.**
+3. **Pick a representative page/frame** — prefer one that introduces new blocks.
 4. **Phase 1 — Content** (two ordered steps — see below).
 5. **🚦 GATE 1 — validate content structure** (below) before any design work.
 6. **Phase 2 — Design** (two ordered steps — see below).
@@ -24,11 +24,11 @@ Once style is validated, the page's blocks/variants/section-styles/templates are
 9. **More pages** — repeat. Style each new page **reuse-first then additive** (Phase 2 step 2): reproduce the look with existing blocks/variants/section-styles before adding anything new, and keep additions scoped to the new page so style-validated pages stay frozen. Prefer pages that introduce new blocks. If in doubt that a change was purely additive, re-check the style-validated pages sharing a touched block (`styling-additively`).
 10. **Bulk import** once representative pages and all block variants are covered.
 
-## Phase 1 — Content (model first, script second)
-**Do NOT start by running the import script.**
-1. **Model the content first.** Study the source and decide default content vs blocks vs sections, section breaks, and block names (`eds-content-modeling`). This produces the validated `.plain.html` reference.
-2. **Generate the import script to reproduce it.** Build ONE generic marker-driven parser (`marker-driven-import`). The script is generated *from* the modeling decisions.
-- **The import script is source of truth thereafter.** Content changes (rename a block, re-split) → update the script; edits to `.plain.html` are temporary.
+## Phase 1 — Content (model first, generate second)
+**Do NOT start by inventing block structure ad hoc.**
+1. **Model the content first.** Study the Figma frame and decide default content vs blocks vs sections, section breaks, and block names (`eds-content-modeling`). This produces the validated `.plain.html` reference for that frame.
+2. **Generate the block + content from the modeling decisions.** Run `excat-figma:excat-figma-migration` per new block the frame introduces — it extracts tokens from the Figma node, creates the block variant, and writes matching `content/*.plain.html` in one pass. Reuse an existing block/variant (Toolbox-First) whenever the frame's structure already matches one.
+- **The Figma frame is the reference truth thereafter.** Content changes (rename a block, re-split) mean re-reading the frame and re-authoring; there is no parser to regenerate from — this project has no source DOM to script against.
 
 ## Phase 2 — Design (workbench first, tools second)
 The workbench (`global-style-foundation`) is built once per site before any page's blocks. Phase 2 assumes it exists.
@@ -51,11 +51,11 @@ Ask the user to confirm and wait:
 - Iterate on feedback (re-run critique to confirm % moved) before moving on.
 
 ## EMA skills by stage
-Reach for these native EMA skills — suggest them to the user when they fit. **Where a project skill covers the same step (content modeling, parser strategy, visual QA), the project skill takes precedence** — see `skills/README.md` "Native EMA & EDS skills" for the full precedence map.
-- **Scope the site (do this first for a new site):** `excat-site-scope` for a full scope report; `excat-site-catalog` to group pages into templates / page types; `excat-url-discovery` to list all URLs from the sitemap.
-- **Migrate content:** `excat-site-migration` orchestrates the migration; `excat-page-analysis` analyzes one page's structure; `excat-import-infrastructure` / `excat-import-script` build parsers + transformers; `excat-content-import` runs the import for one or many pages.
-- **Migrate design:** `excat-complete-design-expert` for site design tokens and block styling.
-- **Validate / critique:** `excat-visual-critique` (see GATE 2).
+Reach for these native EMA skills — suggest them to the user when they fit. **Where a project skill covers the same step (content modeling, visual QA), the project skill takes precedence** — see `skills/README.md` "Native EMA & EDS skills" for the full precedence map.
+- **Scope the build:** for a Figma-only source (this project), no native scoping skill is needed — list the Figma file's frames directly. `excat-site-scope` / `excat-site-catalog` / `excat-url-discovery` / `excat-page-analysis` only apply once a live source site exists.
+- **Migrate content:** `excat-figma:excat-figma-migration` — builds one block/component from a Figma node (screenshot → tokens → variant → plain HTML → verify) and writes `content/*.plain.html` directly; run once per new block a frame introduces.
+- **Migrate design:** `excat-complete-design-expert` for site design tokens; block-level tokens are typically already extracted by `excat-figma:excat-figma-migration`'s Phase 2.
+- **Validate / critique:** `excat-visual-critique` (see GATE 2) or the Figma-specific `/excat-figma-critique` companion to the migration skill.
 - **Nav + footer:** `excat-navigation-orchestrator` (header/nav), `excat-footer-orchestrator` (footer) — require screenshots, run after the page is migrated.
 - **Forms:** `excat-form-migration` for HTML → EDS Form blocks.
 - **UI help:** `excat-ui-tour` when the user asks how to use the Console UI.
@@ -66,15 +66,13 @@ Reach for these native EMA skills — suggest them to the user when they fit. **
 - Consult `PROJECT-STATUS.md` to pick the next page or task.
 
 ## Pitfalls
-- Don't lead Phase 1 with the import script — model the split first, generate the script to reproduce it second.
+- Don't lead Phase 1 by inventing block structure ad hoc — model the split from the Figma frame first, then generate the block/content.
 - Don't style blocks before the global foundation exists (**Workbench-Before-Tools**).
 - Don't ignore the recorded fidelity — read it from `PROJECT-DESIGN.md` before styling.
-- Don't let `.plain.html` drift from the script — content-structure changes must go back into the import script.
 - Don't skip GATE 1 — broken structure is far harder to fix after styling.
 - Don't edit a shared block/variant/section-style to fix a new page — add new styles instead (`styling-additively`).
 - Don't mint a new variant for a different *content shape* — extend the base block's CSS additively.
-- Re-import flattens section boundaries — restore section divs by hand after.
-- `run-bulk-import.js` overwrites `content/*.plain.html` — back up first (`marker-driven-import`).
+- Don't re-run `excat-figma:excat-figma-migration` on a node whose block is already validated — check Step 2.5's reuse comparison first, or you'll fork a near-duplicate variant.
 - Footer blocks must be in one section (no `<hr>`) or EDS renders rules between them.
 
-See also: `migration-orientation` (step 0 — strategy recorded before any import), `global-style-foundation` (step 2 — the workbench), `styling-additively` (reuse-first, additive styling), `marker-driven-import` (ONE generic parser once content is validated), `eds-content-modeling` (block/variant/section/template decisions), `importer-parser-patterns` (writing parsers)
+See also: `migration-orientation` (step 0 — strategy recorded before any build), `global-style-foundation` (step 2 — the workbench), `styling-additively` (reuse-first, additive styling), `eds-content-modeling` (block/variant/section/template decisions)

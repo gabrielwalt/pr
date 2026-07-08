@@ -31,4 +31,4 @@ Ask: **does this container need to hold a variety of content, or reuse existing 
 - Running the hook before `decorateSections` → no `.section` wrappers yet, nothing matches.
 - A media-less panel block may render an empty media half → add a text-only fallback class in the block JS (e.g. `teaser-text-only` collapses the grid to one column).
 
-See also: `eds-content-modeling` (the augmented-styles ladder + section-style-vs-block color/surface rule), `marker-driven-import` (emitting section styles + per-panel blocks from the parser), `debug-block-decoration` (when a real nested block isn't decorating).
+See also: `eds-content-modeling` (the augmented-styles ladder + section-style-vs-block color/surface rule), `debug-block-decoration` (when a real nested block isn't decorating).

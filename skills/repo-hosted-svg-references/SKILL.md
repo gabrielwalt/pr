@@ -41,4 +41,4 @@ A normal link whose href is a `.svg` path under `/svg/`. The link **text becomes
 - It must run **before** `decorateBlocks` or blocks that read `picture/img` (teaser, marquee, cards-icon) won't see the image.
 - Verify the dev server serves `/svg/<name>.svg` (HTTP 200, `image/svg+xml`) — files added after the server starts are still served, but confirm with the rendered `img.naturalWidth > 0`.
 
-See also: `video-in-eds` (same idea for video: reference a URL, script builds the element), `eds-code-conventions` (clean block JS), `marker-driven-import` (parser reproduces validated content). Native `generate-import-html` covers the same ground at a generic level — this skill adds the 80KB threshold rule, the `decorateSvgReferences()` global-script pattern, and the `createOptimizedPicture` SVG pitfall.
+See also: `video-in-eds` (same idea for video: reference a URL, script builds the element), `eds-code-conventions` (clean block JS). Native `generate-import-html` covers the same ground at a generic level — this skill adds the 80KB threshold rule, the `decorateSvgReferences()` global-script pattern, and the `createOptimizedPicture` SVG pitfall.

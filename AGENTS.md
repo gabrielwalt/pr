@@ -38,7 +38,7 @@ Do not propose a new plan if one exists in PROJECT-PLAN.md. Do not ask what to w
 - **Before creating or updating any skill, LOAD `skills/writing-skills/SKILL.md` in full first. No exceptions.** Then add/update its row in `skills/README.md`.
 - Generic skills are named normally and must not hardcode project values (reference `PROJECT-DESIGN.md` / `PROJECT-IMPORT.md`); project-specific ones are prefixed `project-`.
 
-**Keep the PROJECT files current.** Any meaningful change — block, variant, token, import script, page, or skill — updates the relevant file immediately. Don't defer. Project details live in `PROJECT.md` and `PROJECT-*.md`. New or renamed skills must be reflected in `skills/README.md`.
+**Keep the PROJECT files current.** Any meaningful change — block, variant, token, page, or skill — updates the relevant file immediately. Don't defer. Project details live in `PROJECT.md` and `PROJECT-*.md`. New or renamed skills must be reflected in `skills/README.md`.
 
 **Spot-and-act.** When you notice a related issue or improvement while working:
 - Quick fix (< 5 min, 1–2 files): do it immediately, mention it in the summary.
@@ -59,9 +59,7 @@ Do not propose a new plan if one exists in PROJECT-PLAN.md. Do not ask what to w
 
 **Code is truth for implementation.** Don't copy selectors, token values, or DOM patterns into PROJECT-*.md — read the code. PROJECT files hold inventory, intent, decisions, non-obvious gotchas.
 
-**Content structure = import script.** The import script is the authoritative mapping from source DOM to EDS content. Never change a block's structure without updating the import script. Edits to `.plain.html` files are temporary; the script is the truth.
-
-**Never run the import script without backing up content first.** `run-bulk-import.js` writes directly to `content/*.plain.html` with no `--output-dir` flag — it silently overwrites curated content that has DA media hashes, spacing classes, and section boundaries. The import's markdown pipeline flattens section dividers, so the output is structurally different from the served content. Always `cp` the content file before running, or restore from the remote AEM endpoint after: `curl -s 'https://<branch>--<repo>--<owner>.aem.page/<path>.plain.html' -o content/<path>.plain.html`.
+**Content structure = the Figma frame.** The validated Figma frame is the authoritative source for a page's content split. Never change a block's structure without re-reading the frame it came from. `.plain.html` files are hand-authored (via `excat-figma:excat-figma-migration`) from that reading — there is no source DOM and no import script to regenerate from on this project.
 
 **No Git, no AEM pushes.** Never run `git`, and never commit, push, publish, or upload content yourself — not even as a suggestion or "next step". When code/content needs to go live, tell the user to do it via the Console UI.
 
@@ -78,7 +76,7 @@ The migration's load-bearing doctrine, named so you can **cite them by name** in
 - **The Bookend-Verification Rule (must enforce).** Bracket every task with verification. *Open* by restating the request as concrete, checkable success criteria and confirming you understood it correctly. *Close* by verifying each of those criteria is actually met before claiming done. Skipping either bookend is incomplete work, not a shortcut. → `verify-before-claiming`
 - **The Anti-Pattern-Capture Rule.** When the user corrects something you built that was *clearly* a bad idea — obvious in hindsight, not merely a taste preference — name it as an anti-pattern and capture it match-and-refuse (what it looks like → the rewrite) in the relevant skill. Not every correction qualifies; only the ones where the wrongness is self-evident. → `writing-skills`
 - **The Executable-Rule Rule.** A rule the agent must *remember* is weaker than one a script *enforces*. Any rule that's mechanically checkable (a contrast threshold, an off-palette color, a dead token, a frozen-page regression) should be enforced by a deterministic checker under `tools/quality/`, not left to recall. Likewise read project state (frozen pages, per-page gate, working-tree scope) from a structured signals script, not by parsing prose. Scripts own the *mechanics*; the agent owns the *judgment*. → `writing-skills`, `quality-tooling`
-- **The Heavy-SVG-In-Code Rule.** Any image asset ≥ 80KB (graphs, screenshots, full illustrations) must be hosted in the code repo under `/svg/` and referenced from content with a plain link — never embedded in the document. DA/html2md rejects oversized embedded images with a (409) validation error on preview/publish. Parsers must emit the `/svg/` reference, not an embedded picture, so re-import never reintroduces it. → `repo-hosted-svg-references`
+- **The Heavy-SVG-In-Code Rule.** Any image asset ≥ 80KB (graphs, screenshots, full illustrations) must be hosted in the code repo under `/svg/` and referenced from content with a plain link — never embedded in the document. DA/html2md rejects oversized embedded images with a (409) validation error on preview/publish. Author the `/svg/` reference directly in `.plain.html`, not an embedded picture. → `repo-hosted-svg-references`
 - **The Puzzle-Piece Rule.** The user reveals durable knowledge in passing — decisions, constraints, facts, preferences, corrections, reusable procedures. Notice it, ask when capturing would help, and write it to the right home: a task → the user's `plan.md`; a procedure → a skill (`project-` or generic); a fact → the owning PROJECT-* file, else `PROJECT-CONTEXT.md`, else the user's `context.md`. Skip what's derivable from code, session-scoped, or already recorded; update in place, don't append. → `curating-project-knowledge`, `km-check.mjs`
 
 ---
@@ -90,7 +88,7 @@ The migration's load-bearing doctrine, named so you can **cite them by name** in
 | Project context, URLs, GitHub | `PROJECT.md` |
 | Block inventory | `PROJECT-BLOCKS.md` |
 | Design tokens | `PROJECT-DESIGN.md` |
-| Import scripts | `PROJECT-IMPORT.md` |
+| Figma → EDS mapping | `PROJECT-IMPORT.md` |
 | Migration progress | `PROJECT-STATUS.md` |
 | Implementation gap tasks | `PROJECT-PLAN.md` |
 | Cross-cutting decisions, constraints, environment facts | `PROJECT-CONTEXT.md` |
@@ -104,7 +102,7 @@ The migration's load-bearing doctrine, named so you can **cite them by name** in
 
 **Required before quality tools work:**
 - `PROJECT-DESIGN.md` — `tools/quality/detect.mjs` loads the palette and token allow-list from this file. Must have at least a `## Design Tokens` section with the project's CSS `:root` tokens before the checker can run meaningfully.
-- `PROJECT-STATUS.md` — `tools/quality/project-state.mjs` reads the `## Pages` table. Pre-fill the column headers (`| Page | File | Content ✓ | Style ✓ |`) exactly so the parser works on day one.
+- `PROJECT-STATUS.md` — `tools/quality/project-state.mjs` reads the `## Pages` table. Pre-fill the column headers (`| Page | URL | Content ✓ | Style ✓ | Notes |`) exactly so the parser works on day one.
 
 | File | Purpose | When to create / update |
 |------|---------|------------------------|
@@ -113,8 +111,8 @@ The migration's load-bearing doctrine, named so you can **cite them by name** in
 | `PROJECT-STATUS.md` | Per-page validation state — content gate (GATE 1) and style gate (GATE 2) | Create stub at start; update each page row as gates pass |
 | `PROJECT-PLAN.md` | Executable task list (gaps and enhancements) | Create when the first task is written; update in real time — mark done immediately |
 | `PROJECT-BLOCKS.md` | Block + variant + section-style inventory; one-off registry | Update each time a new block, variant, or section style is validated |
-| `PROJECT-IMPORT.md` | Import strategy, URL sets, parser strategy, template-to-parser mapping | Fill after site scope and template consolidation |
-| `PROJECT-TEMPLATES.md` | Page template inventory (chrome → template → sub-category hierarchy) | Fill during site catalog phase |
+| `PROJECT-IMPORT.md` | Figma file link(s), node IDs per screen, frame-to-page mapping | Fill after the Figma file's frames are inventoried |
+| `PROJECT-TEMPLATES.md` | Page template inventory (which frames share a reusable template vs are one-off screens) | Fill during the Figma frame inventory pass |
 | `PROJECT-CONTEXT.md` | The project's wiki — durable, cross-cutting knowledge (environment, constraints, brand, stakeholders, decisions) that fits no other PROJECT-* file and isn't a procedure | Create stub at start; read every session (`session-startup`); curate continuously (`curating-project-knowledge`) |
 | `users/<login>/` | Per-user memory: `context.md` (personal/unproven facts), `plan.md` (tasks + status), `ROLE.md` (role · focus · `Lead:`). The active GH login is cached in `users/.current-user` (gitignored). | Scaffolded on the first session once identity is known (`session-startup` identity gate) |
 

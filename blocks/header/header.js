@@ -168,4 +168,43 @@ export default async function decorate(block) {
   navWrapper.className = 'nav-wrapper';
   navWrapper.append(nav);
   block.append(navWrapper);
+
+  // Home scroll choreography (Beats 1–3), pure CSS: relocate the WHOLE header
+  // into the top of the white grid sheet (the grid section's content column) so
+  // it scrolls NATIVELY with the sheet as the sheet rises over the hero (Beat 1)
+  // and inherits the sheet's capped width — no per-frame JS transform, no
+  // viewport-wide fixed bar. header.css then pins it with `position: sticky`
+  // (Beat 2); the dark Issue section (higher stacking layer, styles.css z:5)
+  // covers the whole grid section as it rises (Beat 3). Non-Home pages keep the
+  // header in its normal <header> landmark position at the top.
+  const main = document.querySelector('main');
+  const gridSection = main && main.querySelector('.hero-cover')
+    ? main.querySelector(':scope > .section:first-child + .section')
+    : null;
+  const gridInner = gridSection && gridSection.querySelector(':scope > div');
+  const headerEl = block.closest('header');
+  if (gridInner && headerEl) {
+    gridInner.prepend(headerEl);
+    headerEl.classList.add('nav-placed');
+  }
+
+  // Split editorial rule (Figma): the thin top hairline breaks between the brand
+  // and the nav cluster — one segment over "Prada Index", a gap, then a segment
+  // spanning the cluster to the right edge. The cluster's x shifts with layout,
+  // so expose the brand's right edge + the cluster's left edge (relative to the
+  // nav box) as CSS vars; header.css draws the two segments from them. Measured
+  // on load + resize only — never on scroll, to keep native scrolling smooth.
+  if (navSections && navBrand) {
+    const measureRule = () => {
+      if (!window.matchMedia('(min-width: 900px)').matches) return;
+      const navBox = nav.getBoundingClientRect();
+      const brandEnd = navBrand.getBoundingClientRect().right - navBox.left;
+      const clusterStart = navSections.getBoundingClientRect().left - navBox.left;
+      nav.style.setProperty('--rule-brand-end', `${Math.round(brandEnd)}px`);
+      nav.style.setProperty('--rule-cluster-start', `${Math.round(clusterStart)}px`);
+    };
+    measureRule();
+    window.addEventListener('resize', measureRule, { passive: true });
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(measureRule);
+  }
 }

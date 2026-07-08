@@ -12,7 +12,7 @@ Note: this "Copy" file key supersedes the base file URL recorded in orientation 
 Scaffolded 2026-07-08 (`component-library`). DA project, build-fresh — the library IS the block library; there is no separate styleguide.
 
 **Location (in-repo, authored `.plain.html`):**
-- `content/library.plain.html` — index + CTA legend
+- `content/library/index.plain.html` — index (overview + Pages list + Design identity); serves at `/library/` via EDS folder-index. Whole library self-contained under `content/library/`.
 - `content/library/default-content.plain.html` — all semantic elements + CTA variants (the design-system showcase; verified on-brand in preview)
 - `content/library/sections.plain.html` — section-style comparison (Default / Light / Dark)
 - `content/library/blocks/` — empty, grows one clean page per block as Home's blocks are built
@@ -42,27 +42,69 @@ Analyzed 2026-07-08 before import. Frame is 1440×4227.6. Four stacked top-level
 - Each Entry Module = image (331px sq, `#eee` placeholder) + label container (gap 7px): **title** (16/19, black, bold-looking), **description** (16/19, black), **type tag** (16/19, grey `#00000040`≈25% black, e.g. "Interview"/"Essay").
 - Frame padding: pr40/pb70/pl40, no top pad (sits under header). Column gap derives from 4×331 across 1360 usable.
 
-### THE SCROLL INTERACTION (reconstructed from user description — NOT observable via Figma tools; static frames only)
-A two-phase pinned-scroll effect. Cannot be read from the prototype through the MCP tools; this is the user's spec, cross-checked against the frame stack:
+### THE SCROLL INTERACTION — four-beat repeating reveal/sticky pattern
+Confirmed 2026-07-08 against a user screen recording (8 frames). This is NOT a one-off hero treatment — it's a **repeating mechanic**: full-height sections rise over the preceding layer (reveal) and sub-header rows pin (sticky), alternating. All Y values below are frame-relative (Home frame top = 0), measured from the node tree.
 
-**Phase 1 — hero pinned, white sheet rises over it.**
-- The hero (child 1, 720px) is **fixed/pinned** and does NOT scroll. The white index section (child 2 onward) scrolls **up over** the hero, progressively covering it. Effect = hero is a stationary backdrop; the white content is a sheet sliding up on top (z-above hero).
+**The mechanic = two primitives, alternating:**
+- **REVEAL** — a section on a higher stacking layer (`z-index` above the previous) scrolls up and *progressively covers* what's beneath it. It's an **explicit cover-up (overlay), NOT a passive release** — the covered layer stays put while the rising sheet's top edge climbs the viewport. The rising edge even evicts a currently-pinned sticky header by overlapping it.
+- **STICKY** — a section's top row (`position: sticky; top: 0`) pins at the viewport top while the rest of that section scrolls beneath it. It stays pinned until the NEXT section's reveal edge rises up and covers it off.
 
-**Phase 2 — white section's top row goes sticky.**
-- When the top of the white section (child 2) reaches the top of the viewport, its **header row becomes sticky** at the top; the rest of the white content (the entry grid) scrolls up *behind* that sticky header.
-- **Sticky region height = from the top of the white bg to the top of the first entry image.** That's the white section's Header `1:13100` band = **≈98.6px** (header incl. its 40/20 padding), i.e. everything above `1:13101`'s first image row. Confirm the exact px at build by measuring header-bottom → first-image-top.
+**Beat 1 — Reveal #1: white grid section evicts the fixed hero.**
+- Hero (`1:13092`, 0→720) is **fixed** (locked to viewport, `z` below). White grid section (`1:13099`, top=720) rises over it on a higher layer, covering the hero completely. Reveal boundary = **720px** scrolled.
 
-**Implementation notes for build (EDS):**
-- Phase 1 (hero pinned + sheet-over) → hero in its own section, `position: sticky; top: 0` (or fixed) with the following white section at a higher stacking context sliding over it. Watch `overflow` on ancestors — `overflow: hidden` on `html/body` kills sticky; use `overflow-x: clip` (see `css-pitfalls-eds`).
-- Phase 2 (sticky sub-header) → the white section's header (nav row) `position: sticky; top: 0` within its section; sticky height must equal header band (≈98.6px). Two independent sticky contexts stacked — verify they don't fight (the hero sticky must release before/behind the header sticky).
-- This is bespoke Home behavior, likely a small JS + CSS block, not a reusable variant. Build behind reduced-motion consideration and test on touch (`responsive-adaptation`).
-- **Verify against the real prototype with the user** (or a screen recording) before finalizing — the pin/release timing and whether hero is `sticky` vs `fixed` affects the DOM/CSS approach.
+**Beat 2 — Sticky #1: grid nav row pins.**
+- Once the grid section's top reaches viewport top, its header row (`1:13100`) becomes `position: sticky; top: 0`. Sticky band = header only = **98.6px** (720→818.6). Grid entries (`1:13101`, first image at **845.6**) scroll beneath it.
+- (Earlier note said "top of white bg → first image" ≈98.6 — correct: header band 98.6px, then a ~27px gap before the first image at 845.6.)
+
+**Beat 3 — Reveal #2: dark Issue section evicts the pinned nav (SAME overlay technique as Beat 1).**
+- Dark Issue section (`1:13138`, top=**2191.6**, 511px tall) rises on a higher layer and covers up the Beat-2 sticky nav — explicit overlap, not the nav's container passively ending. The nav sits pinned while the dark section scrolls up underneath, then is pushed off once the dark section's rising edge reaches the top.
+- The dark section carries **NO sticky header of its own** — after it fully evicts the nav, it scrolls away normally like ordinary content.
+- **Reveal-#2 boundary** = where the dark section's top edge (frame Y **2191.6**) reaches the viewport top = **2191.6px** scrolled. Equivalent: the dark edge meets the pinned nav's bottom (98.6px from top) when scroll = 2191.6 − 98.6 = **2093.0px** (the moment eviction begins); nav fully gone at 2191.6.
+
+**Beat 4 — Sticky #2: table header row pins for the rest of the page.**
+- Table section = Page Content `1:13150` (top=**2702.6**). Its header row = the **search-bar toolbar** (`1:13151`, 70px, "SEARCH … CLEAR") **+ the column-header row** (`1:13157`, "PROJECT / TITLE / TYPE / COLLABORATOR / VENUE / DATE / PRODUCER", 25px). Together they become one `position: sticky; top: 0` context and stay pinned for the remainder of the page.
+- Sticky band = search bar 70px + 40px table pad + column header 25px. Measured: search 2702.6→2772.6; table frame pad +40; column-header `1:13157` 2772.6+40=2812.6→2837.6; **first data row** `1:13158` at **2837.6**. So sticky band ≈ **135px** (2702.6→2837.6, toolbar + pad + header row), pinning until page end. Confirm exact px at build (toolbar-top → first-data-row-top).
+
+**Implementation notes (EDS):**
+- REVEAL primitive → the rising section gets a higher `z-index` and `position: relative`; the covered layer is `position: sticky|fixed; top:0` at a lower `z`. Build ONE reusable reveal mechanism, apply it at both boundaries (hero→grid, nav→dark). Reveal #2 must cover a *sticky* element, so the dark section's stacking context must beat the nav's.
+- STICKY primitive → sub-header `position: sticky; top:0`; each sticky release happens because the next reveal covers it (z-order), not because its container runs out — so don't rely on container end. Two sticky bands: grid nav (98.6px) and table header (~135px).
+- `overflow:hidden` on `html/body`/ancestors kills sticky — use `overflow-x: clip` (`css-pitfalls-eds`).
+- Likely a small Home-scoped JS+CSS controller coordinating z-layers. Respect `prefers-reduced-motion`; test on touch (`responsive-adaptation`).
+- **Hero pin technique = `position: sticky; top: 0` (NOT `fixed`).** Decided 2026-07-08 (gabrielwalt): whether the hero stays pinned or scrolls away under the fully-covering white sheet is visually indistinguishable (the sheet covers it entirely), so use whichever is cleanest/most performant → **sticky**. Sticky keeps the hero in normal flow (occupies its own 720px, so NO spacer needed), pins at `top:0`, and is covered by the higher-z white section with zero JS for the release — pure CSS, no scroll listeners for this beat. This sidesteps the stay-vs-disappear question entirely (the browser handles it via the containing block).
 
 ### Issue banner `1:13138` → maps to a **dark section** (already built in foundation)
 - Black bg, white text, inverted white-fill ABOUT button (verified in `/library/sections`). 42px "Issue 1/Fall 2026", 32/38 credits, magazine mockup image right.
 
 ### Page Content `1:13150` (data table)
-- Search bar (bordered `#707070`, "SEARCH"…"CLEAR", 14px uppercase +1.4px tracking) + a long **Metadata Stack** table (`1:13156`): ~55 rows, 6 columns (Project/Title/Type/Collaborator/Venue/Date/Producer), 13px uppercase grey `#707070` +1.3px tracking, 1px `#707070` cell borders, 25px row height. This is the dense index table seen at the bottom of Home.
+- Search bar (`1:13151`, 70px, bordered `#707070`, "SEARCH"…"CLEAR", 14px uppercase +1.4px tracking) + a long **Metadata Stack** table (`1:13156`, 1375px): **55 rows** (`1:13157`…`1:13211`) × 25px each, 7 columns (Project/Title/Type/Collaborator/Venue/Date/Producer), 13px uppercase grey `#707070` +1.3px tracking, 1px `#707070` cell borders. Row 1 (`1:13157`) is the **column-header row**; rows 2+ are data. This is the dense index table at the bottom of Home; it's the SAME table that IS the whole Search page (`/search`).
+- **All 54 data rows authored** into `content/index.plain.html` (2026-07-08). Figma's code export dedups the repeated row instances, so rows were read from the table screenshot: a 9-title cycle (Wind in the Trees / On the Edge / Question Chain / Starting from Sensation / Metabolic Rift / Harmonic Overtones / Dash / Space Fold / Technique) repeated 6×, with Venue (3 placeholder heads "Ca' Corner della Regina"/"Lorem Ipsum"/"Dolor sit Amet" then a 4-cycle), Date (4-cycle), Producer (Fondazione Prada/Prada/Luna Rossa) cycled — matching the Figma's generated-filler pattern. Search filters across all 54 (verified 54→6 on "Space Fold", Clear restores).
+- The search-toolbar + column-header row together form the Beat-4 sticky band (see scroll interaction above).
+
+### Home content model (Phase 1 — authored `content/index.plain.html`, GATE 1 pending)
+Authored 2026-07-08. Structure verified in preview (4 sections, all blocks decorate). Styling NOT started.
+
+| Section | Block | Reuse | Content model |
+|---------|-------|-------|---------------|
+| 1 Hero | `hero` (`hero-cover` variant) | boilerplate `hero`, new variant | 2 cells: [picture] + [metadata `<p>` list (6 lines) → 2× `<h1>` display title]. Full-bleed cover. |
+| 2 Index grid | `grid` | boilerplate `cards` **renamed → `grid`** as-is | 12 rows, each [cover cell] + [title `<p>`, description `<p>`, type-tag `<p>`]. Cover cell = a picture OR author-typed text (→ typographic cover: black card, white display text). Decorates to `<ul>`/`<li>` (classes `grid-card-image`/`grid-card-body`; text cover adds `grid-card-cover`). |
+| 3 Issue banner | `columns` + **dark section** | boilerplate `columns` + `Style: Dark` section metadata | 1 row, 2 cells: [2× `<h2>`, credits `<p>`, About CTA `<strong><a>`] + [picture]. Inverted CTA via dark-section rule. |
+| 4 Search table | `search-table` (**NEW block**) | new — shared with Search page | Content = ONLY the 7-col `<table>` (header row + data rows). The **search input + Clear button are injected by the block JS** (not authored) — see below. |
+
+Notes:
+- **Site nav is NOT page content** — the "Prada Index / Calendar / Projects / About" bar is the `header` block (from `/nav`), built in the later nav step, not authored into `index.plain.html`.
+- **`grid`** = the boilerplate `cards` block renamed 2026-07-08 (dir/files/classes → `grid`, `grid-card-image`, `grid-card-body`). Entry/type-tag styling (grey tag, bold title) belongs to `grid` block styling in Phase 2.
+- **`search-table`** = the boilerplate had no such block; created 2026-07-08 (was briefly `index-table`, renamed to `search-table`). **Search UI is functional + injected, not authored content:** `search-table.js` prepends a `.search-table-search` bar (an `<input type="search">` with placeholder "Search" + a "Clear" `<button>`) above the table, then live-filters data rows (`tr.hidden`) on input; Clear resets. Only the `<table>` is authored. Search bar styled to Figma (`1:13151`): bordered box `1px #707070`, 10px pad, uppercase 14px +1.4px tracking placeholder/clear, grey `#707070`. Verified functional in preview (10→1 rows on "Kojima", Clear restores). **Shared with the Search page** — reusable block, not Home-bespoke. Full editorial table styling comes in Phase 2.
+- **Images extracted from Figma** 2026-07-08 into `content/media/` (PNG). Extracted per-node via `get_design_context` (image-fill URLs from the S3 export): 9 grid entry images (marie, metabolic, harmonic, technique, wind, sensation, jokes, monster, dontlooknow) + the Issue cover. All decode + render (verified ~662px, zero broken).
+  - **3 grid entries have NO image — they are typographic covers** (black card, white 105px text): "The American Vernacular" (`1:13119`), "Cognitive Estrangement" (`1:13125`), "Two Poems" (`1:13137`). Modeled as image-less cards (empty image cell); the text-cover look is a Phase-2 `grid` variant drawn from the Entry Cover Templates set — do NOT fabricate images for these.
+  - **Hero background** — `dt 1` (`1:13093`) is an image *fill* Figma's export won't surface. Supplied by the user via URL 2026-07-08 (Dropbox) → `content/media/hero-satellites.jpg` (2880×1440 JPEG). Renders full-bleed under the hero; verified loaded + legible.
+- Hero metadata rows + display title split follows the Figma frame (`1:13094` / `1:13096`).
+
+### Shared-vs-bespoke determination (reuse across Page Template)
+The scroll mechanic spans components that recur on the shared **Page Template** (Calendar/Projects/Search/About all wrap it), so decide per-primitive:
+- **The shared site header/nav** (`1:1300`-style) is on every Page-Template screen → its `sticky; top:0` behavior is **shared** (belongs to the header block/nav, not Home). But the **reveal/eviction** of that nav (Beats 1 & 3) is driven by Home's specific hero→grid→dark stack; other screens likely just have a normal sticky nav with no hero-reveal. Confirm each screen against Figma before assuming.
+- **The table header sticky** (Beat 4) recurs wherever the data table appears — Home bottom AND the Search page are the same `search-table` block. So `search-table` should carry its own `sticky` header (search bar + column-header row) **built into the block** (shared), not hardcoded in Home.
+- **The hero-reveal + dark-eviction z-layer choreography** (Beats 1–3) is **bespoke to Home** — no other frame has the fixed-hero → rising-grid → rising-dark sequence. Keep it a Home-scoped controller.
+- **NET:** build the sticky primitives INTO the reusable blocks (nav header, table) so Calendar/Projects/Search/About inherit them; keep the Home reveal choreography (fixed hero + z-layer eviction) as a Home-only treatment. **Verify the other frames' scroll behavior in Figma when those pages are built** — don't assume they replicate Home's reveals.
 
 **Known gap (RESOLVED):** section styles now render — `decorateSections` patched (PROJECT-PLAN task #7 ✅). See `eds-section-metadata-decoration`.
 

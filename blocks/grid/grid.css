@@ -1,0 +1,91 @@
+/* Prada Index entry grid — 4-column index of works.
+   Each li = [image cell] + [label cell: title / description / type-tag].
+   Some entries have an empty image cell → they are typographic covers. */
+
+.grid > ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 20px 12px;
+}
+
+.grid > ul > li {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background-color: var(--background-color);
+}
+
+/* image cell — square-ish media well on a light-grey placeholder ground */
+.grid .grid-card-image {
+  line-height: 0;
+  aspect-ratio: 1 / 1;
+  background-color: var(--placeholder-color);
+  overflow: hidden;
+}
+
+.grid .grid-card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* typographic cover — author types text in the cover cell instead of an image:
+   black card, white display text. A quick way to give an image-less entry a cover. */
+.grid .grid-card-cover {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background-color: var(--text-color);
+  color: var(--background-color);
+  font-family: var(--heading-font-family);
+  font-weight: var(--weight-bold);
+  font-size: clamp(28px, 3.2vw, 48px);
+  line-height: 1.02;
+  letter-spacing: var(--tracking-display);
+  text-align: center;
+}
+
+/* cover text may be authored as a bare string or inside a <p> — normalize either */
+.grid .grid-card-cover p {
+  margin: 0;
+  font: inherit;
+  letter-spacing: inherit;
+  color: inherit;
+}
+
+/* label cell — title + description body, type-tag muted grey; no gap between lines */
+.grid .grid-card-body {
+  padding-right: 10px;
+}
+
+.grid .grid-card-body p {
+  margin: 0;
+  font-size: var(--body-font-size-m);
+  line-height: var(--line-height-body);
+}
+
+/* first line = title (bold), last line = type tag (muted) */
+.grid .grid-card-body p:first-child {
+  font-weight: var(--weight-bold);
+}
+
+.grid .grid-card-body p:last-child {
+  color: rgb(0 0 0 / 40%);
+}
+
+/* single-line label (only a title) stays regular weight — avoid bolding a lone tag */
+.grid .grid-card-body p:only-child {
+  font-weight: var(--weight-regular);
+  color: var(--text-color);
+}
+
+@media (width <= 900px) {
+  .grid > ul {
+    grid-template-columns: repeat(2, 1fr);
+    row-gap: 20px;
+  }
+}

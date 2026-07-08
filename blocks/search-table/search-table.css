@@ -1,0 +1,98 @@
+.search-table-search {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 10px;
+  border: 1px solid var(--border-color);
+}
+
+.search-table-input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: var(--text-color);
+  font-family: var(--body-font-family);
+  font-size: var(--body-font-size-s);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+}
+
+.search-table-input::placeholder {
+  color: var(--metadata-color);
+  opacity: 1;
+}
+
+.search-table-input:focus {
+  outline: none;
+}
+
+.search-table-clear {
+  flex: none;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: var(--metadata-color);
+  font-family: var(--body-font-family);
+  font-size: var(--body-font-size-s);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.search-table-clear:hover {
+  color: var(--text-color);
+}
+
+/* editorial data table — 13px uppercase grey, 1px grey cell borders, tight rows */
+.search-table table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  margin-top: 40px;
+}
+
+.search-table th,
+.search-table td {
+  padding: 6px 8px;
+  border: 1px solid var(--border-color);
+  color: var(--metadata-color);
+  font-size: var(--body-font-size-xs);
+  line-height: var(--line-height-label);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-align: left;
+  font-weight: var(--weight-regular);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.search-table tr:first-child > * {
+  border-top: 0;
+}
+
+/* Beat 4 — the search bar + column-header row pin together for the rest of the page.
+   The search bar sticks at top:0; the table's header row sticks just below it. */
+.search-table .search-table-search {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  background-color: var(--background-color);
+}
+
+.search-table tr:first-child th {
+  position: sticky;
+  top: 39px; /* height of the sticky search bar above it */
+  z-index: 2;
+  background-color: var(--background-color);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .search-table .search-table-search,
+  .search-table tr:first-child th {
+    position: static;
+  }
+}

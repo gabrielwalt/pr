@@ -1,12 +1,13 @@
 ## Current Focus
 
 - Branch: main
-- Active task: Foundation hardening done — full type tokenization + section-metadata fix + dark-section inversion (tasks #7 + iteration)
-- Last completed: Type system fully tokenized (8 roles, all match Figma px); section styles now decorate; dark inverted CTA verified in preview
-- Next up: Build Home content + blocks (task #4) via `excat-figma:excat-figma-migration` — HOLD until user says go; grow /library/blocks per block
+- Active task: Home Phase 2 complete incl. nav + all 4 scroll beats — awaiting GATE 2 validation
+- Last completed: Prada editorial nav (header block + /nav fragment) with full Home choreography (Beats 1–4: hero reveal, nav pin, dark eviction, table-header pin); real hero image; lint+detect clean
+- Next up: GATE 2 sign-off on Home; then next screen (Calendar/Projects/Search/About share the Page Template + nav)
 - Blocker: DA library handoff steps are user-owned (checklist delivered, still pending)
 
 ## Pages
 
 | Page | URL | Content ✓ | Style ✓ | Notes |
 |---|---|---|---|---|
+| Home | `/` | ✅ GATE 1 | 🔲 | 4 sections: hero-cover, grid (12), columns+dark Issue banner, search-table (new block, injects search+clear, shared w/ Search). Nav excluded (header block). Real Figma images (hero bg pending). GATE 1 approved 2026-07-08. |

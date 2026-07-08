@@ -1,4 +1,7 @@
-/* header and nav layout */
+/* Prada Index editorial nav bar.
+   Full-width row: bold "Prada Index" wordmark (left) + grey 37px nav
+   (Calendar / Projects / search … About), under a thin rule. */
+
 header .nav-wrapper {
   background-color: var(--background-color);
   width: 100%;
@@ -15,9 +18,8 @@ header nav {
   align-items: center;
   gap: 0 24px;
   margin: auto;
-  max-width: 1248px;
   height: var(--nav-height);
-  padding: 0 24px;
+  padding: 0 var(--page-padding);
   font-family: var(--body-font-family);
 }
 
@@ -30,25 +32,6 @@ header nav[aria-expanded='true'] {
   min-height: 100dvh;
 }
 
-@media (width >= 900px) {
-  header .nav-wrapper {
-    position: relative;
-  }
-
-  header nav {
-    display: flex;
-    justify-content: space-between;
-    gap: 0 32px;
-    max-width: 1264px;
-    padding: 0 32px;
-  }
-
-  header nav[aria-expanded='true'] {
-    min-height: 0;
-    overflow: visible;
-  }
-}
-
 header nav p {
   margin: 0;
   line-height: 1;
@@ -58,7 +41,7 @@ header nav a:any-link {
   color: currentcolor;
 }
 
-/* hamburger */
+/* hamburger (mobile) */
 header nav .nav-hamburger {
   grid-area: hamburger;
   height: 22px;
@@ -132,28 +115,24 @@ header nav[aria-expanded='true'] .nav-hamburger-icon::after {
   transform: rotate(-45deg);
 }
 
-@media (width >= 900px) {
-  header nav .nav-hamburger {
-    display: none;
-    visibility: hidden;
-  }
-}
-
-/* brand */
+/* brand — bold grey wordmark (Figma fills it #707070, same as the nav links) */
 header .nav-brand {
   grid-area: brand;
-  flex-basis: 128px;
-  font-size: var(--heading-font-size-s);
-  font-weight: 700;
+}
+
+header nav .nav-brand p {
+  font-size: var(--heading-font-size-l);
+  font-weight: var(--weight-bold);
   line-height: 1;
+  letter-spacing: -0.03em;
 }
 
-header nav .nav-brand img {
-  width: 128px;
-  height: auto;
+header nav .nav-brand a:any-link {
+  color: var(--metadata-color);
+  text-decoration: none;
 }
 
-/* sections */
+/* sections — grey nav links */
 header nav .nav-sections {
   grid-area: sections;
   flex: 1 1 auto;
@@ -170,103 +149,171 @@ header nav[aria-expanded='true'] .nav-sections {
 header nav .nav-sections ul {
   list-style: none;
   padding-left: 0;
-  font-size: var(--body-font-size-s);
 }
 
-header nav .nav-sections ul > li {
-  font-weight: 500;
+header nav .nav-sections a:any-link {
+  color: var(--metadata-color);
 }
 
-header nav .nav-sections ul > li > ul {
-  margin-top: 0;
+/* tools — About (far right) */
+header nav .nav-tools {
+  grid-area: tools;
+  display: flex;
+  align-items: center;
+  gap: 20px;
 }
 
-header nav .nav-sections ul > li > ul > li {
-  font-weight: 400;
+header nav .nav-tools ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
+header nav .nav-tools a:any-link {
+  color: var(--metadata-color);
+}
+
+/* search icon — lives in the sections group (next to Calendar/Projects) */
+header nav .nav-search {
+  display: inline-flex;
+  align-items: center;
+}
+
+header nav .icon-search {
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  background-color: var(--metadata-color);
+  mask: url('/icons/search.svg') center / contain no-repeat;
+}
+
+header nav .icon-search svg,
+header nav .icon-search img {
+  width: 100%;
+  height: 100%;
+}
+
+/* Desktop editorial bar: single row, wordmark left, nav grouped + About right,
+   all under a thin top rule. */
 @media (width >= 900px) {
-  header nav .nav-sections {
-    display: block;
-    visibility: visible;
-    white-space: nowrap;
-  }
-
-  header nav[aria-expanded='true'] .nav-sections {
-    align-self: unset;
-  }
-
-  header nav .nav-sections .nav-drop {
+  header .nav-wrapper {
     position: relative;
-    padding-right: 16px;
-    cursor: pointer;
   }
 
-  header nav .nav-sections .nav-drop::after {
+  header nav {
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-start;
+    gap: 0 20px;
+    height: auto;
+    padding: 40px var(--page-padding) 20px;
+  }
+
+  header nav[aria-expanded='true'] {
+    min-height: 0;
+    overflow: visible;
+  }
+
+  header nav .nav-hamburger {
+    display: none;
+    visibility: hidden;
+  }
+
+  header nav .nav-brand {
+    flex: 0 0 auto;
+  }
+
+  /* Split editorial rule (Figma): the thin top hairline is TWO segments with a
+     gap between the brand and the nav cluster — not one continuous line.
+     ::before = short segment over the "Prada Index" wordmark; ::after = segment
+     spanning the nav cluster (Calendar…About) to the right edge. The break x's
+     come from --rule-brand-end / --rule-cluster-start (measured in header.js);
+     a 20px gap sits on each side of the break. Fallback to a full rule if the
+     vars aren't set yet. */
+  header nav::before,
+  header nav::after {
     content: '';
-    display: inline-block;
     position: absolute;
-    top: 0.5em;
-    right: 2px;
-    transform: rotate(135deg);
-    width: 6px;
-    height: 6px;
-    border: 2px solid currentcolor;
-    border-radius: 0 1px 0 0;
-    border-width: 2px 2px 0 0;
+    top: 0;
+    height: 1px;
+    background-color: var(--rule-color);
   }
 
-  header nav .nav-sections .nav-drop[aria-expanded='true']::after {
-    top: unset;
-    bottom: 0.5em;
-    transform: rotate(315deg);
+  header nav::before {
+    left: 0;
+    right: calc(100% - var(--rule-brand-end, 100%) - 20px);
+  }
+
+  header nav::after {
+    left: calc(var(--rule-cluster-start, 0px) - 20px);
+    right: 0;
+  }
+
+  /* Calendar / Projects / search cluster — pushed to the middle, About sits
+     flush-right. Two auto margins split the free space per Figma (brand ⟷
+     cluster ⟷ About). */
+  header nav .nav-sections {
+    display: flex;
+    visibility: visible;
+    flex: 0 0 auto;
+    align-items: center;
+    white-space: nowrap;
+    margin-left: auto;
   }
 
   header nav .nav-sections ul {
     display: flex;
-    gap: 24px;
+    align-items: center;
+    gap: 20px;
     margin: 0;
+    font-size: var(--heading-font-size-l);
+    letter-spacing: -0.03em;
   }
 
-  header nav .nav-sections .default-content-wrapper > ul > li {
-    flex: 0 1 auto;
-    position: relative;
+  header nav .nav-tools {
+    margin-left: auto;
+    font-size: var(--heading-font-size-l);
+    letter-spacing: -0.03em;
   }
 
-  header nav .nav-sections .default-content-wrapper > ul > li > ul {
-    display: none;
-    position: relative;
-  }
-
-  header nav .nav-sections .default-content-wrapper > ul > li[aria-expanded='true'] > ul {
-    display: block;
-    position: absolute;
-    left: -24px;
-    width: 200px;
-    top: 150%;
-    padding: 16px;
-    background-color: var(--light-color);
-    white-space: initial;
-  }
-
-  header nav .nav-sections .default-content-wrapper > ul > li > ul::before {
-    content: '';
-    position: absolute;
-    top: -8px;
-    left: 16px;
-    width: 0;
-    height: 0;
-    border-left: 8px solid transparent;
-    border-right: 8px solid transparent;
-    border-bottom: 8px solid var(--light-color);
-  }
-
-  header nav .nav-sections .default-content-wrapper > ul > li > ul > li {
-    padding: 8px 0;
+  header nav .nav-tools ul {
+    font-size: var(--heading-font-size-l);
+    letter-spacing: -0.03em;
   }
 }
 
-/* tools */
-header nav .nav-tools {
-  grid-area: tools;
+/* ---- Home nav choreography (Beats 1–3), pure CSS ----
+   header.js relocates the whole <header> into the TOP of the white grid sheet
+   (the grid section's content column) and adds `.nav-placed`. From there the
+   choreography is entirely native scroll — no JS transform, no fixed bar:
+   - Beat 1: the header is now part of the grid sheet, so it rides up and covers
+     the hero WITH the sheet as the section scrolls.
+   - Beat 2: `position: sticky; top: 0` pins the nav at the viewport top while
+     the card grid scrolls beneath it.
+   - Beat 3: the dark Issue section (higher stacking layer, z:5 in styles.css)
+     rises over the entire grid section — nav included — covering it top-down.
+   Because it lives inside the sheet's capped content column, the nav is exactly
+   as wide as the sheet (not viewport-wide). Removing the header from the normal
+   <header> landmark leaves that landmark empty; it reserves no space on Home
+   (`body:has(main .hero-cover) header { min-height: 0 }`, foundation). */
+header.nav-placed {
+  position: sticky;
+  top: 0;
+  z-index: 4;
+  min-height: 0;
+  background-color: var(--background-color);
+}
+
+header.nav-placed .nav-wrapper {
+  position: static;
+  background-color: transparent;
+}
+
+/* the relocated header sits inside the grid section's padded content column, so
+   drop the nav's own horizontal page-padding to avoid doubling the gutter. The
+   split-rule segments (nav::before/::after) already measure from the nav box,
+   which now has zero padding, so they land correctly with no override needed. */
+header.nav-placed nav {
+  padding-left: 0;
+  padding-right: 0;
 }

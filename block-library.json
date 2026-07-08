@@ -1,7 +1,20 @@
 {
-  "total": 0,
+  "total": 3,
   "offset": 0,
-  "limit": 0,
-  "data": [],
+  "limit": 3,
+  "data": [
+    {
+      "name": "Hero",
+      "path": "https://main--pr--gabrielwalt.aem.live/library/blocks/hero"
+    },
+    {
+      "name": "Grid",
+      "path": "https://main--pr--gabrielwalt.aem.live/library/blocks/grid"
+    },
+    {
+      "name": "Search Table",
+      "path": "https://main--pr--gabrielwalt.aem.live/library/blocks/search-table"
+    }
+  ],
   ":type": "sheet"
 }

@@ -17,4 +17,5 @@
 
 ## Decisions
 
+- **Home hero pin = `position: sticky`, not `fixed`.** The Home scroll mechanic covers the hero entirely with the rising white grid sheet, so whether the hero stays pinned underneath or scrolls away is visually indistinguishable. User (gabrielwalt, 2026-07-08) left the choice to whatever is cleanest/most performant → **sticky**: hero stays in normal flow (no spacer), pins at `top:0`, covered by higher-z sheet, pure-CSS release (no scroll listener). Full four-beat scroll spec in [[PROJECT-IMPORT]] Home analysis.
 - **Typeface: Univers → Univers Next Pro via Adobe Fonts (Typekit).** The Figma design uses "Univers" (a licensed Linotype face); the current digital release is **Univers Next Pro** (Monotype), treated as equivalent for this build. Sourced from the user's Adobe Fonts web project — kit `lnd2jia`, CSS `https://use.typekit.net/lnd2jia.css`, family `univers-next-pro`. Weights available: 200/300/400/400i/500/500i/600/600i/700. Design uses **400 (Regular)** for body/nav/metadata and **700 (Bold)** for display headings + entry titles; no italics, no condensed/extended widths. Decided 2026-07-08 (gabrielwalt).

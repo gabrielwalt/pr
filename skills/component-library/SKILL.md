@@ -17,9 +17,11 @@ Opt-in per project: `migration-orientation` asks whether to maintain the library
 
 Author under `content/library/` — net-new authored pages (not derived from the source), the one content this project writes directly. Keep it **out of site nav/sitemap** (internal reference). Use representative sample copy, never `lorem`.
 
+**Keep the WHOLE library inside its folder — the index is `content/library/index.plain.html`, NOT a sibling `content/library.plain.html`.** EDS serves a folder's `index` document at the folder path, so `content/library/index.plain.html` renders at `/library/` (the folder URL). This self-contains every library page under `content/library/*`, so the tree moves/copies/publishes as one unit. Do NOT author the root as `content/library.plain.html` (a sibling of the folder) — that scatters the library across two locations.
+
 | Page | Renders | Feeds the author panel? |
 |------|---------|--------------------------|
-| `/library` (index) | Overview + links to every page; a legend of all CTA/button forms | No |
+| `/library` (index = `library/index.plain.html`) | Overview + links to every page, PLUS a **Design identity** section (see below). Pure overview — NO interactive CTAs/demos on the index (those live on `/library/default-content`) | No |
 | `/library/default-content` | Every semantic element: `h1`–`h6`, paragraph, lead, `ul`/`ol`, blockquote, inline (link/bold/italic/code), table, image, eyebrow, button/CTA variants — the design-system showcase of global type + spacing | No |
 | `/library/sections` | Each section style applied to the same sample content, so styles compare side by side | No |
 | `/library/blocks/<block>` | **One page per block, ONE clean instance per real variant** — no story headings, no edge cases | **Yes — this exact page is what `block-library.json` / the component definition points at** |
@@ -27,6 +29,9 @@ Author under `content/library/` — net-new authored pages (not derived from the
 - **Generate from the inventory:** read `PROJECT-BLOCKS.md` (blocks, variants, section styles) + `blocks/` + page templates. One page per block keeps it scannable and lets a critique/diff target a single block.
 - **Build from real blocks/content**, not hand-written classes — the pipeline strips authored classes, and only real decoration is a faithful reference.
 - **Use it:** GATE-2 diffs a block's library page against the source; orientation/foundation stages point the user at it ("nothing renders yet, but review `/library/default-content`"); `block-visual-iteration` verifies a look-change against it; teammate/author onboarding.
+
+### The index page carries a "Design identity" section
+The `/library` index is a **pure overview**: (1) a short intro, (2) a linked **Pages** list (one link per library page), and (3) a **`## Design identity`** section — a few short paragraphs describing the brand's design *concept* in prose (the aesthetic thesis, not a token dump): the overall voice/feel, how typography carries the identity, the colour stance, the layout/motion character, and the fidelity approach. Draw it from `PROJECT-DESIGN.md` + `PROJECT-CONTEXT.md` Brand, phrased for a human reader. **Keep the index CTA-free** — no `<strong>`/`<em>`-wrapped demo buttons; the only links are the Pages nav links. (A CTA/button *showcase* belongs on `/library/default-content`, not the index.) This makes the index read as a table of contents + a design manifesto, orienting anyone who opens the library.
 
 ## Verifying edge cases without polluting the library (ephemeral testing)
 A block isn't done until it survives its meaningful content edge cases — but those renders are **temporary**, not committed to `/library/blocks/<block>`:
@@ -77,7 +82,7 @@ There is **no demo-doc library**; the author's palette IS three JSON files (a fi
 
 ## Recipe
 1. Detect the authoring model (`PROJECT-DESIGN.md` #1 — DA vs UE).
-2. **First time:** scaffold `/library` (index) + `/library/default-content` + `/library/blocks/<block>` for whatever blocks the first page needs. **DA:** also create the in-repo blocks-list JSON at the site root (`name` + absolute `path` per block). **UE:** create the three JSON files.
+2. **First time:** scaffold the index at `content/library/index.plain.html` (serves at `/library/`) + `/library/default-content` + `/library/blocks/<block>` for whatever blocks the first page needs — all under `content/library/`. **DA:** also create the in-repo blocks-list JSON at the site root (`name` + absolute `path` per block). **UE:** create the three JSON files.
 3. **New block validated** → add its `/library/blocks/<block>` page (one clean instance) + (DA) a JSON row / (UE) an entry across all three JSON files.
 4. **New variant validated** → add ONE clean instance of it to that block's library page, named by CSS class (`teaser` + `teaser-dark`); (UE) add a `classes_*` option to the model, not a new component.
 5. **New section style validated** → add it to `/library/sections`.

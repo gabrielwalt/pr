@@ -35,3 +35,94 @@
     padding: 40px 32px;
   }
 }
+
+/* hero-cover variant — full-bleed editorial cover (Prada Index Home).
+   Content model: row 1 = background picture; row 2 = [metadata ribbon cell, title cell]. */
+.hero.hero-cover {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 20px;
+  min-height: 720px;
+  padding: 40px;
+  background-color: var(--text-color); /* fallback ground until real hero image lands */
+}
+
+/* background picture row fills the cover; base .hero picture already sets inset:0 */
+.hero.hero-cover > div:first-child {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  margin: 0;
+}
+
+.hero.hero-cover > div:first-child picture {
+  z-index: 0;
+}
+
+/* content row sits above the image, stacked (ribbon over title) */
+.hero.hero-cover > div:nth-child(2) {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* metadata ribbon: horizontal row of white-bordered cells with shared 1px dividers */
+.hero.hero-cover > div:nth-child(2) > div:first-child {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.hero.hero-cover > div:nth-child(2) > div:first-child p {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  padding: 8px;
+  border: 1px solid var(--background-color);
+  color: var(--background-color);
+  font-size: var(--body-font-size-xs);
+  line-height: 1;
+  letter-spacing: 0.1em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.hero.hero-cover > div:nth-child(2) > div:first-child p + p {
+  margin-left: -1px;
+}
+
+/* title cell: two solid 80px display lines, left-aligned white */
+.hero.hero-cover > div:nth-child(2) > div:last-child {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.hero.hero-cover h1 {
+  max-width: none;
+  margin: 0;
+  color: var(--background-color);
+}
+
+@media (width <= 900px) {
+  .hero.hero-cover {
+    min-height: 60vh;
+    padding: 20px;
+  }
+
+  .hero.hero-cover > div:nth-child(2) > div:first-child {
+    flex-direction: column;
+  }
+
+  .hero.hero-cover > div:nth-child(2) > div:first-child p {
+    margin-left: 0;
+  }
+
+  .hero.hero-cover > div:nth-child(2) > div:first-child p + p {
+    margin-left: 0;
+    margin-top: -1px;
+  }
+}

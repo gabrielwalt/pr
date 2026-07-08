@@ -381,3 +381,86 @@ main .section.dark a.button.secondary:focus-visible {
 main .section.dark :focus-visible {
   outline-color: var(--background-color);
 }
+
+/* ---- Home scroll choreography (bespoke) ----
+   Beat 1: the hero-cover section pins, and the following section rises over it.
+   Beat 4: the search-table's header band pins for the rest of the page.
+   Scoped to a main that contains a hero-cover so no other page is affected.
+   (Beats 2 & 3 — nav pins with the sheet, then the dark section covers it — are
+   pure native scroll: header.js relocates the <header> into the grid sheet and
+   header.css pins it with `position: sticky`. See header.css `.nav-placed`.) */
+
+/* On Home, header.js relocates the whole <header> into the top of the grid
+   sheet (see header.css `.nav-placed`), so it must not reserve flow space above
+   main either before that runs or in its new home. */
+body:has(main .hero-cover) header {
+  min-height: 0;
+}
+
+main:has(.hero-cover) > .section:first-child {
+  position: sticky;
+  top: 0;
+  z-index: 0;
+  padding-top: 0; /* hero sits flush at the viewport top; the relocated nav rides in the sheet above it */
+}
+
+/* Content is capped at max-width and centered; BLACK fills the sides at wider
+   viewports (Figma). The page ground is black; each section paints its own
+   surface only within the capped content column. */
+main:has(.hero-cover) {
+  background-color: var(--text-color);
+}
+
+/* every section after the hero rides above it and covers it on scroll. Each
+   paints an OPAQUE black across its full width (the "black sides") so it fully
+   covers the sticky hero underneath — a transparent section would let the
+   z:0 sticky hero show through its side gutters (main's own black ground sits
+   behind the sticky hero, so transparency reveals the hero, not the ground). */
+main:has(.hero-cover) > .section:first-child ~ .section {
+  position: relative;
+  z-index: 1;
+  background-color: var(--text-color);
+}
+
+/* the grid sheet (first section after the hero, carrying the relocated nav)
+   must meet the hero flush — its white ground lives on the inner `> div`, so
+   the section's own top padding would show the black ground as a gap above the
+   nav. Zero it; the relocated nav supplies its own top inset. */
+main:has(.hero-cover) > .section:first-child + .section {
+  padding-top: 0;
+}
+
+/* opaque white ground only within the capped content of light sections, so the
+   rising sheet covers the hero's content column in white (sides stay black). */
+main:has(.hero-cover) > .section:first-child ~ .section:not(.dark) > div {
+  background-color: var(--background-color);
+}
+
+/* dark Issue banner. TWO things here:
+   1. Beat 3 (reveal, not slide-off): it rises on a HIGHER layer than the pinned
+      nav (z:4, header.css) and climbs over it — same overlay mechanic the grid
+      uses on the hero. The nav stays put; the dark layer covers it as it rises.
+      z:5 > nav z:4 > grid z:1 > hero z:0.
+   2. No section vertical padding so its image reaches the section's top/bottom
+      edges; the text column supplies its own inset.
+   Selector mirrors the generic `~ .section` rule's shape (incl. `:first-child
+   ~`) so it out-specifies the z:1 default rather than losing the tie. */
+main:has(.hero-cover) > .section:first-child ~ .section.dark {
+  z-index: 5;
+  padding: 0;
+}
+
+/* hero content column is capped + centered too, matching the sheet's OUTER
+   width so the rising white sheet covers it exactly; black fills the hero's
+   sides. The sheet div is content-box (1440 + 2×page-padding), so the hero
+   column must span the same footprint. */
+main:has(.hero-cover) > .section:first-child .hero-wrapper {
+  max-width: calc(var(--content-max-width) + 2 * var(--page-padding));
+  margin-inline: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  main:has(.hero-cover) > .section:first-child {
+    position: static;
+  }
+}

@@ -1,6 +1,6 @@
 ---
 name: nav-header-eds
-description: EDS nav/header patterns. Use when header is broken, nav is invisible, mega menu won't animate, sticky isn't working, or mobile/desktop state conflicts. Extends EXCAT `excat-navigation-orchestrator`.
+description: EDS nav/header patterns. Use when header is broken, nav is invisible, mega menu won't animate, sticky isn't working, a section must cover/reveal over a pinned nav on scroll, or mobile/desktop state conflicts. Extends EXCAT `excat-navigation-orchestrator`.
 ---
 
 Nav uses `aria-expanded='true'` on desktop (set by `toggleMenu` on init). Mobile CSS (`nav[aria-expanded='true'] .nav-sections { display: block }`) applies on desktop too unless you match that specificity in media queries.
@@ -59,6 +59,16 @@ Use the project's desktop breakpoint (see `PROJECT-DESIGN.md`) for the media que
   opacity: 1; visibility: visible; transform: translateY(0);
 }
 ```
+
+## Nav that pins as the top of a "rising sheet" (scroll choreography)
+When a design has a full-bleed hero covered by a section (a "sheet") that then pins its own nav at the top: **relocate the whole `<header>` into the top of that sheet's content column and pin it with native `position: sticky` — do NOT keep it `position:fixed` and drive it with a JS scroll `transform`.**
+- **If you're about to write a `requestAnimationFrame`/scroll handler that sets `translateY` on a fixed nav to make it "ride" the sheet — stop.** A JS-transformed fixed bar (a) stutters (never as smooth as native scroll) and (b) spans the whole viewport, so it's wider than a max-width-capped sheet. Both are common complaints.
+- Recipe (pure CSS after a one-time DOM move):
+  1. In the header's `decorate()`, on the choreographed page only, `gridSectionInner.prepend(headerEl)` and add a marker class (`.nav-placed`). Now the header is real content inside the sheet.
+  2. `header.nav-placed { position: sticky; top: 0; z-index: <above cards>; background: <sheet bg> }`. It scrolls natively with the sheet, pins on its own, and inherits the sheet's capped width.
+  3. Zero the nav's own horizontal page-padding — the sheet's content `> div` already supplies the gutter (else it doubles).
+- **Covering the pinned nav with a later section (reveal):** give that section a **higher `z-index` than the nav** and an opaque background; it covers the whole sheet (nav included) as it rises. No eviction class needed — when the sheet scrolls off, its sticky nav goes with it.
+- **Specificity trap:** if the covering section's `z-index` rule shares base specificity with a generic sibling rule (e.g. `main > .section:first-child ~ .section { z-index: 1 }`), your `…~ .section.dark { z-index: 5 }` must reuse the **same `:first-child ~` shape** or it ties and loses — the section stays at z:1, behind the nav, and the cover silently fails. Verify computed `z-index` in the browser, don't assume.
 
 ## Pitfalls
 - The nav fragment loads as an ordered list of sections (typically brand / nav-sections / tools) and the decorate code maps classes by index — if the authored content reorders sections, the classes map to the wrong region. Check the project's nav block for the expected order.

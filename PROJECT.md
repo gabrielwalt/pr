@@ -1,7 +1,7 @@
 # Project Identity
 
-- **Site name:** *[Agent: fill after orientation.]*
-- **Source:** Figma prototype file — *[Agent: fill Figma file URL after orientation.]*
-- **Target EDS repo:** *[Agent: fill after orientation.]*
-- **Authoring model:** *[Agent: fill after orientation — DA or XWalk.]*
-- **Team contacts:** *[Agent: fill after orientation.]*
+- **Site name:** Prada Index Website (INT)
+- **Source:** Figma prototype file — https://www.figma.com/design/r3Na8h9qDALXzvTBZAbQGL/-INT--Prada-Index-Website-Design?node-id=0-1 (no live site)
+- **Target EDS repo:** *[Agent: fill when repo is known.]*
+- **Authoring model:** Document Authoring (da.live)
+- **Team contacts:** gabrielwalt (project lead)

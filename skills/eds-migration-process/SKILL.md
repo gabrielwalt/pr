@@ -14,7 +14,7 @@ Once style is validated, the page's blocks/variants/section-styles/templates are
 ## Flow
 0. **Orient the migration** (new site, before anything) — run `migration-orientation`: settle scope, content source, design source, **fidelity** (Faithful / Refined / Reimagined), reuse strategy, per-page overrides, and constraints. Record them in `PROJECT-DESIGN.md`'s `## Migration Strategy`. **Gate: no import until this exists.**
 1. **Scope the build.** For a **live-site source**: discover URLs and group pages into templates so you know the full scope and which pages are representative — two scope gates apply (what to import, how few templates); see EMA native site-scope skills. For a **Figma-only source** (this project): list the frames/screens directly from the Figma file — the frame list IS the scope, no URL discovery or template-consolidation crawl needed. Note which frames are reused templates (e.g. an "Entry Cover Templates" set) vs one-off screens.
-2. **Build the global design foundation** (the *workbench*, once per project) — run `global-style-foundation`: capture the visual gist across ≥3 representative pages/frames and formalize brand tokens, type scale, spacing system, and default-content styling, at the recorded fidelity. **Blocks are not styled until the workbench is level.**
+2. **Build the global design foundation** (the *workbench*, once per project) — run `global-style-foundation`: capture the visual gist across ≥3 representative pages/frames and formalize brand tokens, type scale, spacing system, and default-content styling, at the recorded fidelity. **Blocks are not styled until the workbench is level.** Then, **if the library opt-in (#13) is yes**, scaffold the initial component library (`component-library`) — default content + the blocks the first frame needs — **before** the first frame is built. It's the GATE-2 diff target, the reuse census, and (once published) the author's insertion palette; grow it as blocks are built.
 3. **Pick a representative page/frame** — prefer one that introduces new blocks.
 4. **Phase 1 — Content** (two ordered steps — see below).
 5. **🚦 GATE 1 — validate content structure** (below) before any design work.
@@ -34,8 +34,8 @@ Once style is validated, the page's blocks/variants/section-styles/templates are
 The workbench (`global-style-foundation`) is built once per site before any page's blocks. Phase 2 assumes it exists.
 1. **Confirm the workbench covers this page.** Brand tokens, type scale, and spacing should already render default content on-brand. If this page reveals a *genuinely global* gap, extend the foundation (not a block) and re-verify existing pages didn't move (`regression-guard`).
 2. **Per-block styling — two ordered sub-steps (`styling-additively`), at the page's fidelity** (first-match-wins: per-page override → site default). **Faithful** = measure and match. **Refined** = reproduce intent, strengthen toward foundation. **Reimagined** = keep concept, rebuild for excellence. Then:
-   - **2a. Reproduce the look with what already exists.** Before writing CSS, try to reproduce by choosing among existing blocks/variants/section-styles. Re-import with those choices.
-   - **2b. Add only what's genuinely missing.** New block, variant, section style, or template — new items are seen only by the new page.
+   - **2a. Reproduce the look with what already exists.** Before writing CSS, try to reproduce by choosing among existing blocks/variants/section-styles — **scan the component library as the block census** (Toolbox-First; often the frame composes with no new code). Re-import with those choices.
+   - **2b. Add only what's genuinely missing.** New block, variant, section style, or template — new items are seen only by the new page. **Add it to the component library in the same step** (`component-library`) so the GATE-2 diff target and the author palette stay current.
    - **Editing shared CSS is the exception.** Additive rules for a new content shape (teaser image-only, title+video) are fine. If you must change an *existing* declaration, measure the style-validated instances before/after (`regression-guard`).
 
 ## 🚦 GATE 1 — content structure
@@ -46,7 +46,7 @@ Ask the user to confirm and wait:
 
 ## 🚦 GATE 2 — design
 **Run `excat-visual-critique` before presenting a page/block as styled — don't wait to be asked.** Block / Section / Page / **Site** mode; site mode parallelizes sub-agents per template. Then:
-- Close each surfaced delta with `block-visual-iteration` (critique discovers + scores; that loop fixes).
+- Close each surfaced delta with `block-visual-iteration` (critique discovers + scores; that loop fixes). When the component library exists, diff the block's library page against the source and **confirm the look holds across every real variant**, not just the page instance.
 - Ask the user to confirm against the source in Console preview: global look right? Each block match the reported %?
 - Iterate on feedback (re-run critique to confirm % moved) before moving on.
 
@@ -75,4 +75,4 @@ Reach for these native EMA skills — suggest them to the user when they fit. **
 - Don't re-run `excat-figma:excat-figma-migration` on a node whose block is already validated — check Step 2.5's reuse comparison first, or you'll fork a near-duplicate variant.
 - Footer blocks must be in one section (no `<hr>`) or EDS renders rules between them.
 
-See also: `migration-orientation` (step 0 — strategy recorded before any build), `global-style-foundation` (step 2 — the workbench), `styling-additively` (reuse-first, additive styling), `eds-content-modeling` (block/variant/section/template decisions)
+See also: `migration-orientation` (step 0 — strategy recorded before any build), `global-style-foundation` (step 2 — the workbench), `component-library` (scaffold after the foundation; the diff target + reuse census + author palette, all one artifact), `styling-additively` (reuse-first, additive styling), `eds-content-modeling` (block/variant/section/template decisions)

@@ -59,7 +59,7 @@ Do not propose a new plan if one exists in PROJECT-PLAN.md. Do not ask what to w
 
 **Code is truth for implementation.** Don't copy selectors, token values, or DOM patterns into PROJECT-*.md — read the code. PROJECT files hold inventory, intent, decisions, non-obvious gotchas.
 
-**Content structure = the Figma frame.** The validated Figma frame is the authoritative source for a page's content split. Never change a block's structure without re-reading the frame it came from. `.plain.html` files are hand-authored (via `excat-figma:excat-figma-migration`) from that reading — there is no source DOM and no import script to regenerate from on this project.
+**Content structure = the Figma frame.** The validated Figma frame is the authoritative source for a page's content split. Never change a block's structure without re-reading the frame it came from. `.plain.html` files are hand-authored (via `excat-figma:excat-figma-migration`) from that reading — there is no source DOM and no import script to regenerate from on this project. *Exception:* `content/library/**` — the net-new, hand-authored component-library pages (`component-library`) are not derived from any Figma frame; they're written directly as the project's design-system reference and author-insertion palette.
 
 **No Git, no AEM pushes.** Never run `git`, and never commit, push, publish, or upload content yourself — not even as a suggestion or "next step". When code/content needs to go live, tell the user to do it via the Console UI.
 
@@ -111,7 +111,7 @@ The migration's load-bearing doctrine, named so you can **cite them by name** in
 | `PROJECT-STATUS.md` | Per-page validation state — content gate (GATE 1) and style gate (GATE 2) | Create stub at start; update each page row as gates pass |
 | `PROJECT-PLAN.md` | Executable task list (gaps and enhancements) | Create when the first task is written; update in real time — mark done immediately |
 | `PROJECT-BLOCKS.md` | Block + variant + section-style inventory; one-off registry | Update each time a new block, variant, or section style is validated |
-| `PROJECT-IMPORT.md` | Figma file link(s), node IDs per screen, frame-to-page mapping | Fill after the Figma file's frames are inventoried |
+| `PROJECT-IMPORT.md` | Figma file link(s), node IDs per screen, frame-to-page mapping; the component library's location + DA/UE config handoff state (`component-library`) | Fill after the Figma file's frames are inventoried; library section filled when the library is first scaffolded |
 | `PROJECT-TEMPLATES.md` | Page template inventory (which frames share a reusable template vs are one-off screens) | Fill during the Figma frame inventory pass |
 | `PROJECT-CONTEXT.md` | The project's wiki — durable, cross-cutting knowledge (environment, constraints, brand, stakeholders, decisions) that fits no other PROJECT-* file and isn't a procedure | Create stub at start; read every session (`session-startup`); curate continuously (`curating-project-knowledge`) |
 | `users/<login>/` | Per-user memory: `context.md` (personal/unproven facts), `plan.md` (tasks + status), `ROLE.md` (role · focus · `Lead:`). The active GH login is cached in `users/.current-user` (gitignored). | Scaffolded on the first session once identity is known (`session-startup` identity gate) |

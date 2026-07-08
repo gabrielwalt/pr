@@ -14,11 +14,11 @@ Before Round 1, do this silently:
 2. **Read `PROJECT-DESIGN.md`** and `PROJECT-STATUS.md` if they exist — some answers may already be recorded.
 3. **Look at `PROJECT.md`** or `AGENTS.md` for any project-level guidance.
 
-Derive as many answers as you can from inspection. Assert those; only ask about the rest. A well-inspected source site should resolve 4–5 of the 12 inputs before the first question lands.
+Derive as many answers as you can from inspection. Assert those; only ask about the rest. A well-inspected source site should resolve 4–5 of the 13 inputs before the first question lands.
 
 ## The conversation — assert-then-confirm, one round at a time
 
-Do not dump all questions at once. Assert what inspection makes obvious, ask only what remains open. **Offer a concrete default for every open question.** Cover the 12 inputs across up to 3 rounds. Skip any the inspection already answers.
+Do not dump all questions at once. Assert what inspection makes obvious, ask only what remains open. **Offer a concrete default for every open question.** Cover the 13 inputs across up to 3 rounds. Skip any the inspection already answers.
 
 ---
 
@@ -44,6 +44,7 @@ Assert the authoring model immediately. For scope, if the user mentioned a URL o
 | **7** | **Additional resources** — Figma links, brand guidelines, style guides, reference EDS implementations, fonts, icon sets, existing token files? | None — ask explicitly: "Do you have a Figma file, brand guidelines, or any reference to share before we build the foundation?" |
 | **8** | **Fidelity** — site-wide default on the Faithful / Refined / Reimagined scale (defined below) | **Faithful** for a strong, modern-looking source; **Refined** if the source looks dated or uneven; assert based on inspection |
 | **9** | **Templates or content to improve** — are any pages/templates meant to be enhanced or redesigned in the process, rather than just copied? | None — pure migration, unless the user signals otherwise |
+| **13** | **Component library** — maintain a single consolidated library (`content/library/`) that showcases default content + one clean instance per block/variant, doubles as the GATE-2 diff target and reuse census, AND wires into the author-facing insertion palette (DA Library panel / UE component definition)? | **Yes (recommended)** — low cost, high payoff; skip only for a one-page throwaway. There is no separate "styleguide" system — see `component-library` |
 
 For fidelity: inspect the source first, then assert — don't offer a menu.
 
@@ -53,9 +54,34 @@ For fidelity: inspect the source first, then assert — don't offer a menu.
 
 | # | Input | Default if not stated |
 |---|-------|-----------------------|
-| **10** | **Reuse** — existing EDS block library, design system, or prior project blocks to reuse? | None |
+| **10** | **Existing blocks & the reuse bar** — does a block library / design system / prior project blocks already exist for this site, and **where does the user set the reuse bar**? See *The Existing-Blocks Interview* below — this is a multi-part question, not a one-liner. | None exist → build fresh (then #13's library is the block library, created as blocks are built) |
 | **11** | **Per-page fidelity overrides** — any page/template with a different fidelity than the site default? | None |
 | **12** | **Constraints** — strict brand rules, pages flagged as off-limits, accessibility bar, templates to avoid copying, anything the agent must not touch or change? | None |
+
+---
+
+## The Existing-Blocks Interview (input #10 — never skip when blocks may exist)
+
+**The Reuse-Bar Rule.** Before any styling, you MUST know whether the project already has blocks AND exactly how freely you may touch them — guessing the bar wrong either reinvents blocks that existed or mutates blocks that were off-limits. This is assert-then-confirm, 2–3 questions, then wait.
+
+Run this whenever the user mentions existing blocks, a design system, or a prior project — or whenever the `blocks/` dir holds more than the stock boilerplate. Three parts, in order:
+
+**1. Do existing blocks exist for this site?** Don't take "yes" at face value — **verify against the repo**. If the user says yes but `blocks/` contains **only the default aem-boilerplate blocks**, the real blocks live elsewhere — **ask where to get them from** (which repo/branch/URL/package). Never proceed to style as if they're present when they aren't.
+
+**2. To what extent should existing blocks be used?** (the reuse bar — give each its consequence)
+- **Existing-only** — use ONLY existing blocks; flag content with no matching block rather than inventing. *Consequence:* maximum consistency, some source content may not map cleanly.
+- **Reuse-when-fits, add-when-needed** *(common default)* — reuse where it fits; add a new block only when nothing matches. *Consequence:* balances consistency with coverage.
+- **Loose reference** — existing blocks are a starting point, free to add/replace liberally. *Consequence:* fastest coverage, least guaranteed consistency.
+
+**3. How frozen are the existing blocks?** (the mutation bar — ask explicitly)
+- **Frozen** — do not touch their CSS/JS at all; compose only.
+- **Restyle-allowed** — styling may be adjusted to fit the new site's brand.
+- **Variants-allowed** — base styles stay, but you may add variants.
+- **Template-scoped styling-allowed** — style them for certain templates/pages without changing the base.
+
+Capture at the granularity the user gives (whole library vs per-block). Record it in `PROJECT-DESIGN.md` (#10) and reflect frozen blocks in `PROJECT-BLOCKS.md` / `PROJECT-STATUS.md` so the Frozen-Tools machinery (`unfreeze-page`, `project-state.mjs`) sees them.
+
+**If no existing blocks** → building fresh: the component library (#13) IS the block library — built and maintained as blocks are created, one artifact, not a separate system.
 
 ---
 
@@ -88,7 +114,7 @@ Fidelity governs *how close to the original*, never *how much craft* — the fou
 
 ## Record the strategy (then the gate is passed)
 
-Write all 12 inputs into `PROJECT-DESIGN.md` under `## Migration Strategy` (create it if absent — it belongs at the top, before the token inventory). All round-table inputs go here.
+Write all 13 inputs into `PROJECT-DESIGN.md` under `## Migration Strategy` (create it if absent — it belongs at the top, before the token inventory). All round-table inputs go here.
 
 Verify before claiming done (**Bookend-Verification**): section exists, all inputs recorded, user confirmed fidelity and authoring model.
 
@@ -96,6 +122,7 @@ Verify before claiming done (**Bookend-Verification**): section exists, all inpu
 
 - **Live-site source, full scope** → run `excat-site-scope` / `excat-site-catalog` / `excat-url-discovery` to inventory pages and group into templates. Report back before touching any page.
 - **Figma-only source (this project)** → inventory the Figma file's frames/screens directly (no URL discovery needed — the frame list IS the scope), then go straight to `global-style-foundation` (the workbench) → first frame's content → gates → per-block styling via `excat-figma:excat-figma-migration`.
+- **If the library opt-in (#13) is yes** → right after `global-style-foundation`, before the first page/frame, scaffold the initial library (default content + the blocks the first page needs) per `component-library`. With no existing blocks (#10), this library IS the block library.
 
 Orientation sets direction. It does not import, style, or commit anything itself.
 
@@ -105,5 +132,8 @@ Orientation sets direction. It does not import, style, or commit anything itself
 - Treating Reimagined as lower quality — it is *freer of the original*, not lower craft.
 - Recording a single fidelity and forgetting per-page overrides — a weak legacy template copied Faithfully drags the whole migration.
 - Assuming no additional resources without asking — a Figma file found in Round 2 can save days.
+- Taking "we have existing blocks" at face value when `blocks/` holds only stock boilerplate — ask where the real ones live (Reuse-Bar Rule, part 1).
+- Styling or composing with existing blocks before the mutation bar is set.
+- Treating the library (#13) as a second "styleguide" system alongside a separate author library — it's one artifact (`component-library`).
 
-See also: `global-style-foundation` (next step), `eds-migration-process` (full workflow this gates), `excat-xwalk-expert` (if XWalk), `measure-then-implement` (Faithful means measure).
+See also: `global-style-foundation` (next step), `component-library` (if #13 yes — scaffold after the foundation; with no existing blocks, it IS the block library), `eds-migration-process` (full workflow this gates), `excat-xwalk-expert` (if XWalk), `measure-then-implement` (Faithful means measure), `styling-additively` (the Frozen-Tools machinery the mutation bar feeds).

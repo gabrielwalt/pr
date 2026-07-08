@@ -9,7 +9,7 @@ A page is "done" only when the **user** confirms it — twice. The agent propose
 | Gate | What passes it | Recorded as |
 |------|----------------|-------------|
 | **GATE 1 — content** | The content **structure** is user-approved: block names, the default-content/block/section split, and section boundaries match what the author should edit. Look-agnostic — purely "is this modeled right?" | `contentValidated` → ✅ in **column 3** (Content ✓) of the `## Pages` table |
-| **GATE 2 — visual** | The page's **look** is user-approved against the source: the user explicitly confirms each block matches the original site at the page's fidelity level. | `styleValidated` → ✅ in **column 4** (Style ✓) of the `## Pages` table |
+| **GATE 2 — visual** | The page's **look** is user-approved against the source: the user explicitly confirms each block matches the original site at the page's fidelity level. Diff against the component library (`component-library`) when it exists — compare the block's real-variant instances so the verdict covers every meaningful combination, not one page instance. | `styleValidated` → ✅ in **column 4** (Style ✓) of the `## Pages` table |
 
 GATE 1 precedes GATE 2 — never run a style pass on content the user hasn't signed off (you'd polish a structure that may change). `block-visual-iteration` only fires after GATE 1.
 
@@ -33,4 +33,4 @@ The moment a page is style-validated, **`frozen = styleValidated AND not 🔓`**
 - Forgetting to set the ✅ after the user confirms — `project-state.mjs` then reports the page as unvalidated and routes wrongly.
 - Unfreezing by editing the agent's own judgment — the 🔓 marker is a user decision recorded by the agent.
 
-See also: `eds-migration-process` (the per-page workflow these gates bracket), `styling-additively` (the additive discipline GATE 2 enforces), `regression-guard` (catches a shared tool shifting under a frozen page), `quality-tooling` (`project-state.mjs` reads these flags), `unfreeze-page` (the reopen protocol when a frozen page must change)
+See also: `eds-migration-process` (the per-page workflow these gates bracket), `styling-additively` (the additive discipline GATE 2 enforces), `component-library` (the GATE-2 diff target when it exists), `regression-guard` (catches a shared tool shifting under a frozen page), `quality-tooling` (`project-state.mjs` reads these flags), `unfreeze-page` (the reopen protocol when a frozen page must change)

@@ -55,4 +55,4 @@ AEM CLI serves the main page from the remote origin — local `.plain.html` edit
 - `<video>` not supported in DA — use link + poster `<picture>`. Block JS builds the player.
 - SVGs stripped by `html2md` — inject manually or use external URLs.
 
-See also: `css-specificity-eds` (why selectors don't apply), `vertical-spacing-system` (block spacing rules).
+See also: `css-specificity-eds` (why selectors don't apply), `vertical-spacing-system` (block spacing rules), `preview-server-content-serving` (this project's `/content` URL prefix + restart-to-rescan behavior — extends the local-vs-remote pitfall above), `eds-section-metadata-decoration` (Section Metadata → section classes; the enhanced boilerplate omits it).

@@ -52,6 +52,7 @@ Load these before making changes — they prevent regressions and guesswork.
 |-------|-------------|
 | [css-specificity-eds](css-specificity-eds/SKILL.md) | A CSS rule isn't applying; computed style shows wrong value |
 | [eds-dom-structure](eds-dom-structure/SKILL.md) | Selector doesn't match; need to know where EDS puts blocks in the DOM |
+| [eds-section-metadata-decoration](eds-section-metadata-decoration/SKILL.md) | A section-style class (`.section.dark/.light`) isn't on the element; section bg/color variants do nothing; auditing a fresh enhanced boilerplate's `decorateSections` before relying on section styles |
 | [vertical-spacing-system](vertical-spacing-system/SKILL.md) | Foundation spacing + universal block-spacing variants; blocks touching with no gap; sections too far apart; page rhythm wrong |
 | [full-width-escape-hatch](full-width-escape-hatch/SKILL.md) | Setting up the max-width container; block needs to escape it; tempted to write `!important` on wrapper |
 | [css-pitfalls-eds](css-pitfalls-eds/SKILL.md) | Fixing stylelint `no-descending-specificity` errors; a background image suddenly renders at native size after shorthand consolidation; `position: sticky` breaks on an element whose ancestor has `overflow: hidden`; a `backdrop-filter` glass effect is invisible or inner corners bleed |
@@ -112,6 +113,7 @@ The *positive method* for building each foundation dimension well, from impeccab
 | Skill | Load when... |
 |-------|-------------|
 | [bootstrap-project](bootstrap-project/SKILL.md) | Project uninitialized — no PROJECT-STATUS.md / PROJECT-PLAN.md yet; scaffold the PROJECT-* stubs and verify the toolchain before `migration-orientation` |
+| [preview-server-content-serving](preview-server-content-serving/SKILL.md) | A locally-created page 404s; edits don't appear; preview shows a different site; unsure of the correct localhost URL for a content page (the `/content` prefix + restart-to-rescan traps) |
 | [migration-orientation](migration-orientation/SKILL.md) | **First thing on any new project** — user says "let's migrate X / start a new site / start a migration"; `PROJECT-DESIGN.md` has no `## Migration Strategy` section. Runs the setup conversation (authoring model, scope, analysis approach, starting page, sources, fidelity, resources, overrides, constraints) and records the strategy before anything else happens |
 | [global-style-foundation](global-style-foundation/SKILL.md) | Right after orientation, before any block styling; building the global *workbench* (brand tokens, type scale, spacing, default-content styling) from the visual gist of ≥3 representative frames/pages; global foundation missing or weak |
 | [craft-floor](craft-floor/SKILL.md) | Building or auditing the global foundation at Refined/Reimagined fidelity; something looks like AI output (flat color, twin font sizes, arbitrary spacing, no focus rings). NOT for Faithful — mirror the source. Pair with `quality-tooling` to run the `[auto]` checks |

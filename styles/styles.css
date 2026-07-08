@@ -29,23 +29,45 @@
   --body-font-family: univers-next-pro, univers-fallback, arial, sans-serif;
   --heading-font-family: var(--body-font-family);
 
-  /* body sizes */
-  --body-font-size-l: 20px;    /* 20/23 — credits, larger body */
-  --body-font-size-m: 16px;    /* 16/19 — default body, entry text */
-  --body-font-size-s: 14px;    /* 14 — tracked uppercase labels */
-  --body-font-size-xs: 13px;   /* 13 — dense table text */
-
-  /* heading sizes (desktop, measured from Figma 1440 frames) */
-  --heading-font-size-xxl: 80px;  /* display: "A record of culture" */
-  --heading-font-size-xl: 42px;
-  --heading-font-size-l: 37px;    /* section titles, nav */
-  --heading-font-size-m: 32px;
-  --heading-font-size-s: 20px;
-  --heading-font-size-xs: 16px;
-
-  /* weights */
+  /* weights (Univers uses only Regular for text, Bold for display/titles) */
   --weight-regular: 400;
   --weight-bold: 700;
+
+  /*
+   * TYPE SCALE — measured from Figma frames (file 6WyrWzRXskdPTcPtQ296CQ).
+   * Each role carries a matched size / line-height / tracking triplet.
+   * Sizes below the mobile breakpoint are overridden in the @media block.
+   * Role → source: display=hero "Satellites II"/"A record of culture" (80);
+   * xl=banner "Issue 1" (42); l=nav + section titles (37); m=banner body +
+   * About intro (32); body-l=credits (20); body-m=body/entry (16);
+   * label=search + UI labels (14, uppercase); tag=metadata tags (13, uppercase).
+   */
+
+  /* heading sizes */
+  --heading-font-size-xxl: 80px;  /* display */
+  --heading-font-size-xl: 42px;   /* banner heading */
+  --heading-font-size-l: 37px;    /* nav / section titles */
+  --heading-font-size-m: 32px;    /* banner body / intro lead */
+  --heading-font-size-s: 20px;    /* small heading / credits label */
+  --heading-font-size-xs: 16px;   /* smallest heading */
+
+  /* body sizes */
+  --body-font-size-l: 20px;    /* credits, larger body */
+  --body-font-size-m: 16px;    /* default body, entry text */
+  --body-font-size-s: 14px;    /* tracked uppercase UI labels */
+  --body-font-size-xs: 13px;   /* uppercase metadata tags, dense tables */
+
+  /* line-heights per role (Figma: display/titles set solid ≈1.0; body looser) */
+  --line-height-display: 1;       /* 80/80, 42/42, 37/37 */
+  --line-height-heading: 1.19;    /* 32/38 */
+  --line-height-body: 1.19;       /* 16/19 */
+  --line-height-body-l: 1.15;     /* 20/23 */
+  --line-height-label: 1;         /* 14/14, 13/13 */
+
+  /* letter-spacing per role (Figma tracking ÷ size) */
+  --tracking-display: -0.03em;    /* -2.4px @ 80, -1.11px @ 37 */
+  --tracking-heading: -0.01em;    /* -0.42px @ 42, -0.32px @ 32 */
+  --tracking-label: 0.1em;        /* +1.4px @ 14, +1.3px @ 13 (uppercase) */
 
   /* layout */
   --content-max-width: 1440px;
@@ -104,7 +126,7 @@ footer .footer[data-block-status="loaded"] {
   visibility: visible;
 }
 
-/* headings — Univers bold, tight tracking on display sizes */
+/* headings — Univers bold; display sizes set solid with tight tracking */
 h1,
 h2,
 h3,
@@ -114,38 +136,39 @@ h6 {
   margin: 0;
   font-family: var(--heading-font-family);
   font-weight: var(--weight-bold);
-  line-height: 1;
+  line-height: var(--line-height-display);
+  letter-spacing: var(--tracking-display);
   scroll-margin: 40px;
 }
 
 h1 {
   font-size: var(--heading-font-size-xxl);
-  letter-spacing: -0.03em;
 }
 
 h2 {
   font-size: var(--heading-font-size-xl);
-  letter-spacing: -0.02em;
 }
 
 h3 {
   font-size: var(--heading-font-size-l);
-  letter-spacing: -0.03em;
 }
 
 h4 {
   font-size: var(--heading-font-size-m);
-  line-height: 1.18;
+  line-height: var(--line-height-heading);
+  letter-spacing: var(--tracking-heading);
 }
 
 h5 {
   font-size: var(--heading-font-size-s);
-  line-height: 1.15;
+  line-height: var(--line-height-body-l);
+  letter-spacing: var(--tracking-heading);
 }
 
 h6 {
   font-size: var(--heading-font-size-xs);
-  line-height: 1.19;
+  line-height: var(--line-height-body);
+  letter-spacing: normal;
 }
 
 p,
@@ -156,7 +179,7 @@ pre,
 blockquote {
   margin: 0;
   font-size: var(--body-font-size-m);
-  line-height: 1.19;
+  line-height: var(--line-height-body);
 }
 
 code,
@@ -207,10 +230,10 @@ button.button {
   border-radius: 0;
   padding: 0.75em 1.5em;
   font: inherit;
-  font-size: var(--body-font-size-s);
+  font-size: var(--body-font-size-m);
   font-weight: var(--weight-regular);
-  line-height: 1;
-  letter-spacing: 0.1em;
+  line-height: var(--line-height-label);
+  letter-spacing: var(--tracking-label);
   text-transform: uppercase;
   text-decoration: none;
   cursor: pointer;
@@ -315,6 +338,8 @@ main .section.highlight {
   background-color: var(--light-color);
 }
 
+/* dark section — black surface, white text (Issue banner). Light-on-dark:
+   nudge tracking slightly open; weight already bold on headings so no bump. */
 main .section.dark {
   background-color: var(--text-color);
   color: var(--background-color);
@@ -322,4 +347,37 @@ main .section.dark {
 
 main .section.dark a:any-link {
   color: var(--background-color);
+}
+
+main .section.dark a:hover {
+  color: var(--placeholder-color);
+}
+
+/* CTA inverts on dark: white fill / black text (primary), white outline (secondary) */
+main .section.dark a.button.primary {
+  border-color: var(--background-color);
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
+main .section.dark a.button.primary:hover,
+main .section.dark a.button.primary:focus-visible {
+  border-color: var(--placeholder-color);
+  background-color: var(--placeholder-color);
+  color: var(--text-color);
+}
+
+main .section.dark a.button.secondary {
+  border-color: var(--background-color);
+  color: var(--background-color);
+}
+
+main .section.dark a.button.secondary:hover,
+main .section.dark a.button.secondary:focus-visible {
+  border-color: var(--placeholder-color);
+  color: var(--placeholder-color);
+}
+
+main .section.dark :focus-visible {
+  outline-color: var(--background-color);
 }

@@ -19,7 +19,7 @@ Recorded 2026-07-08 (orientation with gabrielwalt, project lead).
 
 ## Design Tokens
 
-Global foundation established 2026-07-08 (`global-style-foundation`, Faithful fidelity). Measured across 3 representative frames: Home `1:13091`, Projects `1:13593`, About `1:13576`. **Code is truth** — the live token set lives in `styles/styles.css` `:root`; the summary below records *intent*.
+Global foundation established 2026-07-08 (`global-style-foundation`, Faithful fidelity); type system fully tokenized 2026-07-08 after a second measurement pass across Home hero (`1:13092`), Issue banner (`1:13138`), Page Content table (`1:13150`), and About/Page-Template (`1:13592`). **Code is truth** — the live token set lives in `styles/styles.css` `:root`; the summary below records *intent*. Every recurring size/line-height/tracking is a token (Systematic-Tokenization); verified in-browser (all roles match Figma px exactly).
 
 | Token | Value | For |
 |-------|-------|-----|
@@ -36,22 +36,30 @@ Global foundation established 2026-07-08 (`global-style-foundation`, Faithful fi
 | `--page-padding` | `40px` (20px mobile) | page edge padding (Figma header/slot padding = 40) |
 | `--section-padding` / `--block-padding` | `30 / 24px` (20/20 mobile) | vertical rhythm |
 | `--nav-height` | `99px` | header height (measured Page Template header 98.6px) |
+| `--line-height-display / -heading / -body / -body-l / -label` | `1.0 / 1.19 / 1.19 / 1.15 / 1.0` | per-role line-heights |
+| `--tracking-display / -heading / -label` | `−0.03em / −0.01em / +0.1em` | per-role letter-spacing |
+
+**Section styles** (via Section Metadata `Style` → class): `light`/`highlight` (grey `#f5f5f5` surface), `dark` (black surface, white text). Dark inverts CTAs — primary becomes white-fill/black-text, secondary white outline; links white, hover to `#eee`; focus ring white. Section-metadata decoration was added to `scripts/aem.js` `decorateSections` (the enhanced boilerplate shipped without it — was PROJECT-PLAN task #7).
 
 ## Typography
 
-Single family **Univers Next Pro** (Adobe Fonts kit `lnd2jia`, family `univers-next-pro`) — see [[PROJECT-CONTEXT]] Decisions for sourcing. **Regular 400** for body/nav/metadata; **Bold 700** for display headings + entry titles. **No italics, no condensed/extended widths.** Tight negative tracking on display sizes; line-height ≈ 1 on large headings (Figma line-height = font-size).
+Single family **Univers Next Pro** (Adobe Fonts kit `lnd2jia`, family `univers-next-pro`) — see [[PROJECT-CONTEXT]] Decisions for sourcing. **Regular 400** for body/nav/metadata; **Bold 700** for display headings + entry titles. **No italics, no condensed/extended widths.** Tight negative tracking on display sizes; line-height set solid (≈1.0) on large headings (Figma line-height = font-size); uppercase labels/tags open tracking to +0.1em.
 
-Measured type ramp (desktop, from Figma 1440 frames), mapped to EDS tokens:
+Eight measured roles, each a full size/line-height/tracking triplet. Sizes are the EDS-standard `--heading-font-size-*`/`--body-font-size-*` tokens (blocks + boilerplate expect these names); line-height and tracking are separate role tokens shared across roles. Showcased live at `/library/default-content` (Type scale section).
 
-| Role | Figma size/lh | Token | EDS element |
-|------|---------------|-------|-------------|
-| Display | 80/80, tracking −2.4px (−0.03em) | `--heading-font-size-xxl` 80px | `h1` |
-| Section head / nav | 37/37, tracking −1.11px (−0.03em) | `--heading-font-size-l` 37px | `h3` |
-| Sub-head | 42/42 | `--heading-font-size-xl` 42px | `h2` |
-| Body-large / credits | 32/37 (About intro); 20/23 (credits) | `--heading-font-size-m` 32 / `--body-font-size-l` 20 | `h4` / large text |
-| Body | 16/19 | `--body-font-size-m` 16px | `p`, entry text |
-| Label (uppercase, tracked) | 14, tracking +1.4px | `--body-font-size-s` 14px | search/labels |
-| Dense table | 13/13 | `--body-font-size-xs` 13px | data tables |
+| Role | Figma (size/lh, tracking) | Size token | lh / tracking token | Element |
+|------|---------------------------|------------|---------------------|---------|
+| Display | 80/80, −2.4px (−0.03em) | `--heading-font-size-xxl` 80px | `--line-height-display` 1.0 / `--tracking-display` −0.03em | `h1` |
+| Banner heading | 42/42, −0.42…−1.26px | `--heading-font-size-xl` 42px | display / display | `h2` |
+| Section title / nav | 37/37, −1.11px (−0.03em) | `--heading-font-size-l` 37px | display / display | `h3` |
+| Lead | 32/38, −0.32px | `--heading-font-size-m` 32px | `--line-height-heading` 1.19 / `--tracking-heading` −0.01em | `h4` |
+| Small heading / credits | 20/23 | `--heading-font-size-s` 20px | `--line-height-body-l` 1.15 / heading | `h5` |
+| Smallest heading | 16 | `--heading-font-size-xs` 16px | `--line-height-body` 1.19 / normal | `h6` |
+| Body / entry | 16/19 | `--body-font-size-m` 16px | `--line-height-body` 1.19 | `p`, entry text |
+| UI label (uppercase) | 14, +1.4px (+0.1em) | `--body-font-size-s` 14px | `--line-height-label` 1.0 / `--tracking-label` +0.1em | search, buttons |
+| Metadata tag (uppercase) | 13/13, +1.3px (+0.1em) | `--body-font-size-xs` 13px | label / label | entry type tags (via block) |
+
+Mobile (`@media width <= 900px`) scales the top of the ramp down: display 80→44, xl 42→34, l 37→28, m 32→24, s 20→18; body-l 20→18. Line-height/tracking tokens are viewport-invariant.
 
 Note: Figma's variable panel flattened all weights to 400, but rendered screenshots show clear Bold on headings/titles — Faithful match honors the *rendered* weight (700), not the panel value.
 

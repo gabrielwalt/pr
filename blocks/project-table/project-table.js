@@ -23,6 +23,9 @@ export default function decorate(block) {
   // Build the functional search bar (injected, not authored — see PROJECT-IMPORT Home model)
   const bar = document.createElement('div');
   bar.className = 'project-table-search';
+  // Anchor target: the nav's search icon links to `/#search`, so the homepage
+  // scrolls here and focuses the input (see the hash handler at the end).
+  bar.id = 'search';
 
   const input = document.createElement('input');
   input.type = 'search';
@@ -58,4 +61,25 @@ export default function decorate(block) {
     applyFilter();
     input.focus();
   });
+
+  // Deep-link from the nav search icon (`/#search`): scroll the search bar into
+  // view and focus the input so the visitor can start typing immediately. Fires
+  // on initial load (arriving from another page) and on hashchange (already here).
+  const revealSearch = () => {
+    if (window.location.hash !== '#search') return;
+    bar.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    input.focus({ preventScroll: true });
+  };
+  // hashchange (already on the page): reveal immediately.
+  window.addEventListener('hashchange', revealSearch);
+  // Initial arrival from another page: the focus must run AFTER the rest of the
+  // page settles (section loading + the homepage scroll choreography) or it gets
+  // stolen back to <body>. `load` + a deferred tick wins reliably.
+  if (window.location.hash === '#search') {
+    if (document.readyState === 'complete') {
+      setTimeout(revealSearch, 100);
+    } else {
+      window.addEventListener('load', () => setTimeout(revealSearch, 100), { once: true });
+    }
+  }
 }

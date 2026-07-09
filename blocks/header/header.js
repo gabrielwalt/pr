@@ -143,6 +143,19 @@ export default async function decorate(block) {
     brandLink.closest('.button-container').className = '';
   }
 
+  // Wrap the sections + tools regions in a single `.nav-menu` div so the two
+  // top rules (Figma 1:13100) can be drawn as one segment over the wordmark
+  // (.nav-brand) and one over the menu group (.nav-menu) — the brand rule and
+  // the menu rule, with the gap between them falling over the search area.
+  const navSectionsEl = nav.querySelector('.nav-sections');
+  const navToolsEl = nav.querySelector('.nav-tools');
+  if (navSectionsEl && navToolsEl) {
+    const navMenu = document.createElement('div');
+    navMenu.className = 'nav-menu';
+    navSectionsEl.before(navMenu);
+    navMenu.append(navSectionsEl, navToolsEl);
+  }
+
   const navSections = nav.querySelector('.nav-sections');
   if (navSections) {
     navSections.querySelectorAll(':scope .default-content-wrapper > ul > li').forEach((navSection) => {

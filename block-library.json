@@ -1,7 +1,7 @@
 {
-  "total": 3,
+  "total": 8,
   "offset": 0,
-  "limit": 3,
+  "limit": 8,
   "data": [
     {
       "name": "Hero",
@@ -14,6 +14,26 @@
     {
       "name": "Project Table",
       "path": "https://main--pr--gabrielwalt.aem.live/library/blocks/project-table"
+    },
+    {
+      "name": "Project Header",
+      "path": "https://main--pr--gabrielwalt.aem.live/library/blocks/project-header"
+    },
+    {
+      "name": "Event List",
+      "path": "https://main--pr--gabrielwalt.aem.live/library/blocks/event-list"
+    },
+    {
+      "name": "Contributors",
+      "path": "https://main--pr--gabrielwalt.aem.live/library/blocks/contributors"
+    },
+    {
+      "name": "Columns",
+      "path": "https://main--pr--gabrielwalt.aem.live/library/blocks/columns"
+    },
+    {
+      "name": "Projects Search",
+      "path": "https://main--pr--gabrielwalt.aem.live/library/blocks/projects-search"
     }
   ],
   ":type": "sheet"

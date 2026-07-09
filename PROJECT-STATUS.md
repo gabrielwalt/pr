@@ -1,17 +1,17 @@
 ## Current Focus
 
 - Branch: main
-- Active task: Style validation (GATE 2) of Calendar / Projects / Project Detail — content model validated across all pages
-- Last completed: **ALL pages GATE 1 (content) approved 2026-07-09** (user validated the content structure of every page). About also GATE 2 (frozen). All new blocks (`project-header`, `project-table`, `contributors`, `event-list`) styled; `project-table` refactored to a single block-table (No-Nested-Tables Rule).
-- Next up: user style validation (GATE 2) for Calendar, Projects, Project Detail
+- Active task: Project Detail content review; **shared nav given the two-segment top rule (Figma 1:13100) — applies to ALL pages** (user-requested)
+- Last completed: nav top-rule (`.nav-menu` wrapper + border-top on brand & menu) 2026-07-09; Project Detail content re-imported.
+- Next up: user re-validates the nav change on the 4 frozen pages (Home/About/Calendar/Projects — 🔓 unfrozen for this shared-header edit), then Project Detail GATE 2.
 - Blocker: DA library handoff steps are user-owned (checklist delivered, still pending)
 
 ## Pages
 
 | Page | URL | Content ✓ | Style ✓ | Notes |
 |---|---|---|---|---|
-| Home | `/` | ✅ GATE 1 | ✅ GATE 2 | 4 sections: hero-cover, grid (12), columns+dark Issue banner, project-table. Nav = header block relocated into the grid sheet (native sticky choreography, all 4 beats). Spacing tokenized (`--space-*` scale). Nav aligned to the 4-col grid. Footer removed (none yet). GATE 2 approved 2026-07-08. |
-| Calendar | `/calendar` | ✅ GATE 1 | 🔲 | Wraps shared `Page Template` (`1:13732`). `event-list` block styled (event rows: ribbon + 42px date/title + thumbnail; producer logos). 12 events. Content validated 2026-07-09; style GATE pending. |
-| Projects | `/projects` | ✅ GATE 1 | 🔲 | Wraps shared `Page Template` (`1:13697`). `project-header` (per project) + `projects` scroller styled. Content validated 2026-07-09; style GATE pending. |
-| Project Detail | `/projects/<slug>` | ✅ GATE 1 | 🔲 | Wraps shared `Page Template` (`14:11052`, very tall long-form entry). `project-header` + hero + `event-list` + long-form entries + `projects` — all render; every entry has a cover image. Content validated 2026-07-09; style GATE pending. |
-| About | `/about` | ✅ GATE 1 | ✅ GATE 2 | Wraps shared `Page Template` (`1:13592`). `about` page template → 3-column layout for `contributors` (credits) + `projects` (4 issue covers). 80px h1, 32px lead paragraph. **Content + look validated 2026-07-09 — frozen.** |
+| Home | `/` | ✅ GATE 1 | ✅ 🔓 | GATE 2 approved 2026-07-08. **🔓 Unfrozen 2026-07-09 for the shared nav two-segment top-rule change (Figma 1:13100) — re-validate the nav, then re-freeze.** 4 sections: hero-cover, grid (12), columns+dark Issue banner, project-table. Nav relocated into the grid sheet (native sticky choreography). |
+| Calendar | `/calendar` | ✅ GATE 1 | ✅ 🔓 | Frozen 2026-07-09; **🔓 unfrozen for the shared nav top-rule change — re-validate + re-freeze.** `event-list` styled (thumbnail on the title's line; producer logos). |
+| Projects | `/projects` | ✅ GATE 1 | ✅ 🔓 | Frozen 2026-07-09; **🔓 unfrozen for the shared nav top-rule change — re-validate + re-freeze.** All 7 projects + functional `projects-search`. |
+| Project Detail | `/projects/<slug>` | ✅ GATE 1 | 🔲 | Wraps shared `Page Template` (`14:11052`). Full content (Figma `14:10689`) + **all default-content styled 2026-07-09** (overview 3-image row + 32px lead; entry excerpts: 42px titles, grey bylines, centered capped covers, 700px reading-measure body, centered bordered Read-more) — scoped to `body.template-project-detail`, additive. Page blocks (project-header/event-list/project-table/projects-search) already styled. Awaiting user GATE 2. |
+| About | `/about` | ✅ GATE 1 | ✅ 🔓 | Frozen 2026-07-09; **🔓 unfrozen for the shared nav top-rule change — re-validate + re-freeze.** `template-about` → 3-column layout; 80px h1, 32px lead. |

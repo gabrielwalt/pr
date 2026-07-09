@@ -88,6 +88,7 @@
    * body (48); 2xl=dark-banner bottom breathing room (80 = 2× base module).
    * The 40 base module lives in --page-padding; 24 in --block-padding.
    */
+  --space-3xs: 4px;
   --space-2xs: 8px;
   --space-xs: 10px;
   --space-s: 12px;
@@ -373,7 +374,6 @@ body:not(.homepage) main > .section:not(.dark) > div {
 }
 
 /* section metadata variants */
-main .section.light,
 main .section.highlight {
   background-color: var(--light-color);
 }
@@ -500,15 +500,139 @@ body.homepage main > .section:first-child .hero-wrapper {
   }
 }
 
-/* ---- About page template (`template: about` → body.about) ----
+/* ---- About page template (`template: template-about` → body.template-about) ----
    The About screen lays its editorial content out in THREE columns (Figma
    1:13576): the credits (`contributors`) and the issue archive (`projects`)
    both read as 3-column grids. The template owns this column count so the page
    composition is driven here, not by each block's default. */
-body.about main .contributors ul {
+body.template-about main .contributors ul {
   columns: 3;
 }
 
-body.about main .projects.grid > ul {
+body.template-about main .projects.grid > ul {
   grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+/* ---- Projects + Project Detail templates: drop wrapper top/bottom padding ----
+   Zero the vertical page-padding on the project-header and projects wrappers so
+   these sections sit tighter. Scoped to the two template body classes (NOT the
+   shared `main > .section > div` rule) so Home and About — which also use the
+   `projects` block and are style-validated (frozen) — keep their 40px insets. */
+body.template-projects main > .project-header-container > .project-header-wrapper,
+body.template-projects main > .projects-container > .projects-wrapper,
+body.template-project-detail main > .project-header-container > .project-header-wrapper,
+body.template-project-detail main > .projects-container > .projects-wrapper {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+/* ---- Project Detail template (`template: project-detail` → body.template-project-detail) ----
+   Styles the page's DEFAULT CONTENT (the page blocks — project-header, event-list,
+   project-table, projects-search — are already styled by their own CSS). Two shapes:
+   (1) the overview image row under the header, (2) the long-form entry excerpts
+   (heading + byline + cover image + reading-measure body + a "Read more" button).
+   All scoped to the template body class → fully additive, touches no other page. */
+
+/* Overview: the row of cover images directly under the project-header intro.
+   The `<p>` holds 3 (or 2) images side by side, full content width, equal gap. */
+body.template-project-detail main > .section:first-child .default-content-wrapper p:first-child {
+  display: flex;
+  gap: var(--space-s);
+  line-height: 0;
+}
+
+body.template-project-detail main > .section:first-child .default-content-wrapper p:first-child img {
+  flex: 1;
+  min-width: 0;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+/* Overview intro paragraph — 32px editorial lead, matching the Figma. */
+body.template-project-detail main > .section:first-child .default-content-wrapper p:first-child + p {
+  margin-top: var(--space-l);
+  font-size: var(--heading-font-size-m);
+  line-height: var(--line-height-heading);
+  letter-spacing: var(--tracking-heading);
+}
+
+/* Entry excerpt sections — every default-content section AFTER the header/table
+   region: a two-line 42px title, an optional grey byline, a cover image, a
+   reading-measure body, and a centered "Read more" button. `.default-content-wrapper`
+   inside a plain section (no block) is the entry container. */
+body.template-project-detail main > .section > .default-content-wrapper h2 {
+  font-size: var(--heading-font-size-xl);
+  letter-spacing: var(--tracking-heading);
+}
+
+/* consecutive h2s (two-line title) sit tight; body/byline get breathing room */
+body.template-project-detail main > .section > .default-content-wrapper h2 + h2 {
+  margin-top: 0;
+}
+
+body.template-project-detail main > .section > .default-content-wrapper h2 + p {
+  margin-top: var(--space-m);
+}
+
+/* byline = the short grey line right after the title (e.g. "Nancy Spector").
+   Only the FIRST paragraph after the last title, and only when it's short text
+   (no image) — handled by not overriding image paragraphs below. */
+body.template-project-detail main > .section > .default-content-wrapper h2 + p:not(:has(img)) {
+  color: var(--metadata-color);
+  font-size: var(--heading-font-size-s);
+  line-height: var(--line-height-body-l);
+}
+
+/* cover image(s): centered, capped to a comfortable column, never full-bleed.
+   A paragraph may hold ONE cover or a side-by-side PAIR (the Wind interview). */
+body.template-project-detail main > .section > .default-content-wrapper p:has(img) {
+  display: flex;
+  gap: var(--space-s);
+  justify-content: center;
+  margin-top: var(--space-l);
+  line-height: 0;
+}
+
+body.template-project-detail main > .section > .default-content-wrapper p img {
+  width: 100%;
+  height: auto;
+  max-height: 70vh;
+  object-fit: contain;
+}
+
+/* reading-measure body text: 20px, capped to a ~700px measure, left-aligned */
+body.template-project-detail main > .section > .default-content-wrapper p:not(:has(img)) {
+  max-width: 700px;
+  margin-top: var(--space-m);
+  font-size: var(--heading-font-size-s);
+  line-height: var(--line-height-body-l);
+}
+
+/* interview speaker labels: the leading <strong> reads as the speaker name */
+body.template-project-detail main > .section > .default-content-wrapper p strong {
+  font-weight: var(--weight-bold);
+}
+
+/* "Read more" → a centered, bordered uppercase button (Figma per-entry CTA) */
+body.template-project-detail main > .section > .default-content-wrapper p:last-child {
+  margin-top: var(--space-l);
+  text-align: center;
+}
+
+body.template-project-detail main > .section > .default-content-wrapper p:last-child a {
+  display: inline-block;
+  padding: var(--space-s) var(--space-m);
+  border: 1px solid var(--text-color);
+  color: var(--text-color);
+  font-size: var(--body-font-size-s);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+body.template-project-detail main > .section > .default-content-wrapper p:last-child a:hover,
+body.template-project-detail main > .section > .default-content-wrapper p:last-child a:focus-visible {
+  background-color: var(--text-color);
+  color: var(--background-color);
 }

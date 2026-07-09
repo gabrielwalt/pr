@@ -1,0 +1,53 @@
+/* Projects page search bar — same bordered, uppercase editorial look as the
+   project-table search (Figma 1:13696): a bordered box with the input on the
+   left and a Clear button on the right. */
+.projects-search {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-m);
+  padding: var(--space-xs);
+  border: 1px solid var(--border-color);
+
+  /* site table rule: the top row of any table-style element shows no top border */
+  border-top: 0;
+}
+
+.projects-search-input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: var(--text-color);
+  font-family: var(--body-font-family);
+  font-size: var(--body-font-size-s);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+}
+
+.projects-search-input::placeholder {
+  color: var(--metadata-color);
+  opacity: 1;
+}
+
+.projects-search-input:focus {
+  outline: none;
+}
+
+.projects-search-clear {
+  flex: none;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: var(--metadata-color);
+  font-family: var(--body-font-family);
+  font-size: var(--body-font-size-s);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.projects-search-clear:hover {
+  color: var(--text-color);
+}

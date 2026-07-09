@@ -20,6 +20,7 @@
    align to the grid columns; only the overflow slides under the bleed edge. */
 .projects:not(.grid) {
   margin-right: calc(-1 * var(--page-padding));
+  margin-left: calc(-1 * var(--page-padding));
 }
 
 .projects > ul {
@@ -38,16 +39,33 @@
   display: none;
 }
 
-/* Card width = one grid column of the PADDED content width. The block is 40px
-   wider than that (the right bleed above), so subtract --page-padding from 100%
-   before dividing by 4 — otherwise the extra bleed width would inflate each card
-   and the first four would no longer line up with the grid columns / header. */
+/* Card width = one grid column of the PADDED content width. The block now
+   bleeds BOTH left and right (2 × --page-padding wider than the content), so
+   subtract 2 × --page-padding from 100% before dividing by 4 — otherwise the
+   extra bleed width would inflate each card and the first four would no longer
+   line up with the grid columns / header. */
 .projects > ul > li {
-  flex: 0 0 calc((100% - var(--page-padding) - 3 * var(--space-s)) / 4);
+  flex: 0 0 calc((100% - 2 * var(--page-padding) - 3 * var(--space-s)) / 4);
   display: flex;
   flex-direction: column;
   gap: var(--space-s);
   background-color: var(--background-color);
+}
+
+/* leading scroll inset: the block bleeds left to the column edge, so give the
+   first card a --page-padding left margin. At rest the row starts at the content
+   edge (as if padded); on scroll-right the first card slides left and disappears
+   under the column's left border rather than stopping at the content edge. */
+.projects:not(.grid) > ul > li:first-child {
+  margin-left: var(--page-padding);
+}
+
+/* trailing scroll room: the block bleeds right to the column edge, so at the
+   scroll end the last card sits flush against that edge. Add a --page-padding
+   right margin on the last card so it can scroll slightly further left, leaving
+   a gutter instead of pinning to the section's right border. */
+.projects:not(.grid) > ul > li:last-child {
+  margin-right: var(--page-padding);
 }
 
 /* grid variant: wrap into 4 equal columns instead of scrolling. */
@@ -99,6 +117,23 @@
   font: inherit;
   letter-spacing: inherit;
   color: inherit;
+}
+
+/* Scroller only: keep every cover the same square size regardless of text.
+   A flex item defaults to `min-width: auto`, so an unbreakable word (e.g.
+   "Estrangement") overrides the fixed flex-basis and grows the card — and since
+   the cover is `aspect-ratio: 1/1`, wider means taller. `min-width: 0` makes the
+   item honor its flex-basis; the cover then breaks long words where it can and
+   CLIPS any remainder (it's a cover — a cut word is acceptable). Scoped to the
+   scroller so the frozen Home grid (which already caps via `minmax(0,1fr)`) is
+   untouched. */
+.projects:not(.grid) > ul > li {
+  min-width: 0;
+}
+
+.projects:not(.grid) .projects-card-cover {
+  overflow: hidden;
+  overflow-wrap: anywhere;
 }
 
 /* label cell — title + description body, type-tag muted grey; no gap between lines */

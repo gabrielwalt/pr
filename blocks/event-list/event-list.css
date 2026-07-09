@@ -3,10 +3,27 @@
    project-header) over a preview row: 42px date + 42px title on the left, a
    landscape thumbnail pinned right. Per Figma node I1:13732;…;1:13701. */
 
+/* meta spans the full top row; the preview (date + title) and the thumbnail
+   share the second row so the title's top line aligns with the image's top. */
 .event-list .event {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-m);
+  display: grid;
+  grid-template-columns: 1fr 210px;
+  column-gap: var(--space-m);
+  row-gap: var(--space-m);
+  align-items: start;
+}
+
+.event-list .event-meta {
+  grid-column: 1 / -1;
+}
+
+.event-list .event-preview {
+  grid-column: 1;
+}
+
+.event-list .event-media {
+  grid-column: 2;
+  grid-row: 2;
 }
 
 .event-list .event + .event {
@@ -76,11 +93,9 @@
   min-width: 0;
 }
 
-/* landscape thumbnail pinned to the right edge of the row */
+/* landscape thumbnail — sits in the right grid track (row 2), top-aligned with
+   the title on the left. */
 .event-list .event-media {
-  flex: 0 0 auto;
-  width: 210px;
-  margin-left: auto;
   line-height: 0;
 }
 
@@ -92,6 +107,11 @@
 }
 
 @media (width <= 900px) {
+  /* single column: meta, then preview, then full-width thumbnail */
+  .event-list .event {
+    grid-template-columns: 1fr;
+  }
+
   .event-list .event-preview {
     flex-wrap: wrap;
   }
@@ -101,7 +121,8 @@
   }
 
   .event-list .event-media {
+    grid-column: 1;
+    grid-row: auto;
     width: 100%;
-    margin-left: 0;
   }
 }

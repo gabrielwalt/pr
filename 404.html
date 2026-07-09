@@ -43,6 +43,13 @@
       align-items: center;
     }
 
+    /* let the error section span the full width so its inner `> div` caps at
+       --content-max-width and centers — the same white sheet every other page
+       gets (styles.css paints white on `main > .section:not(.dark) > div`). */
+    main.error > .section {
+      width: 100%;
+    }
+
     main.error .error-number {
       width: 100%;
     }

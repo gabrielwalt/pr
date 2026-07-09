@@ -16,6 +16,7 @@
 .project-header .project-header-meta {
   display: flex;
   flex-wrap: wrap;
+  padding-bottom: var(--space-3xs);
 }
 
 .project-header .project-header-meta p {

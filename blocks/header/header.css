@@ -147,6 +147,14 @@ header nav[aria-expanded='true'] .nav-hamburger-icon::after {
   transform: rotate(-45deg);
 }
 
+/* nav-menu wraps sections + tools. On mobile the nav uses named grid areas, so
+   the wrapper must be transparent to layout (`display: contents`) — its children
+   .nav-sections / .nav-tools keep snapping to their `sections` / `tools` areas.
+   On desktop it becomes a real grid item (see the >=900px block). */
+header nav .nav-menu {
+  display: contents;
+}
+
 /* brand — bold grey wordmark (Figma fills it #707070, same as the nav links) */
 header .nav-brand {
   grid-area: brand;
@@ -264,7 +272,11 @@ header nav .icon-search img {
        minmax(0, 1fr) — same as the grid block — forces 4 EQUAL columns; plain
        1fr would let wide nav text inflate its track and break the alignment. */
     grid-template: auto / repeat(4, minmax(0, 1fr));
-    align-items: end;
+
+    /* top-align so the two top rules (on .nav-brand and .nav-menu) sit on the
+       same y — the taller menu group (30px search icon) must not push its rule
+       up relative to the brand's (Figma 1:13100 shows both rules aligned). */
+    align-items: start;
     column-gap: var(--space-s);
     height: auto;
 
@@ -310,14 +322,23 @@ header nav .icon-search img {
     grid-column: 1 / 3;
   }
 
-  /* Calendar / Projects / search cluster + About together span grid columns
-     3–4 (Figma): the cluster start-aligned in column 3, About end-aligned at the
-     right of column 4. Both are placed in the same 3/5 track range and pushed to
-     opposite ends via justify-self. */
-  header nav .nav-sections {
+  /* nav-menu is the grid item spanning columns 3–4 (Figma): it holds the
+     Calendar/Projects/search cluster (left) and About (right), a flex row with
+     space-between so the cluster start-aligns in column 3 and About end-aligns
+     at the right of column 4. `display: contents` (mobile) is overridden here. */
+  header nav .nav-menu {
+    display: flex;
+    grid-area: auto;
     grid-column: 3 / 5;
-    grid-row: 1;    /* clear the inherited `grid-area: sections` row line — keeps all nav items on one row */
-    justify-self: start;
+    grid-row: 1;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  header nav .nav-sections {
+    grid-column: auto;
+    grid-row: auto;
+    justify-self: auto;
     display: flex;
     visibility: visible;
     align-items: center;
@@ -334,9 +355,9 @@ header nav .icon-search img {
   }
 
   header nav .nav-tools {
-    grid-column: 3 / 5;
-    grid-row: 1;    /* clear the inherited `grid-area: tools` row line — keeps About on the same row */
-    justify-self: end;
+    grid-column: auto;
+    grid-row: auto;
+    justify-self: auto;
     font-size: var(--heading-font-size-l);
     letter-spacing: -0.03em;
   }
@@ -344,6 +365,17 @@ header nav .icon-search img {
   header nav .nav-tools ul {
     font-size: var(--heading-font-size-l);
     letter-spacing: -0.03em;
+  }
+
+  /* Two thin grey top rules (Figma 1:13100): one over the wordmark (.nav-brand),
+     one over the menu group (.nav-menu). The gap between grid columns 2 and 3
+     (the --space-s gutter) leaves the search area un-ruled, splitting the line
+     into the two Prada-editorial segments. Text sits below its rule via the
+     nav's top padding + align-items:end. */
+  header nav .nav-brand,
+  header nav .nav-menu {
+    border-top: 1px solid var(--border-color);
+    padding-top: var(--space-s);
   }
 }
 

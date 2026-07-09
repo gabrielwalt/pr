@@ -14,9 +14,9 @@ Scaffolded 2026-07-08 (`component-library`). DA project, build-fresh — the lib
 **Location (in-repo, authored `.plain.html`):**
 - `content/library/index.plain.html` — index (overview + Pages list + Design identity); serves at `/library/` via EDS folder-index. Whole library self-contained under `content/library/`.
 - `content/library/default-content.plain.html` — all semantic elements + CTA variants (the design-system showcase; verified on-brand in preview)
-- `content/library/sections.plain.html` — section-style comparison (Default / Light / Dark)
-- `content/library/blocks/` — empty, grows one clean page per block as Home's blocks are built
-- `block-library.json` (repo root) — DA Library-panel blocks list; currently empty (`data: []`), one row added per validated block. Row shape: `name` (author label) + `path` = absolute `https://main--pr--gabrielwalt.aem.live/library/blocks/<block>` (NO `.plain.html`).
+- `content/library/sections.plain.html` — section-style comparison (Default / Dark)
+- `content/library/blocks/` — one clean page per author-insertable block (updated 2026-07-09 to the full set): `hero`, `projects` (grid + scroller variants), `project-table`, `project-header`, `event-list`, `contributors`, `columns` (shown in its dark-section context). Structural blocks (`header`/`footer`/`fragment`) are not author-insertable → no library page. All entry images reference local `/media/*` (re-pointed 2026-07-09 from the dead `content.da.live` blob URLs that made images break on reload).
+- `block-library.json` (repo root) — DA Library-panel blocks list; 7 rows (one per insertable block). Row shape: `name` (author label) + `path` = absolute `https://main--pr--gabrielwalt.aem.live/library/blocks/<block>` (NO `.plain.html`).
 
 **Local serving quirk:** the dev server maps `content/` under the **`/content` URL prefix** (`aem up --html-folder content`), so pages preview at `http://localhost:3000/content/library/default-content` (and `.plain.html` at `/content/library/....plain.html`). In DA/published they live at `/library/...` (no `/content`). Restart `aem up` after adding new content files — it scans the folder at boot.
 
@@ -116,8 +116,8 @@ The scroll mechanic spans components that recur on the shared **Page Template** 
 |-------|---------|---------------|--------|
 | Home | `1:13091` | `/` (index) | ✅ GATE 1 + GATE 2 (2026-07-08) |
 | Calendar | `1:13698` | `/calendar` | ✅ content authored (`event-list`), GATE 1 pending |
-| Projects | `1:13593` | `/projects` | ✅ content authored (`project-header` + `projects` pairs), GATE 1 pending |
-| Project Detail | `14:10689` | `/projects/helter-skelter` | ✅ content authored (`project-header` + hero + `event-list` + long-form entries + `projects`), GATE 1 pending |
+| Projects | `1:13593` | `/projects` | ✅ content authored — **all 7 Project List Items** (Helter Skelter, Satellites II, The Island, 38th America's Cup, Cinema Godard, Dash, Chawan Cabinet), each = `project-header` + `projects` scroller. Full content re-extracted from Figma 2026-07-09 (was only the first 3). New entry images in `content/media/` (`island-filmstills`, `americascup-*`, `godard-*`, `dash-*`, `chawan-*`). Figma also has a decorative Search Bar at the page foot — NOT added (no data table to filter on this page; the functional search lives in `project-table` on Home/Search). GATE 1 pending |
+| Project Detail | `14:10689` | `/projects/helter-skelter` | ✅ **full content re-imported 2026-07-09** from `14:11052` (was a simplified stub). Five sections per Figma: (1) `project-header` + **3-image overview row** + intro; (2) `event-list` (3 upcoming) + "View all events"; (3) **TOC index table** = `project-table` block, 7 rows (Project/Title/Type/Collaborator/Venue/Date/Producer) — the entry index; (4) **7 entry excerpts** (Wind in the Trees [2 portraits], The American Vernacular, Don't Look Now, Jokes, Monster/Mythic/Mystery, Artwork Images and Film Clips, Exhibition Images) — each a heading + byline + cover + real opening text + Read more (the Figma's per-entry "Continue Reading" fade → excerpt model); (5) `projects-search`. Entry text/images verbatim from Figma. New images `content/media/hs-*`. GATE 2 pending. |
 | Slideshow | `1:14709` | `/slideshow` (entry viewer) | 🔲 |
 | Search (state 1) | `1:13913` | `/search` | 🔲 |
 | Search (state 2) | `1:13994` | `/search` (results/alt state) | 🔲 |

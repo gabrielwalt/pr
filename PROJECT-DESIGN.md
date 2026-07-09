@@ -39,7 +39,7 @@ Global foundation established 2026-07-08 (`global-style-foundation`, Faithful fi
 | `--line-height-display / -heading / -body / -body-l / -label` | `1.0 / 1.19 / 1.19 / 1.15 / 1.0` | per-role line-heights |
 | `--tracking-display / -heading / -label` | `−0.03em / −0.01em / +0.1em` | per-role letter-spacing |
 
-**Section styles** (via Section Metadata `Style` → class): `light`/`highlight` (grey `#f5f5f5` surface), `dark` (black surface, white text). Dark inverts CTAs — primary becomes white-fill/black-text, secondary white outline; links white, hover to `#eee`; focus ring white. Section-metadata decoration was added to `scripts/aem.js` `decorateSections` (the enhanced boilerplate shipped without it — was PROJECT-PLAN task #7).
+**Section styles** (via Section Metadata `Style` → class): `highlight` (grey `#f5f5f5` surface), `dark` (black surface, white text). (`light` removed 2026-07-09 — not in the designs.) Dark inverts CTAs — primary becomes white-fill/black-text, secondary white outline; links white, hover to `#eee`; focus ring white. Section-metadata decoration was added to `scripts/aem.js` `decorateSections` (the enhanced boilerplate shipped without it — was PROJECT-PLAN task #7).
 
 ## Typography
 

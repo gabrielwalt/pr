@@ -16,11 +16,11 @@ Scaffolded 2026-07-08 (`component-library`). DA project, build-fresh — the lib
 - `content/library/default-content.plain.html` — all semantic elements + CTA variants (the design-system showcase; verified on-brand in preview)
 - `content/library/sections.plain.html` — section-style comparison (Default / Dark)
 - `content/library/blocks/` — one clean page per author-insertable block (updated 2026-07-09 to the full set): `hero`, `projects` (grid + scroller variants), `project-table`, `project-header`, `event-list`, `contributors`, `columns` (shown in its dark-section context). Structural blocks (`header`/`footer`/`fragment`) are not author-insertable → no library page. All entry images reference local `/media/*` (re-pointed 2026-07-09 from the dead `content.da.live` blob URLs that made images break on reload).
-- `block-library.json` (repo root) — DA Library-panel blocks list; 7 rows (one per insertable block). Row shape: `name` (author label) + `path` = absolute `https://main--pr--gabrielwalt.aem.live/library/blocks/<block>` (NO `.plain.html`).
+- `block-library.json` (repo root) — DA Library-panel blocks list; 7 rows (one per insertable block). Row shape: `name` (author label) + `path` = absolute `https://main--<repo>--<owner>.aem.live/library/blocks/<block>` (NO `.plain.html`).
 
 **Local serving quirk:** the dev server maps `content/` under the **`/content` URL prefix** (`aem up --html-folder content`), so pages preview at `http://localhost:3000/content/library/default-content` (and `.plain.html` at `/content/library/....plain.html`). In DA/published they live at `/library/...` (no `/content`). Restart `aem up` after adding new content files — it scans the folder at boot.
 
-**DA handoff status (2026-07-08): NOT yet handed off.** Library pages exist in-repo only — they must be brought into DA + published before the Library panel shows anything. `block-library.json` will serve from the code repo once committed. See the Library-Handoff checklist delivered to the user. Config row (`da.live/config#/gabrielwalt/pr/` → sheet `library`), CORS header, and EMA Library-url are all user-owned steps, still open.
+**DA handoff status (2026-07-08): NOT yet handed off.** Library pages exist in-repo only — they must be brought into DA + published before the Library panel shows anything. `block-library.json` will serve from the code repo once committed. See the Library-Handoff checklist delivered to the user. Config row (`da.live/config#/<owner>/<repo>/` → sheet `library`), CORS header, and EMA Library-url are all user-owned steps, still open.
 
 ## Home — in-depth analysis (frame `1:13091`)
 
@@ -42,35 +42,8 @@ Analyzed 2026-07-08 before import. Frame is 1440×4227.6. Four stacked top-level
 - Each Entry Module = image (331px sq, `#eee` placeholder) + label container (gap 7px): **title** (16/19, black, bold-looking), **description** (16/19, black), **type tag** (16/19, grey `#00000040`≈25% black, e.g. "Interview"/"Essay").
 - Frame padding: pr40/pb70/pl40, no top pad (sits under header). Column gap derives from 4×331 across 1360 usable.
 
-### THE SCROLL INTERACTION — four-beat repeating reveal/sticky pattern
-Confirmed 2026-07-08 against a user screen recording (8 frames). This is NOT a one-off hero treatment — it's a **repeating mechanic**: full-height sections rise over the preceding layer (reveal) and sub-header rows pin (sticky), alternating. All Y values below are frame-relative (Home frame top = 0), measured from the node tree.
-
-**The mechanic = two primitives, alternating:**
-- **REVEAL** — a section on a higher stacking layer (`z-index` above the previous) scrolls up and *progressively covers* what's beneath it. It's an **explicit cover-up (overlay), NOT a passive release** — the covered layer stays put while the rising sheet's top edge climbs the viewport. The rising edge even evicts a currently-pinned sticky header by overlapping it.
-- **STICKY** — a section's top row (`position: sticky; top: 0`) pins at the viewport top while the rest of that section scrolls beneath it. It stays pinned until the NEXT section's reveal edge rises up and covers it off.
-
-**Beat 1 — Reveal #1: white grid section evicts the fixed hero.**
-- Hero (`1:13092`, 0→720) is **fixed** (locked to viewport, `z` below). White grid section (`1:13099`, top=720) rises over it on a higher layer, covering the hero completely. Reveal boundary = **720px** scrolled.
-
-**Beat 2 — Sticky #1: grid nav row pins.**
-- Once the grid section's top reaches viewport top, its header row (`1:13100`) becomes `position: sticky; top: 0`. Sticky band = header only = **98.6px** (720→818.6). Grid entries (`1:13101`, first image at **845.6**) scroll beneath it.
-- (Earlier note said "top of white bg → first image" ≈98.6 — correct: header band 98.6px, then a ~27px gap before the first image at 845.6.)
-
-**Beat 3 — Reveal #2: dark Issue section evicts the pinned nav (SAME overlay technique as Beat 1).**
-- Dark Issue section (`1:13138`, top=**2191.6**, 511px tall) rises on a higher layer and covers up the Beat-2 sticky nav — explicit overlap, not the nav's container passively ending. The nav sits pinned while the dark section scrolls up underneath, then is pushed off once the dark section's rising edge reaches the top.
-- The dark section carries **NO sticky header of its own** — after it fully evicts the nav, it scrolls away normally like ordinary content.
-- **Reveal-#2 boundary** = where the dark section's top edge (frame Y **2191.6**) reaches the viewport top = **2191.6px** scrolled. Equivalent: the dark edge meets the pinned nav's bottom (98.6px from top) when scroll = 2191.6 − 98.6 = **2093.0px** (the moment eviction begins); nav fully gone at 2191.6.
-
-**Beat 4 — Sticky #2: table header row pins for the rest of the page.**
-- Table section = Page Content `1:13150` (top=**2702.6**). Its header row = the **search-bar toolbar** (`1:13151`, 70px, "SEARCH … CLEAR") **+ the column-header row** (`1:13157`, "PROJECT / TITLE / TYPE / COLLABORATOR / VENUE / DATE / PRODUCER", 25px). Together they become one `position: sticky; top: 0` context and stay pinned for the remainder of the page.
-- Sticky band = search bar 70px + 40px table pad + column header 25px. Measured: search 2702.6→2772.6; table frame pad +40; column-header `1:13157` 2772.6+40=2812.6→2837.6; **first data row** `1:13158` at **2837.6**. So sticky band ≈ **135px** (2702.6→2837.6, toolbar + pad + header row), pinning until page end. Confirm exact px at build (toolbar-top → first-data-row-top).
-
-**Implementation notes (EDS):**
-- REVEAL primitive → the rising section gets a higher `z-index` and `position: relative`; the covered layer is `position: sticky|fixed; top:0` at a lower `z`. Build ONE reusable reveal mechanism, apply it at both boundaries (hero→grid, nav→dark). Reveal #2 must cover a *sticky* element, so the dark section's stacking context must beat the nav's.
-- STICKY primitive → sub-header `position: sticky; top:0`; each sticky release happens because the next reveal covers it (z-order), not because its container runs out — so don't rely on container end. Two sticky bands: grid nav (98.6px) and table header (~135px).
-- `overflow:hidden` on `html/body`/ancestors kills sticky — use `overflow-x: clip` (`css-pitfalls-eds`).
-- Likely a small Home-scoped JS+CSS controller coordinating z-layers. Respect `prefers-reduced-motion`; test on touch (`responsive-adaptation`).
-- **Hero pin technique = `position: sticky; top: 0` (NOT `fixed`).** Decided 2026-07-08 (gabrielwalt): whether the hero stays pinned or scrolls away under the fully-covering white sheet is visually indistinguishable (the sheet covers it entirely), so use whichever is cleanest/most performant → **sticky**. Sticky keeps the hero in normal flow (occupies its own 720px, so NO spacer needed), pins at `top:0`, and is covered by the higher-z white section with zero JS for the release — pure CSS, no scroll listeners for this beat. This sidesteps the stay-vs-disappear question entirely (the browser handles it via the containing block).
+### THE SCROLL INTERACTION
+The Home reveal/sticky scroll mechanic has been distilled into **PROJECT-DESIGN.md → Home Scroll Interaction** (the two primitives, the four beats, and the hero-pin decision). Code is truth for the implementation.
 
 ### Issue banner `1:13138` → maps to a **dark section** (already built in foundation)
 - Black bg, white text, inverted white-fill ABOUT button (verified in `/library/sections`). 42px "Issue 1/Fall 2026", 32/38 credits, magazine mockup image right.
@@ -95,7 +68,7 @@ Notes:
 - **`projects`** = the boilerplate `cards` block, renamed 2026-07-08 to `grid`, then renamed 2026-07-09 to `projects` (dir/files/classes → `projects`, `projects-card-image`, `projects-card-body`). Entry/type-tag styling (grey tag, bold title) belongs to `projects` block styling in Phase 2.
 - **`project-table`** = the boilerplate had no such block; created 2026-07-08 (was briefly `index-table`, renamed to `project-table`). **Search UI is functional + injected, not authored content:** `project-table.js` prepends a `.project-table-search` bar (an `<input type="search">` with placeholder "Search" + a "Clear" `<button>`) above the table, then live-filters data rows (`tr.hidden`) on input; Clear resets. Only the `<table>` is authored. Search bar styled to Figma (`1:13151`): bordered box `1px #707070`, 10px pad, uppercase 14px +1.4px tracking placeholder/clear, grey `#707070`. Verified functional in preview (10→1 rows on "Kojima", Clear restores). **Shared with the Search page** — reusable block, not Home-bespoke. Full editorial table styling comes in Phase 2.
 - **Images extracted from Figma** into `content/media/` (PNG). Extracted per-node via `get_design_context` (image-fill URLs from the S3 export): 9 grid entry images (marie, metabolic, harmonic, technique, wind, sensation, jokes, monster, dontlooknow) + the Issue cover. All decode + render (verified ~662px, zero broken).
-  - **Referenced site-root-absolute as `/media/<name>.<ext>`** (no hash suffix, no `content.da.live` host) — resolves in local preview and in production. Re-imported 2026-07-09 after the DA-hosted `content.da.live/gabrielwalt/pr/...` URLs went dead on reload (the `.plain.html` files had absolute DA blob URLs that no longer resolved → all images broke). The local `content/media/` files are the source of truth; keep image `src` as `/media/...`.
+  - **Referenced site-root-absolute as `/media/<name>.<ext>`** (no hash suffix, no `content.da.live` host) — resolves in local preview and in production. Re-imported 2026-07-09 after the DA-hosted `content.da.live/<owner>/<repo>/...` URLs went dead on reload (the `.plain.html` files had absolute DA blob URLs that no longer resolved → all images broke). The local `content/media/` files are the source of truth; keep image `src` as `/media/...`.
   - **3 grid entries have NO image — they are typographic covers** (black card, white 105px text): "The American Vernacular" (`1:13119`), "Cognitive Estrangement" (`1:13125`), "Two Poems" (`1:13137`). Modeled as image-less cards (empty image cell); the text-cover look is a Phase-2 `projects` variant drawn from the Entry Cover Templates set — do NOT fabricate images for these.
   - **Hero background** — `dt 1` (`1:13093`) is an image *fill* Figma's export won't surface. Supplied by the user via Dropbox URL → `content/media/hero-satellites.jpg` (2880×1440 JPEG). Renders full-bleed under the hero; verified loaded + legible.
   - **About issue cover** — also a Figma image fill not surfaced by export; supplied by the user via Dropbox URL → `content/media/issue.jpg` (871×871 JPEG). Used for all 4 issue cards on `/about`.
@@ -108,7 +81,7 @@ The scroll mechanic spans components that recur on the shared **Page Template** 
 - **The hero-reveal + dark-eviction z-layer choreography** (Beats 1–3) is **bespoke to Home** — no other frame has the fixed-hero → rising-grid → rising-dark sequence. Keep it a Home-scoped controller.
 - **NET:** build the sticky primitives INTO the reusable blocks (nav header, table) so Calendar/Projects/Search/About inherit them; keep the Home reveal choreography (fixed hero + z-layer eviction) as a Home-only treatment. **Verify the other frames' scroll behavior in Figma when those pages are built** — don't assume they replicate Home's reveals.
 
-**Known gap (RESOLVED):** section styles now render — `decorateSections` patched (PROJECT-PLAN task #7 ✅). See `eds-section-metadata-decoration`.
+**Section styles render** — `scripts/aem.js` `decorateSections` reads `.section-metadata` rows into `.section.<style>` classes (the enhanced boilerplate shipped without this; it was added during the build).
 
 ## Frame → Page Mapping
 

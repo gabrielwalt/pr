@@ -1,5 +1,8 @@
-# Your Project's Title...
-Your project's description...
+# Prada Index Website
+
+An editorial "record of culture" site built on Adobe Edge Delivery Services. Monochrome, print-like aesthetic — large display headings, dense data tables, and image-led index card grids.
+
+- **Authoring model:** Document Authoring (da.live)
 
 ## Environments
 - Preview: https://main--{repo}--{owner}.aem.page/

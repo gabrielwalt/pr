@@ -1,6 +1,6 @@
 ## Migration Strategy
 
-Recorded 2026-07-08 (orientation with gabrielwalt, project lead).
+Recorded 2026-07-08 (project orientation).
 
 | # | Input | Decision |
 |---|-------|----------|
@@ -10,12 +10,7 @@ Recorded 2026-07-08 (orientation with gabrielwalt, project lead).
 | 4 | Starting page | **Home** |
 | 5 | Content source | **Figma-only** — [INT] Prada Index Website Design (no live site). |
 | 6 | Design source | Same — the Figma file. |
-| 7 | Additional resources | Figma file: https://www.figma.com/design/r3Na8h9qDALXzvTBZAbQGL/-INT--Prada-Index-Website-Design?node-id=0-1 |
-| 8 | Fidelity | **Faithful** — match the Figma design closely. Still start by establishing a base global style baseline (colors, fonts, default-content styling, CTA) before styling blocks. |
-| 9 | Templates/content to improve | None — faithful migration. "Entry Cover Templates" is a reusable card-variant set across listing pages. |
-| 10 | Reuse | Enhanced EDS boilerplate blocks (cards, columns, footer, fragment, header, hero, widget) as starting palette. |
-| 11 | Per-page fidelity overrides | None. |
-| 12 | Constraints | No Git, no AEM pushes (agent never commits/publishes). |
+| 7 | Reuse | Enhanced EDS boilerplate blocks (cards, columns, footer, fragment, header, hero, widget) as starting palette. |
 
 ## Design Tokens
 
@@ -39,13 +34,13 @@ Global foundation established 2026-07-08 (`global-style-foundation`, Faithful fi
 | `--line-height-display / -heading / -body / -body-l / -label` | `1.0 / 1.19 / 1.19 / 1.15 / 1.0` | per-role line-heights |
 | `--tracking-display / -heading / -label` | `−0.03em / −0.01em / +0.1em` | per-role letter-spacing |
 
-**Section styles** (via Section Metadata `Style` → class): `highlight` (grey `#f5f5f5` surface), `dark` (black surface, white text), `narrow` (reading-measure column: `> div` capped to 700px + centered — the COLUMN centers, text stays left-aligned), `expandable` (long content clipped behind a fade with a JS-injected "Read more" toggle — `scripts/expandable.js`, wired in `scripts.js` loadLazy; adds `.is-collapsed`/`.is-expanded`). (`light` removed 2026-07-09 — not in the designs.) Dark inverts CTAs — primary becomes white-fill/black-text, secondary white outline; links white, hover to `#eee`; focus ring white. Section-metadata decoration was added to `scripts/aem.js` `decorateSections` (the enhanced boilerplate shipped without it — was PROJECT-PLAN task #7). Styles combine comma-separated (`Style: Narrow, Expandable`).
+**Section styles** (via Section Metadata `Style` → class): `dark` (black surface, white text), `narrow` (reading-measure column: inner content capped to 700px + centered — the COLUMN centers, text stays left-aligned), `expandable` (long content clipped behind a fade with a JS-injected "Read more" toggle — `scripts/expandable.js`, wired in `scripts.js` loadLazy; adds `.is-collapsed`/`.is-expanded`). (`light` and `highlight` removed — not used in the designs.) Dark inverts CTAs — primary becomes white-fill/black-text, secondary white outline; links white, hover to `#eee`; focus ring white. Section-metadata decoration was added to `scripts/aem.js` `decorateSections` (the enhanced boilerplate shipped without it). Styles combine comma-separated (`Style: Narrow, Expandable`).
 
 **Prada branding — never center text; bold via markup.** Body/heading text is always left-aligned (only the *column* may be centered, e.g. `narrow`). Multi-line titles are NOT all-bold: only the emphasized line is bold, and boldness is driven by an authored `<strong>` in the content (NOT by element type or line position) — so the heading defaults to regular weight and `<strong>` renders bold. Second/subsequent title lines (subtitles, author bylines) read regular, same size, same black.
 
 ## Typography
 
-Single family **Univers Next Pro** (Adobe Fonts kit `lnd2jia`, family `univers-next-pro`) — see [[PROJECT-CONTEXT]] Decisions for sourcing. **Regular 400** for body/nav/metadata; **Bold 700** for display headings + entry titles. **No italics, no condensed/extended widths.** Tight negative tracking on display sizes; line-height set solid (≈1.0) on large headings (Figma line-height = font-size); uppercase labels/tags open tracking to +0.1em.
+Single family **Univers Next Pro** (Adobe Fonts kit `lnd2jia`, family `univers-next-pro`) — see the Decisions section below for sourcing. **Regular 400** for body/nav/metadata; **Bold 700** for display headings + entry titles. **No italics, no condensed/extended widths.** Tight negative tracking on display sizes; line-height set solid (≈1.0) on large headings (Figma line-height = font-size); uppercase labels/tags open tracking to +0.1em.
 
 Eight measured roles, each a full size/line-height/tracking triplet. Sizes are the EDS-standard `--heading-font-size-*`/`--body-font-size-*` tokens (blocks + boilerplate expect these names); line-height and tracking are separate role tokens shared across roles. Showcased live at `/library/default-content` (Type scale section).
 
@@ -93,6 +88,36 @@ Base rhythm from Figma: page padding 40px (frame edge), header pt40/pr40/pb20/pl
 
 Figma frames are **1440px desktop** only; no mobile frame was provided in the prototype. Single breakpoint in the foundation: `@media (width <= 900px)` scales down the display ramp and edge padding. Refine breakpoints per-block during Home styling and confirm with the user if mobile frames surface.
 
+## Home Scroll Interaction (`homepage` template)
+
+The Home page uses a repeating reveal/sticky scroll mechanic — the `homepage` template plus a small Home-scoped controller. It is NOT a one-off hero treatment; it's a repeating pattern of two alternating primitives (code is truth for the implementation — this records intent):
+
+- **REVEAL** — a section on a higher `z-index` rises and *progressively covers* the layer beneath it. An explicit overlay cover-up, NOT a passive release: the covered layer stays put while the rising sheet climbs the viewport, and the rising edge can even cover a currently-pinned sticky header.
+- **STICKY** — a section's top row pins (`position: sticky; top: 0`) while the rest of that section scrolls beneath it, staying pinned until the next section's reveal edge rises up and covers it off.
+
+Four beats down the page: (1) the white index-grid section rises over the hero; (2) the grid's nav row pins; (3) the dark Issue section rises and evicts the pinned nav; (4) the data-table header (search bar + column-header row) pins for the remainder of the page.
+
+Key decisions & guardrails:
+- **Hero pin = `position: sticky; top: 0` (NOT `fixed`).** The rising white sheet covers the hero entirely, so stay-vs-scroll-away is visually indistinguishable — sticky is cleanest: hero stays in normal flow (no spacer), pins at `top:0`, is covered by the higher-`z` sheet, and releases with pure CSS (no scroll listener). Decided 2026-07-08.
+- **Build the sticky primitives INTO the reusable blocks** (nav header, `project-table`) so other pages inherit a normal sticky header/table; keep the reveal choreography (hero→grid→dark z-layer eviction) as a **Home-only** treatment.
+- `overflow: hidden` on `html`/`body`/ancestors kills sticky — use `overflow-x: clip` instead.
+- Respect `prefers-reduced-motion`; verify on touch.
+
+## Page Templates
+
+Page-wide looks applied via a `metadata` block (`template: <name>`) at the end of a page; EDS's `decorateTemplateAndTheme` maps it to `body.<name>`, and template CSS lives in `styles/styles.css` scoped to that body class. **Code is truth** — read the CSS for exact selectors; the summary below records intent. All content pages carry a template; only `homepage` keeps a grandfathered bare name (the rest follow `template-<page-type>`).
+
+- **`homepage`** (`body.homepage`) — Home's bespoke scroll choreography (sticky hero, relocated nav, dark-band reveal — see Home Scroll Interaction above). Fallback: `scripts.js` adds it when `main .hero-cover` is present.
+- **`template-content`** (`body.template-content`) — the About screen. Composes editorial content as **3 columns**: contributors (`main .contributors ul { columns: 3 }`) and the issue archive (`main .projects.grid > ul { grid-template-columns: repeat(3, …) }`). The column count is owned by the template, not the blocks. About's `projects` block carries the `grid` variant (wrapping, not the scroller).
+- **`template-calendar`** (`body.template-calendar`) — the Calendar screen: a full-page `event-list`. Template class is just a scoping hook; no bespoke overrides (the `event-list` block owns its styling).
+- **`template-projects`** (`body.template-projects`) — the Projects listing: repeated `project-header` + `projects` scroller pairs. Override: **zeroes top/bottom padding on `.project-header-wrapper` + `.projects-wrapper`** (keeps 40px left/right) so the pairs sit tighter. Scoped to this body class (NOT the shared `main > .section > div` rule) so Home/About — which also use `projects` — keep their 40px vertical insets.
+- **`template-project-detail`** (`body.template-project-detail`) — the Project Detail long-form entry: `project-header` + 3-image overview + `event-list` + a `project-table` (base variant, no search) table-of-contents + long-form entries + `projects-search`. Same wrapper padding-zeroing as `template-projects`. **Owns the default-content styling:** (1) overview — the first section's leading image `p` becomes a horizontal scroller (480px-tall images, bleeds both column edges, hidden scrollbar); the following `p` is a 20px full-width lead. (2) entry titles — two `h2` lines at 42px; `h2` defaults REGULAR and `h2 strong` is bold (bold-via-markup), so the first line reads bold and the byline regular. (3) cover image(s) via `p:has(img)` → flex full width; `p.image-pair` removes the gutter. (4) body `p` → 20px left-aligned. (5) the "View all events" CTA → centered bordered button. Long-form entries also carry the `Narrow` + `Expandable` section styles (see Section styles under Design Tokens). All scoped to the template body class → additive.
+
+## Decisions
+
+- **Home hero pin = `position: sticky`, not `fixed`.** See the Home Scroll Interaction section above — the rising white sheet covers the hero entirely, so sticky (normal flow, no spacer, pure-CSS release) was chosen over fixed. Decided 2026-07-08.
+- **Typeface: Univers → Univers Next Pro via Adobe Fonts (Typekit).** The design specifies "Univers" (a licensed Linotype face); the current digital release **Univers Next Pro** (Monotype) is treated as equivalent for this build. Sourced from the Adobe Fonts web project — kit `lnd2jia`, CSS `https://use.typekit.net/lnd2jia.css`, family `univers-next-pro`. Weights available 200–700; the build uses **400 (Regular)** for body/nav/metadata and **700 (Bold)** for display headings + entry titles — no italics, no condensed/extended widths. Decided 2026-07-08.
+
 ## Block Inventory
 
-*[Agent: fill as blocks are built — see also `PROJECT-BLOCKS.md` for the detailed registry.]*
+*[See `PROJECT-BLOCKS.md` for the detailed block/variant/section-style registry.]*

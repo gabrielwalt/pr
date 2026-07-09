@@ -374,9 +374,6 @@ body:not(.homepage) main > .section:not(.dark) > div {
 }
 
 /* section metadata variants */
-main .section.highlight {
-  background-color: var(--light-color);
-}
 
 /* dark section — black surface, white text (Issue banner). Light-on-dark:
    nudge tracking slightly open; weight already bold on headings so no bump. */
@@ -500,16 +497,16 @@ body.homepage main > .section:first-child .hero-wrapper {
   }
 }
 
-/* ---- About page template (`template: template-about` → body.template-about) ----
+/* ---- About page template (`template: template-content` → body.template-content) ----
    The About screen lays its editorial content out in THREE columns (Figma
    1:13576): the credits (`contributors`) and the issue archive (`projects`)
    both read as 3-column grids. The template owns this column count so the page
    composition is driven here, not by each block's default. */
-body.template-about main .contributors ul {
+body.template-content main .contributors ul {
   columns: 3;
 }
 
-body.template-about main .projects.grid > ul {
+body.template-content main .projects.grid > ul {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 

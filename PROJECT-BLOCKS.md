@@ -1,6 +1,6 @@
 ## Block Inventory
 
-*Content structure authored (GATE 1 pending); styling not yet validated (GATE 2). Section styles: `highlight`/`dark` (foundation).*
+*Content structure authored (GATE 1 pending); styling not yet validated (GATE 2). Section styles: `dark` (foundation), `narrow`, `expandable`.*
 
 | Block | Variant | Origin | Content model | Used on | Status |
 |-------|---------|--------|---------------|---------|--------|
@@ -14,7 +14,7 @@
 
 | `projects-search` | — | **new** 2026-07-09 (Projects) | Authored as an **empty** `<div class="projects-search">`; JS injects an `<input type="search">` + "Clear" `<button>` (same Figma-matched bordered/uppercase look as `project-table`'s search, `1:13696`). Live-filters the page's `projects` entry cards on input: a non-matching card is `hidden`, and a whole project group (its `project-header` section) is hidden when NONE of its entries match; Clear restores all. Sits at the foot of the Projects page. | Projects (`/projects`) | ✅ structure / 🔲 style (GATE 2 pending) |
 
-**Section styles:** `highlight` (grey surface), `dark` (black/white inversion + inverted CTAs) — foundation. (`light` removed 2026-07-09 — not in the designs.)
+**Section styles:** `dark` (black/white inversion + inverted CTAs), `narrow` (reading-measure centred column), `expandable` (fold-with-toggle). (`light` and `highlight` removed — not used in the designs.)
 
 **Projects scroller — uniform cover size (gotcha):** in the flex scroller (`:not(.grid)`), a flex item defaults to `min-width: auto`, so an unbreakable long word in a typographic cover (e.g. "Estrangement") overrides the fixed `flex-basis` and grows the card wider — and because `.projects-card-cover` is `aspect-ratio: 1/1`, wider = taller (the "Cognitive Estrangement" card was 370 vs 351). Fix (scroller-scoped only): `li { min-width: 0 }` so the item honors flex-basis, plus `.projects-card-cover { overflow: hidden; overflow-wrap: anywhere }` to break/clip long words. The `.grid` variant (Home) is immune — `minmax(0,1fr)` already caps the track — so the fix is scoped `:not(.grid)` and leaves frozen Home untouched.
 
@@ -41,8 +41,4 @@
 
 **Nav + footer are auto-included (no per-page metadata).** `header.js`/`footer.js` resolve the fragment path themselves: `<contentPrefix>/nav` and `<contentPrefix>/footer`, where `contentPrefix` = `/content` when `window.location.pathname` starts with `/content/` (the local `aem up` server) and empty in production (root serving). An authored `nav`/`footer` metadata value still overrides if ever needed. So content `.plain.html` files carry **no** nav/footer metadata rows. Footer load re-enabled in `scripts.js` (fragment: `content/footer.plain.html`).
 
-**Homepage is a page template, not `.hero-cover` sniffing.** Home carries a `metadata` block `template = homepage` → `body.homepage` (via EDS `decorateTemplateAndTheme`). All the bespoke Home choreography is scoped to `body.homepage main …` (was `main:has(.hero-cover)`), and `header.js` gates the nav-relocation on `document.body.classList.contains('homepage')`. A `scripts.js` fallback adds `body.homepage` when `main .hero-cover` is present (backup only, per `page-template-metadata`), so the choreography survives even if the metadata is dropped.
-
-## One-off Registry
-
-*[Agent: record one-off content structures here as they're approved.]*
+**Homepage is a page template, not `.hero-cover` sniffing.** Home carries a `metadata` block `template = homepage` → `body.homepage` (via EDS `decorateTemplateAndTheme`). All the bespoke Home choreography is scoped to `body.homepage main …` (was `main:has(.hero-cover)`), and `header.js` gates the nav-relocation on `document.body.classList.contains('homepage')`. A `scripts.js` fallback adds `body.homepage` when `main .hero-cover` is present (backup only), so the choreography survives even if the metadata is dropped.

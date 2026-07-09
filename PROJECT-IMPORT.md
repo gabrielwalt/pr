@@ -88,7 +88,7 @@ Authored 2026-07-08. Structure verified in preview (4 sections, all blocks decor
 | 1 Hero | `hero` (`hero-cover` variant) | boilerplate `hero`, new variant | 2 cells: [picture] + [metadata `<p>` list (6 lines) → 2× `<h1>` display title]. Full-bleed cover. |
 | 2 Index grid | `projects` | boilerplate `cards` **renamed → `grid` → `projects`** as-is | 12 rows, each [cover cell] + [title `<p>`, description `<p>`, type-tag `<p>`]. Cover cell = a picture OR author-typed text (→ typographic cover: black card, white display text). Decorates to `<ul>`/`<li>` (classes `projects-card-image`/`projects-card-body`; text cover adds `projects-card-cover`). |
 | 3 Issue banner | `columns` + **dark section** | boilerplate `columns` + `Style: Dark` section metadata | 1 row, 2 cells: [2× `<h2>`, credits `<p>`, About CTA `<strong><a>`] + [picture]. Inverted CTA via dark-section rule. |
-| 4 Search table | `project-table` (**NEW block**) | new — shared with Search page | Content = ONLY the 7-col `<table>` (header row + data rows). The **search input + Clear button are injected by the block JS** (not authored) — see below. |
+| 4 Search table | `project-table` (**NEW block**) | new — shared with Search page | Content = the 7 columns authored as a **single block-table** (each block row = a data row, cells = columns; first row = header labels) — **NOT** a nested HTML `<table>` (No-Nested-Tables Rule). JS builds the semantic `<table>`/`th`/`td`. The **search input + Clear button are injected by the block JS** (not authored) — see below. |
 
 Notes:
 - **Site nav is NOT page content** — the "Prada Index / Calendar / Projects / About" bar is the `header` block (from `/nav`), built in the later nav step, not authored into `index.plain.html`.

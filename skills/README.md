@@ -89,7 +89,7 @@ The *positive method* for building each foundation dimension well, from impeccab
 | Skill | Load when... |
 |-------|-------------|
 | [eds-content-patterns](eds-content-patterns/SKILL.md) | Auto-styles: link not becoming a CTA button; button style wrong; eyebrow not styling; `decorateButtons()` not triggering |
-| [eds-content-modeling](eds-content-modeling/SKILL.md) | **Augmented-styles hub** — block vs variant vs section style vs page template; naming; cell/column conventions; one-off discipline |
+| [eds-content-modeling](eds-content-modeling/SKILL.md) | **Augmented-styles hub** — block vs variant vs section style vs page template; naming; cell/column conventions; one-off discipline; **No-Nested-Tables Rule** (never a `<table>` inside a block cell — the block IS the table) |
 | [container-block-vs-section-style](container-block-vs-section-style/SKILL.md) | A container (tabs/accordion/carousel) must hold a variety of content or reuse existing blocks; inner block content renders unstyled; "block or section style?" |
 | [context-adaptive-blocks](context-adaptive-blocks/SKILL.md) | A block needs a dark/inverted look only because its CONTAINER (section style / page template) is dark; deciding whether to add a `*-dark`/`*-inverse` variant; "do authors really need the dark variant", "template already inverts colors" |
 | [page-template-metadata](page-template-metadata/SKILL.md) | Applying page-level styles via metadata template classes; deciding whether a page template is warranted (be conservative) |

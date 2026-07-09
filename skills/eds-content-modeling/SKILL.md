@@ -44,6 +44,7 @@ Rules:
 - Litmus test: "Would an author or translator ever need to edit this?" → yes = content; no/decorative = code (in `/icons/`).
 
 ## Blocks vs default content & content model
+- **The No-Nested-Tables Rule (PROHIBITED).** A block IS a table — the author builds it as a grid of rows and cells (in DA/Google Docs) that EDS serializes to nested `<div>`s (block → row `<div>` → cell `<div>`s). So **never author an HTML `<table>` (or any block/grid) *inside* a block cell** — that's a table-in-a-table, miserable to author (a grid nested in a grid cell) and forbidden. If you're about to write `<div class="my-block"><div><div><table>…</table></div></div></div>` — STOP. Instead make the block itself the single table: **each block row = one data row, each cell = one column**; author the header labels as the block's first row. The block JS then builds the semantic `<table>`/`<th>`/`<td>` for rendering + a11y from those rows (first row → `th`, rest → `td`). One table, authored as the block's own grid — never a table within a table. Applies to *any* block whose data is tabular (`project-table`-style listings, spec sheets, pricing grids). The same rule bans a block nested inside another block's cell unless it's a deliberate container block (see `container-block-vs-section-style`).
 - **Prefer default content over blocks.** Eyebrows, section headings, subtitles, and CTAs introducing a block belong in the section's default content above the block — not in the block's first row.
 - **Content determines materialization; variants/styles determine appearance & behavior.** Don't bake a one-off look or behavior into a block's identity (image → image teaser, video → video teaser is content's call; "expansible" is a variant).
 - **Cell conventions, so a block can be transformed into a sibling block.** Keep row/cell layout systematic across similar blocks. If one uses `[h2, p, CTA]` in a text cell, don't split another into `[h2]` + `[p, CTA]` for the same logical content.
@@ -96,6 +97,7 @@ Some blocks are **placeholders for an interactive feature** whose substance is *
 - Every styling choice (CTA type, heading level, variant, section style, template) is **derived from observable source-DOM signals** — never assumed. Detect dark backgrounds / layout patterns → emit matching Section Metadata or template metadata.
 
 ## Pitfalls
+- **Nested table = instant reject.** About to put a `<table>` inside a block cell (or a block inside another block's cell)? Stop — the block itself is the table; make its rows the data rows. See The No-Nested-Tables Rule above. The only exception is a deliberate container block (`container-block-vs-section-style`).
 - A variant that needs a different content model is a different block.
 - Section Metadata must be the LAST element inside its section div.
 - Missing source content at import time → leave empty, don't invent.

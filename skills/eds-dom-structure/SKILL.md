@@ -34,7 +34,10 @@ Inside the `.block` element, EDS transforms authored table rows into nested divs
 ```
 For a single-row block with N cells: `.block > div > div:nth-child(1..N)`. The selector `.block > div > div` targets the FIRST cell, not the row. To target all cells, use `.block > div > div` (matches each cell div). For multi-cell blocks like footer-links (5 columns in one row), the 5 column `<div>`s are children of the single row `<div>`.
 
+**Because the block IS already a table (rows × cells), NEVER author an HTML `<table>` inside a block cell** — that's a table nested in a table, banned (see The No-Nested-Tables Rule in `eds-content-modeling`). For tabular data, make the block itself the table: each block row = one data row, each cell = one column; author the header labels as the first row. The block JS builds the semantic `<table>`/`<th>`/`<td>` from those rows (first row → `th`, rest → `td`). Same for any block: don't nest a block/grid inside another block's cell unless it's a deliberate container block (`container-block-vs-section-style`).
+
 ## Pitfalls
+- **Nested `<table>` in a block cell (or a block in a block cell) = forbidden.** The block is already a table; if the data is tabular, the block's own rows ARE the table rows. See `eds-content-modeling` No-Nested-Tables Rule.
 - `.section.{block}-container` is on the **section**, not the block — confusing naming
 - Section metadata disappears from DOM after decoration — only its classes remain
 - Never add `{block}-wrapper` or `{block}-container` classes in JS — reserved by EDS

@@ -5,6 +5,9 @@
   gap: var(--space-m);
   padding: var(--space-xs);
   border: 1px solid var(--border-color);
+
+  /* site table rule: the top row of any table shows no top border */
+  border-top: 0;
 }
 
 .project-table-input {
@@ -70,6 +73,7 @@
   text-overflow: ellipsis;
 }
 
+/* site table rule: the top row of any table shows no top border */
 .project-table tr:first-child > * {
   border-top: 0;
 }

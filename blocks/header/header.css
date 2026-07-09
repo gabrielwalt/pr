@@ -223,8 +223,11 @@ header nav .icon-search {
   mask: url('/icons/search.svg') center / contain no-repeat;
 }
 
+/* the grey shape is drawn by the span's --metadata-color background + mask; the
+   inner <img> would paint the raw (black) SVG on top, so hide it. */
 header nav .icon-search svg,
 header nav .icon-search img {
+  display: none;
   width: 100%;
   height: 100%;
 }
@@ -309,32 +312,6 @@ header nav .icon-search img {
     grid-column: 1 / 3;
   }
 
-  /* Split editorial rule (Figma): the thin top hairline is TWO segments with a
-     gap between the brand and the nav cluster — not one continuous line.
-     ::before = short segment over the "Prada Index" wordmark; ::after = segment
-     spanning the nav cluster (Calendar…About) to the right edge. The break x's
-     come from --rule-brand-end / --rule-cluster-start (measured in header.js);
-     a --space-m (20) gap sits on each side of the break. Fallback to a full
-     rule if the vars aren't set yet. */
-  header nav::before,
-  header nav::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    height: 1px;
-    background-color: var(--rule-color);
-  }
-
-  header nav::before {
-    left: 0;
-    right: calc(100% - var(--rule-brand-end, 100%) - var(--space-m));
-  }
-
-  header nav::after {
-    left: calc(var(--rule-cluster-start, 0px) - var(--space-m));
-    right: 0;
-  }
-
   /* Calendar / Projects / search cluster + About together span grid columns
      3–4 (Figma): the cluster start-aligned in column 3, About end-aligned at the
      right of column 4. Both are placed in the same 3/5 track range and pushed to
@@ -400,9 +377,7 @@ header.nav-placed .nav-wrapper {
 }
 
 /* the relocated header sits inside the grid section's padded content column, so
-   drop the nav's own horizontal page-padding to avoid doubling the gutter. The
-   split-rule segments (nav::before/::after) already measure from the nav box,
-   which now has zero padding, so they land correctly with no override needed. */
+   drop the nav's own horizontal page-padding to avoid doubling the gutter. */
 header.nav-placed nav {
   padding-left: 0;
   padding-right: 0;

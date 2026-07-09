@@ -197,24 +197,4 @@ export default async function decorate(block) {
     gridInner.prepend(headerEl);
     headerEl.classList.add('nav-placed');
   }
-
-  // Split editorial rule (Figma): the thin top hairline breaks between the brand
-  // and the nav cluster — one segment over "Prada Index", a gap, then a segment
-  // spanning the cluster to the right edge. The cluster's x shifts with layout,
-  // so expose the brand's right edge + the cluster's left edge (relative to the
-  // nav box) as CSS vars; header.css draws the two segments from them. Measured
-  // on load + resize only — never on scroll, to keep native scrolling smooth.
-  if (navSections && navBrand) {
-    const measureRule = () => {
-      if (!window.matchMedia('(min-width: 900px)').matches) return;
-      const navBox = nav.getBoundingClientRect();
-      const brandEnd = navBrand.getBoundingClientRect().right - navBox.left;
-      const clusterStart = navSections.getBoundingClientRect().left - navBox.left;
-      nav.style.setProperty('--rule-brand-end', `${Math.round(brandEnd)}px`);
-      nav.style.setProperty('--rule-cluster-start', `${Math.round(clusterStart)}px`);
-    };
-    measureRule();
-    window.addEventListener('resize', measureRule, { passive: true });
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(measureRule);
-  }
 }

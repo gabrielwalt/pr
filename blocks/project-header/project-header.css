@@ -24,6 +24,10 @@
   margin: 0;
   padding: var(--space-2xs);
   border: 1px solid var(--border-color);
+
+  /* site table rule: the top row shows no top border. The ribbon is one
+     horizontal row on desktop, so every cell is in that top row. */
+  border-top: 0;
   color: var(--metadata-color);
   font-size: var(--body-font-size-xs);
   line-height: 1;
@@ -75,6 +79,5 @@
 
   .project-header .project-header-meta p + p {
     margin-left: 0;
-    margin-top: -1px;
   }
 }

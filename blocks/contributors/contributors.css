@@ -1,0 +1,34 @@
+/* Prada Index contributors — editorial credits (role + name pairs).
+   Authored as a 2-col key/value table (role | name, one row per entry); the JS
+   rebuilds each row as a stacked entry (bold role over the name). Displayed as
+   the Figma 3-column masthead: entries flow top-to-bottom then across columns. */
+
+.contributors ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  columns: 3;
+  column-gap: var(--space-xl);
+}
+
+.contributors li {
+  break-inside: avoid;
+  margin-bottom: var(--space-l);
+}
+
+.contributors .contributors-role,
+.contributors .contributors-name {
+  margin: 0;
+  font-size: var(--heading-font-size-s);
+  line-height: var(--line-height-body-l);
+}
+
+.contributors .contributors-role {
+  font-weight: var(--weight-bold);
+}
+
+@media (width <= 900px) {
+  .contributors ul {
+    columns: 2;
+  }
+}

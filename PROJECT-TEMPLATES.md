@@ -26,3 +26,8 @@ Calendar, Projects, Project Detail, Search, and About are each a single frame wr
 - One secondary template (`Entry Template`) for Slideshow.
 - Home + Overlay bespoke.
 - Card-cover block with a variant matrix drawn from Entry Cover Templates.
+
+### Implemented EDS page templates (`template: <name>` metadata → `body.<name>`)
+Authored via a `metadata` block at the end of the page; EDS `decorateTemplateAndTheme` maps it to a body class, and template CSS lives in `styles/styles.css`.
+- **`homepage`** (`body.homepage`) — Home's bespoke scroll choreography (sticky hero, relocated nav, dark-band reveal). Fallback: `scripts.js` adds it when `main .hero-cover` is present.
+- **`about`** (`body.about`) — 2026-07-09. Composes the About screen's editorial content as **3 columns** (Figma `1:13576`): `body.about main .contributors ul { columns: 3 }` and `body.about main .projects.grid > ul { grid-template-columns: repeat(3, …) }`. The column count is owned by the template, not the blocks (contributors defaults to 3 on its own, projects.grid defaults to 4). About's `projects` block carries the `grid` variant (wrapping, not the scroller).

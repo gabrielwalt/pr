@@ -10,7 +10,7 @@
 
 | Page | URL | Content ✓ | Style ✓ | Notes |
 |---|---|---|---|---|
-| Home | `/` | ✅ GATE 1 | ✅ GATE 2 | 4 sections: hero-cover, grid (12), columns+dark Issue banner, search-table. Nav = header block relocated into the grid sheet (native sticky choreography, all 4 beats). Spacing tokenized (`--space-*` scale). Nav aligned to the 4-col grid. Footer removed (none yet). GATE 2 approved 2026-07-08. |
+| Home | `/` | ✅ GATE 1 | ✅ GATE 2 | 4 sections: hero-cover, grid (12), columns+dark Issue banner, project-table. Nav = header block relocated into the grid sheet (native sticky choreography, all 4 beats). Spacing tokenized (`--space-*` scale). Nav aligned to the 4-col grid. Footer removed (none yet). GATE 2 approved 2026-07-08. |
 | Calendar | `/calendar` | 🔲 | 🔲 | Wraps shared `Page Template` (`1:13732`). Phase 1 pending. |
 | Projects | `/projects` | 🔲 | 🔲 | Wraps shared `Page Template` (`1:13697`). Phase 1 pending. |
 | Project Detail | `/projects/<slug>` | 🔲 | 🔲 | Wraps shared `Page Template` (`14:11052`, very tall long-form entry). Phase 1 pending. |

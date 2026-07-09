@@ -77,16 +77,17 @@
 }
 
 /* magazine mockup — a tall cover. Its TOP keeps the 40 inset (= section pad-top
-   = its right inset, symmetric), but its BOTTOM runs past the section's 80px
-   bottom padding down to the section's bottom EDGE (per direction). The negative
-   bottom margin (= --space-2xl, the section's pad-bottom) cancels that padding
-   for the image only; the text column still ends 80 above the edge. The section
-   height is driven by the TEXT column; the image is out of flow (absolute) so
-   its intrinsic aspect doesn't inflate the row, then crops to fill, clipping top. */
+   = its right inset, symmetric), but its BOTTOM runs past the section's bottom
+   padding down to the section's bottom EDGE (per direction). The negative bottom
+   margin (= --page-padding, the section div's pad-bottom) cancels that padding
+   for the image only; the text column still ends --page-padding above the edge.
+   The section height is driven by the TEXT column; the image is out of flow
+   (absolute) so its intrinsic aspect doesn't inflate the row, then crops to fill,
+   clipping top. */
 .section.dark .columns .columns-img-col {
   align-self: stretch;
   position: relative;
-  margin-bottom: calc(-1 * var(--space-2xl));
+  margin-bottom: calc(-1 * var(--page-padding));
   overflow: hidden;
 }
 

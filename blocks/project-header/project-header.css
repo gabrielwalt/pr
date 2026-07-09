@@ -11,7 +11,7 @@
 }
 
 /* metadata ribbon: horizontal row of grey-bordered cells sharing 1px dividers,
-   13px uppercase-tracked grey (matches the search-table / hero-ribbon tag look,
+   13px uppercase-tracked grey (matches the project-table / hero-ribbon tag look,
    but this block owns its own rule — no shared CSS touched). */
 .project-header .project-header-meta {
   display: flex;
@@ -31,6 +31,14 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+/* producer logo (JS-swapped for the last ribbon line's text): matched to the
+   13px ribbon text so it reads as an inline wordmark. */
+.project-header .project-header-meta .producer-logo {
+  display: block;
+  height: 13px;
+  width: auto;
 }
 
 /* title block: two 42px display lines — project name (bold h2) over the

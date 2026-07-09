@@ -12,8 +12,8 @@
       "path": "https://main--pr--gabrielwalt.aem.live/library/blocks/projects"
     },
     {
-      "name": "Search Table",
-      "path": "https://main--pr--gabrielwalt.aem.live/library/blocks/search-table"
+      "name": "Project Table",
+      "path": "https://main--pr--gabrielwalt.aem.live/library/blocks/project-table"
     }
   ],
   ":type": "sheet"

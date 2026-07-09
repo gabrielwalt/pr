@@ -2,6 +2,34 @@
    Full-width row: bold "Prada Index" wordmark (left) + grey 37px nav
    (Calendar / Projects / search … About), under a thin rule. */
 
+/* The nav loads asynchronously; while it's still loading, the empty `header`
+   reserves --nav-height of space that would otherwise show the black page ground
+   and flash before the (white-banded) nav arrives. Pre-paint a WHITE band there,
+   capped + centered to the same content column the loaded nav uses, so the space
+   matches the white sheet from the first paint. Positioned ABSOLUTELY (not in
+   flow) so it fills the reserved box without adding height on top of the loaded
+   nav, and sits BEHIND the nav (z:0 vs .nav-wrapper z:2) so the nav covers it.
+   Home is excluded — its header is relocated and reserves no space. */
+header {
+  position: relative;
+}
+
+header:not(.nav-placed)::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 0;
+  width: 100%;
+  max-width: calc(var(--content-max-width) + 2 * var(--page-padding));
+  height: var(--nav-height);
+  margin-inline: auto;
+  background-color: var(--background-color);
+}
+
+body.homepage header::before {
+  content: none;
+}
+
 /* wrapper is transparent so the black page ground shows in the gutters; the
    white band lives on the capped `nav` (below) — the header thus reads as the
    top of the same white sheet the content sits on. */
@@ -204,6 +232,19 @@ header nav .icon-search img {
 /* Desktop editorial bar: single row, wordmark left, nav grouped + About right,
    all under a thin top rule. */
 @media (width >= 900px) {
+  /* Sticky nav on every page: pin the <header> element itself (its containing
+     block is the tall page body, so it stays put across the whole scroll — a
+     sticky .nav-wrapper would only stick within the short header box and scroll
+     away). Its white nav band covers the capped column while content scrolls
+     beneath; the black ground shows through the transparent gutters. On Home the
+     relocated header handles its own pinning via `header.nav-placed` (below,
+     higher specificity), so Home is unaffected. */
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+  }
+
   header .nav-wrapper {
     position: relative;
   }

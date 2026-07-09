@@ -65,12 +65,16 @@
   font-size: var(--body-font-size-xs);
   line-height: var(--line-height-label);
   letter-spacing: 0.1em;
-  text-transform: uppercase;
   text-align: left;
   font-weight: var(--weight-regular);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+/* only the header row (th) is uppercased; data rows keep their authored case */
+.project-table th {
+  text-transform: uppercase;
 }
 
 /* site table rule: the top row of any table shows no top border */

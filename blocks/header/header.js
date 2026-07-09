@@ -1,4 +1,4 @@
-import { getMetadata } from '../../scripts/aem.js';
+import { getMetadata, decorateIcons } from '../../scripts/aem.js';
 import { loadFragment } from '../fragment/fragment.js';
 
 // media query match that indicates mobile/tablet width
@@ -155,6 +155,19 @@ export default async function decorate(block) {
         }
       });
     });
+  }
+
+  // Search item: render the code-hosted icon (icons/search.svg) in place of the
+  // link text, keeping the word "Search" only as the accessible label.
+  const searchLink = nav.querySelector('.nav-search a');
+  if (searchLink) {
+    const label = searchLink.textContent.trim() || 'Search';
+    searchLink.setAttribute('aria-label', label);
+    searchLink.textContent = '';
+    const icon = document.createElement('span');
+    icon.className = 'icon icon-search';
+    searchLink.append(icon);
+    decorateIcons(searchLink);
   }
 
   // hamburger for mobile

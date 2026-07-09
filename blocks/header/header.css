@@ -206,13 +206,11 @@ header nav .nav-tools a:any-link {
 }
 
 /* Search item — lives in the sections group (next to Calendar/Projects). The
-   link carries the visible word "Search" for authoring + accessibility, but the
-   icon stands in for it visually: font-size:0 collapses the text (kept in DOM /
-   accessible tree), the icon keeps its explicit 30px size, inline-flex centers it. */
+   link text is replaced by the code-hosted icon in header.js; the word "Search"
+   survives only as the link's aria-label. inline-flex centers the 30px icon. */
 header nav .nav-search {
   display: inline-flex;
   align-items: center;
-  font-size: 0;
 }
 
 header nav .icon-search {

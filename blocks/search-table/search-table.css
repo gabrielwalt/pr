@@ -1,13 +1,3 @@
-/* the section's white ground sits on its inner content div, which the global
-   `main > .section > div` rule pads `0 --page-padding` (horizontal only). Add
-   matching TOP and BOTTOM insets so neither the search bar nor the last table
-   row touches the edge of the white sheet — vertical gap == the section's
-   left/right gutter (40). Selector is qualified with `main > .section...` to
-   out-specify that global rule (else it resets the vertical padding to 0). */
-main > .section.search-table-container > div {
-  padding-block: var(--page-padding);
-}
-
 .search-table-search {
   display: flex;
   align-items: center;

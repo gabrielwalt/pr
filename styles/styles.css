@@ -19,7 +19,6 @@
   --border-color: #707070;     /* framed containers (search bar, nav) */
   --placeholder-color: #eee;   /* image placeholders */
   --light-color: #f5f5f5;      /* light surface */
-  --dark-color: #000;
 
   /* links — monochrome, no brand accent */
   --link-color: #000;
@@ -52,7 +51,6 @@
   --heading-font-size-xs: 16px;   /* smallest heading */
 
   /* body sizes */
-  --body-font-size-l: 20px;    /* credits, larger body */
   --body-font-size-m: 16px;    /* default body, entry text */
   --body-font-size-s: 14px;    /* tracked uppercase UI labels */
   --body-font-size-xs: 13px;   /* uppercase metadata tags, dense tables */
@@ -109,17 +107,24 @@
     --heading-font-size-l: 28px;
     --heading-font-size-m: 24px;
     --heading-font-size-s: 18px;
-    --body-font-size-l: 18px;
     --page-padding: 20px;
     --section-padding: 20px;
     --block-padding: 20px;
   }
 }
 
+/* Page ground is BLACK on every page; the readable content sits on a centered
+   white "sheet" (the section content columns), with black filling the gutters
+   at wide viewports — the same look the homepage sheet has as it covers the
+   hero. See the content-column rule below and header.css for the header band. */
+html {
+  background-color: var(--text-color);
+}
+
 body {
   display: none;
   margin: 0;
-  background-color: var(--background-color);
+  background-color: var(--text-color);
   color: var(--text-color);
   font-family: var(--body-font-family);
   font-size: var(--body-font-size-m);
@@ -334,14 +339,14 @@ main img {
 /* sections + vertical-spacing system */
 main > .section {
   margin: 0;
-  padding: var(--section-padding) 0;
+  padding: 0;
 }
 
 main > .section > div {
   max-width: var(--content-max-width);
   margin-left: auto;
   margin-right: auto;
-  padding: 0 var(--page-padding);
+  padding: var(--page-padding);
 }
 
 /* block-to-block rhythm inside a section */
@@ -349,8 +354,14 @@ main > .section > div > * + * {
   margin-top: var(--block-padding);
 }
 
-main > .section:first-of-type {
-  padding-top: var(--section-padding);
+/* White content sheet on every non-home page: each non-dark section paints
+   white ONLY within its capped content column (`> div`), so the black page
+   ground shows in the side gutters — the same centered white sheet the homepage
+   grid section is, minus the hero-cover scroll choreography. Consecutive
+   sections stack flush (section padding is 0), reading as one continuous sheet.
+   Home is excluded — its bespoke sticky/reveal rules (below) own its sheet. */
+body:not(.homepage) main > .section:not(.dark) > div {
+  background-color: var(--background-color);
 }
 
 /* section metadata variants */
@@ -414,11 +425,11 @@ main .section.dark :focus-visible {
 /* On Home, header.js relocates the whole <header> into the top of the grid
    sheet (see header.css `.nav-placed`), so it must not reserve flow space above
    main either before that runs or in its new home. */
-body:has(main .hero-cover) header {
+body.homepage header {
   min-height: 0;
 }
 
-main:has(.hero-cover) > .section:first-child {
+body.homepage main > .section:first-child {
   position: sticky;
   top: 0;
   z-index: 0;
@@ -431,9 +442,12 @@ main:has(.hero-cover) > .section:first-child {
 }
 
 /* Content is capped at max-width and centered; BLACK fills the sides at wider
-   viewports (Figma). The page ground is black; each section paints its own
-   surface only within the capped content column. */
-main:has(.hero-cover) {
+   viewports (Figma). The whole page ground is black — set on <html>/<body> (not
+   just main) so any area outside main (overscroll, gaps) is black too, never
+   white. Each section then paints its own surface within the capped column. */
+html:has(body.homepage),
+body.homepage,
+body.homepage main {
   background-color: var(--text-color);
 }
 
@@ -442,7 +456,7 @@ main:has(.hero-cover) {
    covers the sticky hero underneath — a transparent section would let the
    z:0 sticky hero show through its side gutters (main's own black ground sits
    behind the sticky hero, so transparency reveals the hero, not the ground). */
-main:has(.hero-cover) > .section:first-child ~ .section {
+body.homepage main > .section:first-child ~ .section {
   position: relative;
   z-index: 1;
   background-color: var(--text-color);
@@ -450,15 +464,16 @@ main:has(.hero-cover) > .section:first-child ~ .section {
 
 /* the grid sheet (first section after the hero, carrying the relocated nav)
    must meet the hero flush — its white ground lives on the inner `> div`, so
-   the section's own top padding would show the black ground as a gap above the
-   nav. Zero it; the relocated nav supplies its own top inset. */
-main:has(.hero-cover) > .section:first-child + .section {
+   the div's top padding would show the black ground as a gap above the nav.
+   Zero the TOP only (the relocated nav supplies its own top inset); the global
+   `> div` rule keeps the --page-padding on the other three sides. */
+body.homepage main > .section:first-child + .section > div {
   padding-top: 0;
 }
 
 /* opaque white ground only within the capped content of light sections, so the
    rising sheet covers the hero's content column in white (sides stay black). */
-main:has(.hero-cover) > .section:first-child ~ .section:not(.dark) > div {
+body.homepage main > .section:first-child ~ .section:not(.dark) > div {
   background-color: var(--background-color);
 }
 
@@ -473,7 +488,7 @@ main:has(.hero-cover) > .section:first-child ~ .section:not(.dark) > div {
       (80). The section's `> div` supplies the 40 horizontal gutter.
    Selector mirrors the generic `~ .section` rule's shape (incl. `:first-child
    ~`) so it out-specifies the z:1 default rather than losing the tie. */
-main:has(.hero-cover) > .section:first-child ~ .section.dark {
+body.homepage main > .section:first-child ~ .section.dark {
   z-index: 5;
   padding: var(--page-padding) 0 var(--space-2xl);
 }
@@ -482,13 +497,13 @@ main:has(.hero-cover) > .section:first-child ~ .section.dark {
    width so the rising white sheet covers it exactly; black fills the hero's
    sides. The sheet div is content-box (1440 + 2×page-padding), so the hero
    column must span the same footprint. */
-main:has(.hero-cover) > .section:first-child .hero-wrapper {
+body.homepage main > .section:first-child .hero-wrapper {
   max-width: calc(var(--content-max-width) + 2 * var(--page-padding));
   margin-inline: auto;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  main:has(.hero-cover) > .section:first-child {
+  body.homepage main > .section:first-child {
     position: static;
   }
 }

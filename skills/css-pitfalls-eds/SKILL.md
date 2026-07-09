@@ -1,6 +1,6 @@
 ---
 name: css-pitfalls-eds
-description: Common EDS CSS gotchas with fixes. Load when: fixing a stylelint no-descending-specificity error; a background image suddenly renders at native size after shorthand consolidation; `position: sticky` breaks due to an ancestor `overflow: hidden`; a `backdrop-filter` glass effect is invisible or corners bleed.
+description: Common EDS CSS gotchas with fixes. Load when: fixing a stylelint no-descending-specificity error; a background image suddenly renders at native size after shorthand consolidation; `position: sticky` breaks due to an ancestor `overflow: hidden`; a `backdrop-filter` glass effect is invisible or corners bleed; one grid's columns won't line up with another grid's (unequal tracks / nav-to-content-grid alignment).
 ---
 
 ## Descending specificity (stylelint no-descending-specificity)
@@ -69,6 +69,18 @@ Three non-obvious requirements for `backdrop-filter: blur()` to render correctly
 1. **Non-opaque background required.** A fully opaque `background-color` prevents the blur from showing through — the glass effect is invisible. Use a semi-transparent color (e.g. `rgb(255 255 255 / 10%)` or `oklch(100% 0 0 / 0.1)`).
 2. **Border on light backgrounds.** Without a border, a glass frame blends into a light background and the effect disappears. A subtle semi-transparent white border (e.g. `border: 1px solid rgb(255 255 255 / 60%)`) makes the frame visible.
 3. **Inner border-radius must account for padding.** If the frame has `border-radius: R` and `padding: P`, the inner element needs `border-radius: calc(R - P)` — otherwise its corners bleed outside the frame's rounded edge.
+
+---
+
+## Aligning one grid's columns to another grid below/above it
+
+To make element A (e.g. a header row) line up column-for-column with element B (e.g. a card grid) in the same content-width container, give A the SAME `grid-template-columns` and gutter as B, then place A's children by column line. Three traps make the tracks come out unequal — all three fixes are usually needed:
+
+1. **Use `repeat(N, minmax(0, 1fr))`, not `repeat(N, 1fr)`.** Plain `1fr` has an `auto` (min-content) floor, so a wide/`nowrap` child inflates its track and the columns stop matching. `minmax(0, 1fr)` forces truly equal tracks. (This is why the card grid below already uses `minmax(0,1fr)` — match it.)
+2. **Add `min-width: 0` to the grid items.** Grid items default to `min-width: auto` (their min-content), which re-introduces the same inflation even under `minmax(0,1fr)` — especially for a `white-space: nowrap` cluster. `min-width: 0` on the items removes the floor.
+3. **Clear any inherited `grid-template-areas` / `grid-area` from a mobile rule.** If the mobile layout used named areas (`grid-template: 'brand nav' … ; .child { grid-area: brand }`), the desktop override must reset them — use the `grid-template` shorthand (`grid-template: auto / repeat(N, minmax(0,1fr))`, which clears areas) AND neutralize child `grid-area` (set explicit `grid-column`/`grid-row`). A higher-specificity state selector (e.g. `nav[aria-expanded='true']`) may re-declare `grid-template` too — override it in the same desktop scope or its areas win.
+
+**Match-and-refuse:** if a header's items compute to unequal tracks like `0px 1072px 165px 165px` instead of four equal `351px`, you hit trap #1 or #2. Verify with `getComputedStyle(grid).gridTemplateColumns` — it must read N equal tracks — and compare the items' `getBoundingClientRect().left/right` against the reference grid's cells.
 
 ---
 

@@ -12,16 +12,16 @@ export default function decorate(block) {
     if (cover) {
       if (cover.querySelector('picture')) {
         // image cover
-        cover.className = 'grid-card-image';
+        cover.className = 'projects-card-image';
       } else if (cover.textContent.trim()) {
         // typographic cover: author put text in the cover cell instead of an image
-        cover.className = 'grid-card-image grid-card-cover';
+        cover.className = 'projects-card-image projects-card-cover';
       } else {
         // empty cover cell → drop it, entry has no cover
         cover.remove();
       }
     }
-    rest.forEach((div) => { div.className = 'grid-card-body'; });
+    rest.forEach((div) => { div.className = 'projects-card-body'; });
 
     ul.append(li);
   });

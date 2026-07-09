@@ -1,0 +1,72 @@
+/* Prada Index project-header — a project's section intro on the Projects page.
+   Two stacked cells: a metadata ribbon (grey bordered cells) over a two-line
+   42px title block (project name + collaborators). Padding 40/40/20/40 and a
+   16px internal gap, per Figma (node I1:13697;…;3157:180047). */
+
+.project-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-m);
+  padding: var(--page-padding) 0 var(--space-m);
+}
+
+/* metadata ribbon: horizontal row of grey-bordered cells sharing 1px dividers,
+   13px uppercase-tracked grey (matches the search-table / hero-ribbon tag look,
+   but this block owns its own rule — no shared CSS touched). */
+.project-header .project-header-meta {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.project-header .project-header-meta p {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  padding: var(--space-2xs);
+  border: 1px solid var(--border-color);
+  color: var(--metadata-color);
+  font-size: var(--body-font-size-xs);
+  line-height: 1;
+  letter-spacing: var(--tracking-label);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* title block: two 42px display lines — project name (bold h2) over the
+   collaborators line (regular). Per-line tracking from Figma. */
+.project-header .project-header-title {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-m);
+}
+
+.project-header .project-header-title h2 {
+  margin: 0;
+  font-size: var(--heading-font-size-xl);
+  line-height: var(--line-height-display);
+  letter-spacing: -0.01em;
+}
+
+.project-header .project-header-title p {
+  margin: 0;
+  font-size: var(--heading-font-size-xl);
+  font-weight: var(--weight-regular);
+  line-height: var(--line-height-display);
+  letter-spacing: -0.03em;
+}
+
+.project-header .project-header-meta p + p {
+  margin-left: -1px;
+}
+
+@media (width <= 900px) {
+  .project-header .project-header-meta {
+    flex-direction: column;
+  }
+
+  .project-header .project-header-meta p + p {
+    margin-left: 0;
+    margin-top: -1px;
+  }
+}

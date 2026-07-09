@@ -1,5 +1,6 @@
 import {
   loadHeader,
+  loadFooter,
   decorateIcons,
   decorateSections,
   decorateBlocks,
@@ -136,6 +137,12 @@ export function decorateMain(main) {
 async function loadEager(doc) {
   document.documentElement.lang = 'en';
   decorateTemplateAndTheme();
+  // Homepage template fallback (backup only — primary is the `template: homepage`
+  // metadata on the Home page). If that metadata is ever dropped, the hero-cover
+  // block is the reliable Home signal; keeps the nav-relocation choreography working.
+  if (doc.querySelector('main .hero-cover') && !document.body.classList.contains('homepage')) {
+    document.body.classList.add('homepage');
+  }
   const main = doc.querySelector('main');
   if (main) {
     decorateMain(main);
@@ -167,7 +174,7 @@ async function loadLazy(doc) {
   const element = hash ? doc.getElementById(hash.substring(1)) : false;
   if (hash && element) element.scrollIntoView();
 
-  // no footer yet — leave the <footer> landmark empty (loadFooter disabled)
+  loadFooter(doc.querySelector('footer'));
 
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();

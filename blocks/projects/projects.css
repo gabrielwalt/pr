@@ -1,32 +1,57 @@
-/* Prada Index entry grid — 4-column index of works.
+/* Prada Index projects block — an index of works.
    Each li = [image cell] + [label cell: title / description / type-tag].
-   Some entries have an empty image cell → they are typographic covers. */
+   Some entries have an empty image cell → they are typographic covers.
 
-.grid > ul {
+   TWO layouts, same card:
+   - BASE (Projects page): a single horizontal row that does NOT wrap; it
+     scrolls sideways and is clipped by the right edge of the white content
+     column (the block's own box = the section's capped `> div`).
+   - `.grid` variant (Home index): the classic 4-column grid that wraps onto
+     new rows. Cards are sized to the same column width in both, so the two
+     read near-identically — one scrolls, one wraps. */
+
+/* base: horizontal scroller. Card width matches the grid's column so 4 sit in
+   view, the rest overflow to the right and are cut off at the content edge. */
+.projects > ul {
   list-style: none;
   margin: 0;
   padding: 0;
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: var(--space-m) var(--space-s);
+  display: flex;
+  flex-wrap: nowrap;
+  gap: var(--space-s);
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
 }
 
-.grid > ul > li {
+.projects > ul > li {
+  flex: 0 0 calc((100% - 3 * var(--space-s)) / 4);
   display: flex;
   flex-direction: column;
   gap: var(--space-s);
   background-color: var(--background-color);
 }
 
+/* grid variant: wrap into 4 equal columns instead of scrolling. */
+.projects.grid > ul {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-m) var(--space-s);
+  overflow: visible;
+}
+
+.projects.grid > ul > li {
+  flex: initial;
+}
+
 /* image cell — square-ish media well on a light-grey placeholder ground */
-.grid .grid-card-image {
+.projects .projects-card-image {
   line-height: 0;
   aspect-ratio: 1 / 1;
   background-color: var(--placeholder-color);
   overflow: hidden;
 }
 
-.grid .grid-card-image img {
+.projects .projects-card-image img {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -34,7 +59,7 @@
 
 /* typographic cover — author types text in the cover cell instead of an image:
    black card, white display text. A quick way to give an image-less entry a cover. */
-.grid .grid-card-cover {
+.projects .projects-card-cover {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -50,7 +75,7 @@
 }
 
 /* cover text may be authored as a bare string or inside a <p> — normalize either */
-.grid .grid-card-cover p {
+.projects .projects-card-cover p {
   margin: 0;
   font: inherit;
   letter-spacing: inherit;
@@ -58,34 +83,40 @@
 }
 
 /* label cell — title + description body, type-tag muted grey; no gap between lines */
-.grid .grid-card-body {
+.projects .projects-card-body {
   padding-right: var(--space-xs);
 }
 
-.grid .grid-card-body p {
+.projects .projects-card-body p {
   margin: 0;
   font-size: var(--body-font-size-m);
   line-height: var(--line-height-body);
 }
 
 /* first line = title (bold), last line = type tag (muted) */
-.grid .grid-card-body p:first-child {
+.projects .projects-card-body p:first-child {
   font-weight: var(--weight-bold);
 }
 
-.grid .grid-card-body p:last-child {
+.projects .projects-card-body p:last-child {
   color: rgb(0 0 0 / 40%);
 }
 
 /* single-line label (only a title) stays regular weight — avoid bolding a lone tag */
-.grid .grid-card-body p:only-child {
+.projects .projects-card-body p:only-child {
   font-weight: var(--weight-regular);
   color: var(--text-color);
 }
 
 @media (width <= 900px) {
-  .grid > ul {
+  /* grid variant drops to 2 columns */
+  .projects.grid > ul {
     grid-template-columns: repeat(2, 1fr);
     row-gap: var(--space-m);
+  }
+
+  /* base scroller shows ~1.5 cards so the overflow cue reads on a phone */
+  .projects > ul > li {
+    flex-basis: 66%;
   }
 }

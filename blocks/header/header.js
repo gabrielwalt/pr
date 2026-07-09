@@ -172,8 +172,15 @@ export default async function decorate(block) {
 
   // Search item: render the code-hosted icon (icons/search.svg) in place of the
   // link text, keeping the word "Search" only as the accessible label.
-  const searchLink = nav.querySelector('.nav-search a');
+  // Identify it by its `/search` href, NOT by an authored `.nav-search` class:
+  // EDS's production pipeline strips hand-authored class attributes from nav
+  // content (they survive on the local `aem up` proxy but not in prod), so the
+  // class isn't reliable. We (re)apply `.nav-search` to the <li> ourselves so
+  // header.css keys off it consistently in both environments.
+  const searchLink = [...nav.querySelectorAll('.nav-sections a')]
+    .find((a) => new URL(a.href, window.location).pathname.replace(/\/$/, '').endsWith('/search'));
   if (searchLink) {
+    searchLink.closest('li')?.classList.add('nav-search');
     const label = searchLink.textContent.trim() || 'Search';
     searchLink.setAttribute('aria-label', label);
     searchLink.textContent = '';

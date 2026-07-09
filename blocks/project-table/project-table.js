@@ -20,7 +20,16 @@ export default function decorate(block) {
 
   block.replaceChildren(table);
 
-  // Build the functional search bar (injected, not authored — see PROJECT-IMPORT Home model)
+  const dataRows = [...table.querySelectorAll('tr')].filter((tr) => !tr.querySelector('th'));
+
+  // Producer column (last cell) → swap matching text for its logo.
+  dataRows.forEach((tr) => applyProducerLogo(tr.lastElementChild));
+
+  // Search is a VARIANT: only the `.project-table.search` variant gets the
+  // injected filter bar (Home / Search page). Plain `.project-table` (e.g. the
+  // Project Detail table of contents) renders the table alone, no search.
+  if (!block.classList.contains('search')) return;
+
   const bar = document.createElement('div');
   bar.className = 'project-table-search';
   // Anchor target: the nav's search icon links to `/#search`, so the homepage
@@ -40,11 +49,6 @@ export default function decorate(block) {
 
   bar.append(input, clear);
   block.prepend(bar);
-
-  const dataRows = [...table.querySelectorAll('tr')].filter((tr) => !tr.querySelector('th'));
-
-  // Producer column (last cell) → swap matching text for its logo.
-  dataRows.forEach((tr) => applyProducerLogo(tr.lastElementChild));
 
   const applyFilter = () => {
     const q = input.value.trim().toLowerCase();

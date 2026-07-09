@@ -170,6 +170,12 @@ async function loadLazy(doc) {
   const main = doc.querySelector('main');
   await loadSections(main);
 
+  // Section style `Expandable`: inject the Read-more toggle + clip long content.
+  if (main.querySelector('.section.expandable')) {
+    const { default: decorateExpandableSections } = await import('./expandable.js');
+    decorateExpandableSections(main);
+  }
+
   const { hash } = window.location;
   const element = hash ? doc.getElementById(hash.substring(1)) : false;
   if (hash && element) element.scrollIntoView();

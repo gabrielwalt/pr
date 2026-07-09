@@ -528,45 +528,65 @@ body.template-project-detail main > .projects-container > .projects-wrapper {
 
 /* ---- Project Detail template (`template: project-detail` → body.template-project-detail) ----
    Styles the page's DEFAULT CONTENT (the page blocks — project-header, event-list,
-   project-table, projects-search — are already styled by their own CSS). Two shapes:
-   (1) the overview image row under the header, (2) the long-form entry excerpts
-   (heading + byline + cover image + reading-measure body + a "Read more" button).
+   project-table, projects-search — are already styled by their own CSS): (1) the
+   overview image scroller under the header, (2) the long-form entry sections
+   (title + cover image(s) + body). The narrow/expandable SECTION STYLES (below,
+   unscoped by template) drive the reading-measure + Read-more behavior.
    All scoped to the template body class → fully additive, touches no other page. */
 
-/* Overview: the row of cover images directly under the project-header intro.
-   The `<p>` holds 3 (or 2) images side by side, full content width, equal gap. */
+/* Overview: a horizontal, scrollable row of larger images under the intro (same
+   bleed pattern as the projects scroller). Bleeds to both column edges; images
+   keep a fixed height and natural width, scrolling sideways. */
 body.template-project-detail main > .section:first-child .default-content-wrapper p:first-child {
   display: flex;
   gap: var(--space-s);
+  margin-inline: calc(-1 * var(--page-padding));
+  padding-inline: var(--page-padding);
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
   line-height: 0;
 }
 
+body.template-project-detail main > .section:first-child .default-content-wrapper p:first-child::-webkit-scrollbar {
+  display: none;
+}
+
 body.template-project-detail main > .section:first-child .default-content-wrapper p:first-child img {
-  flex: 1;
-  min-width: 0;
-  width: 100%;
-  height: auto;
+  width: auto;
+  height: 480px;
+  max-width: none;
   object-fit: cover;
 }
 
-/* Overview intro paragraph — 32px editorial lead, matching the Figma. */
+/* Overview intro paragraph — full content width, left-aligned body (never
+   centered, per Prada). 20px reading size. */
 body.template-project-detail main > .section:first-child .default-content-wrapper p:first-child + p {
   margin-top: var(--space-l);
-  font-size: var(--heading-font-size-m);
-  line-height: var(--line-height-heading);
-  letter-spacing: var(--tracking-heading);
+  font-size: var(--heading-font-size-s);
+  line-height: var(--line-height-body-l);
 }
 
-/* Entry excerpt sections — every default-content section AFTER the header/table
-   region: a two-line 42px title, an optional grey byline, a cover image, a
-   reading-measure body, and a centered "Read more" button. `.default-content-wrapper`
-   inside a plain section (no block) is the entry container. */
+/* Entry sections — every default-content section AFTER the header/table region:
+   a two-line 42px title (first line bold via <strong>, second regular), a cover
+   image (or pair), and body text. `.default-content-wrapper` in a plain section
+   (no block) is the entry container. */
 body.template-project-detail main > .section > .default-content-wrapper h2 {
   font-size: var(--heading-font-size-xl);
+
+  /* bold-via-markup: the heading is REGULAR by default; only the <strong> the
+     author wraps around the emphasized line renders bold (Prada principle:
+     first line bold, subsequent title lines lighter — driven by markup, not
+     element/line position). */
+  font-weight: var(--weight-regular);
   letter-spacing: var(--tracking-heading);
 }
 
-/* consecutive h2s (two-line title) sit tight; body/byline get breathing room */
+body.template-project-detail main > .section > .default-content-wrapper h2 strong {
+  font-weight: var(--weight-bold);
+}
+
+/* consecutive h2s (two-line title: bold line + regular byline line) sit tight */
 body.template-project-detail main > .section > .default-content-wrapper h2 + h2 {
   margin-top: 0;
 }
@@ -575,53 +595,50 @@ body.template-project-detail main > .section > .default-content-wrapper h2 + p {
   margin-top: var(--space-m);
 }
 
-/* byline = the short grey line right after the title (e.g. "Nancy Spector").
-   Only the FIRST paragraph after the last title, and only when it's short text
-   (no image) — handled by not overriding image paragraphs below. */
-body.template-project-detail main > .section > .default-content-wrapper h2 + p:not(:has(img)) {
-  color: var(--metadata-color);
-  font-size: var(--heading-font-size-s);
-  line-height: var(--line-height-body-l);
-}
-
-/* cover image(s): centered, capped to a comfortable column, never full-bleed.
-   A paragraph may hold ONE cover or a side-by-side PAIR (the Wind interview). */
+/* cover image(s): full content width, never full-bleed. A paragraph may hold
+   ONE cover or a side-by-side PAIR (the Wind interview) — the pair gets a gap;
+   `.image-pair` explicitly removes it (author choice). */
 body.template-project-detail main > .section > .default-content-wrapper p:has(img) {
   display: flex;
   gap: var(--space-s);
-  justify-content: center;
   margin-top: var(--space-l);
   line-height: 0;
 }
 
-body.template-project-detail main > .section > .default-content-wrapper p img {
-  width: 100%;
-  height: auto;
-  max-height: 70vh;
-  object-fit: contain;
+body.template-project-detail main > .section > .default-content-wrapper p.image-pair {
+  gap: 0;
 }
 
-/* reading-measure body text: 20px, capped to a ~700px measure, left-aligned */
+body.template-project-detail main > .section > .default-content-wrapper p img {
+  flex: 1;
+  min-width: 0;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+/* body text: 20px, left-aligned. Width is full by default; the `Narrow` section
+   style (below) caps + centers the reading column for long-form entries. */
 body.template-project-detail main > .section > .default-content-wrapper p:not(:has(img)) {
-  max-width: 700px;
   margin-top: var(--space-m);
   font-size: var(--heading-font-size-s);
   line-height: var(--line-height-body-l);
 }
 
-/* interview speaker labels: the leading <strong> reads as the speaker name */
+/* interview speaker labels + inline lead lines: authored <strong> renders bold */
 body.template-project-detail main > .section > .default-content-wrapper p strong {
   font-weight: var(--weight-bold);
 }
 
-/* "Read more" → a centered, bordered uppercase button (Figma per-entry CTA) */
-body.template-project-detail main > .section > .default-content-wrapper p:last-child {
-  margin-top: var(--space-l);
+/* "View all events" CTA (default content after the event-list block) — centered
+   bordered uppercase button. */
+body.template-project-detail main > .event-list-container .default-content-wrapper {
   text-align: center;
 }
 
-body.template-project-detail main > .section > .default-content-wrapper p:last-child a {
+body.template-project-detail main > .event-list-container .default-content-wrapper a {
   display: inline-block;
+  margin-top: var(--space-l);
   padding: var(--space-s) var(--space-m);
   border: 1px solid var(--text-color);
   color: var(--text-color);
@@ -631,8 +648,55 @@ body.template-project-detail main > .section > .default-content-wrapper p:last-c
   text-decoration: none;
 }
 
-body.template-project-detail main > .section > .default-content-wrapper p:last-child a:hover,
-body.template-project-detail main > .section > .default-content-wrapper p:last-child a:focus-visible {
+body.template-project-detail main > .event-list-container .default-content-wrapper a:hover,
+body.template-project-detail main > .event-list-container .default-content-wrapper a:focus-visible {
+  background-color: var(--text-color);
+  color: var(--background-color);
+}
+
+/* ---- Section style: `Narrow` ----
+   A reading-measure column, centered in the section (the COLUMN is centered, the
+   TEXT stays left-aligned — never centered text, per Prada). Applied via Section
+   Metadata `Style: Narrow`. Generic (not template-scoped) so any page can reuse. */
+main .section.narrow > div {
+  max-width: 700px;
+  margin-inline: auto;
+}
+
+/* ---- Section style: `Expandable` ----
+   Long content is clipped to a preview height behind a fade, with a JS-injected
+   "Read more" button that expands it. `expandable.js` adds `.is-collapsed` +
+   the button; `.is-expanded` removes the clip. Applied via `Style: Expandable`. */
+main .section.expandable.is-collapsed > div {
+  max-height: 60vh;
+  overflow: hidden;
+
+  /* fade the clipped edge */
+  mask-image: linear-gradient(to bottom, #000 60%, transparent 100%);
+}
+
+main .section.expandable.is-expanded > div {
+  max-height: none;
+  mask-image: none;
+}
+
+/* the injected Read-more button — centered bordered uppercase (matches CTAs) */
+main .section.expandable .expandable-toggle {
+  display: block;
+  margin: var(--space-l) auto 0;
+  padding: var(--space-s) var(--space-m);
+  border: 1px solid var(--text-color);
+  background: transparent;
+  color: var(--text-color);
+  font-family: var(--body-font-family);
+  font-size: var(--body-font-size-s);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+main .section.expandable .expandable-toggle:hover,
+main .section.expandable .expandable-toggle:focus-visible {
   background-color: var(--text-color);
   color: var(--background-color);
 }

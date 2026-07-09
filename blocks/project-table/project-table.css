@@ -54,6 +54,10 @@
   width: 100%;
   border-collapse: collapse;
   table-layout: fixed;
+}
+
+/* search variant: gap between the injected search bar and the table */
+.project-table.search table {
   margin-top: var(--page-padding);
 }
 
@@ -99,7 +103,7 @@
   background-color: var(--background-color);
 }
 
-.project-table tr:first-child th {
+.project-table.search tr:first-child th {
   position: sticky;
   top: 39px; /* height of the sticky search bar above it */
   z-index: 2;
@@ -108,7 +112,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .project-table .project-table-search,
-  .project-table tr:first-child th {
+  .project-table.search tr:first-child th {
     position: static;
   }
 }

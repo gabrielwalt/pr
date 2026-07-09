@@ -69,6 +69,19 @@
   letter-spacing: -0.03em;
 }
 
+/* Project-detail variant uses two <h1> lines (80px). Bold-via-markup, per Prada:
+   the heading is REGULAR by default; only the <strong> the author wraps around
+   the first line renders bold, so the collaborators line below reads lighter. */
+.project-header .project-header-title h1 {
+  margin: 0;
+  font-weight: var(--weight-regular);
+  line-height: var(--line-height-display);
+}
+
+.project-header .project-header-title h1 strong {
+  font-weight: var(--weight-bold);
+}
+
 .project-header .project-header-meta p + p {
   margin-left: -1px;
 }

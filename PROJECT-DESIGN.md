@@ -39,7 +39,9 @@ Global foundation established 2026-07-08 (`global-style-foundation`, Faithful fi
 | `--line-height-display / -heading / -body / -body-l / -label` | `1.0 / 1.19 / 1.19 / 1.15 / 1.0` | per-role line-heights |
 | `--tracking-display / -heading / -label` | `−0.03em / −0.01em / +0.1em` | per-role letter-spacing |
 
-**Section styles** (via Section Metadata `Style` → class): `highlight` (grey `#f5f5f5` surface), `dark` (black surface, white text). (`light` removed 2026-07-09 — not in the designs.) Dark inverts CTAs — primary becomes white-fill/black-text, secondary white outline; links white, hover to `#eee`; focus ring white. Section-metadata decoration was added to `scripts/aem.js` `decorateSections` (the enhanced boilerplate shipped without it — was PROJECT-PLAN task #7).
+**Section styles** (via Section Metadata `Style` → class): `highlight` (grey `#f5f5f5` surface), `dark` (black surface, white text), `narrow` (reading-measure column: `> div` capped to 700px + centered — the COLUMN centers, text stays left-aligned), `expandable` (long content clipped behind a fade with a JS-injected "Read more" toggle — `scripts/expandable.js`, wired in `scripts.js` loadLazy; adds `.is-collapsed`/`.is-expanded`). (`light` removed 2026-07-09 — not in the designs.) Dark inverts CTAs — primary becomes white-fill/black-text, secondary white outline; links white, hover to `#eee`; focus ring white. Section-metadata decoration was added to `scripts/aem.js` `decorateSections` (the enhanced boilerplate shipped without it — was PROJECT-PLAN task #7). Styles combine comma-separated (`Style: Narrow, Expandable`).
+
+**Prada branding — never center text; bold via markup.** Body/heading text is always left-aligned (only the *column* may be centered, e.g. `narrow`). Multi-line titles are NOT all-bold: only the emphasized line is bold, and boldness is driven by an authored `<strong>` in the content (NOT by element type or line position) — so the heading defaults to regular weight and `<strong>` renders bold. Second/subsequent title lines (subtitles, author bylines) read regular, same size, same black.
 
 ## Typography
 

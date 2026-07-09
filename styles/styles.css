@@ -657,8 +657,13 @@ body.template-project-detail main > .event-list-container .default-content-wrapp
 /* ---- Section style: `Narrow` ----
    A reading-measure column, centered in the section (the COLUMN is centered, the
    TEXT stays left-aligned — never centered text, per Prada). Applied via Section
-   Metadata `Style: Narrow`. Generic (not template-scoped) so any page can reuse. */
-main .section.narrow > div {
+   Metadata `Style: Narrow`. Generic (not template-scoped) so any page can reuse.
+
+   IMPORTANT: the white content sheet (`> div`) must stay the SAME width on every
+   section of the page — so DON'T narrow `> div`. Instead keep the sheet full and
+   cap the INNER content (`> div > *`) to the reading measure, centered. The extra
+   width becomes left/right padding on the white area, not a narrower sheet. */
+main .section.narrow > div > * {
   max-width: 700px;
   margin-inline: auto;
 }
@@ -668,16 +673,24 @@ main .section.narrow > div {
    "Read more" button that expands it. `expandable.js` adds `.is-collapsed` +
    the button; `.is-expanded` removes the clip. Applied via `Style: Expandable`. */
 main .section.expandable.is-collapsed > div {
+  position: relative;
   max-height: 60vh;
   overflow: hidden;
+}
 
-  /* fade the clipped edge */
-  mask-image: linear-gradient(to bottom, #000 60%, transparent 100%);
+/* fade the clipped edge to WHITE (the sheet colour), not to the black page
+   ground — an overlay gradient rather than a mask, so nothing turns transparent */
+main .section.expandable.is-collapsed > div::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 0;
+  height: var(--space-2xl);
+  background: linear-gradient(to bottom, transparent, var(--background-color));
+  pointer-events: none;
 }
 
 main .section.expandable.is-expanded > div {
   max-height: none;
-  mask-image: none;
 }
 
 /* the injected Read-more button — centered bordered uppercase (matches CTAs) */

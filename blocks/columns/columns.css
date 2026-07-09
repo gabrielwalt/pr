@@ -44,19 +44,20 @@
   padding-right: var(--page-padding);
 }
 
-/* headings: same weight, per-line tracking per Figma (Issue 1 −0.01em looser,
-   Fall 2026 −0.03em tighter). font-synthesis off so no faux-bold inconsistency. */
+/* heading: a single two-line <h2> ("Issue 1" / "Fall 2026") split by <br>.
+   Bold-via-markup (per Prada): the heading is REGULAR; only the authored
+   <strong> ("Issue 1") is bold — so "Fall 2026" reads lighter. The two lines
+   sit close together (solid line-height) to match the Figma. */
 .section.dark .columns h2 {
-  letter-spacing: -0.01em;
+  font-weight: var(--weight-regular);
+  line-height: var(--line-height-display);
+  letter-spacing: -0.03em;
   font-synthesis: none;
 }
 
-/* second heading (Fall 2026) sits --space-m (20) under the first, tighter
-   tracking, and LIGHTER weight than "Issue 1" (regular vs bold) per direction. */
-.section.dark .columns h2 + h2 {
-  margin-top: var(--space-m);
-  font-weight: var(--weight-regular);
-  letter-spacing: -0.03em;
+.section.dark .columns h2 strong {
+  font-weight: var(--weight-bold);
+  letter-spacing: -0.01em;
 }
 
 /* description = lead size (32/38), --space-xl (48) below the heading group */

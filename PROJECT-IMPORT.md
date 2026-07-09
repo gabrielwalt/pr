@@ -86,16 +86,16 @@ Authored 2026-07-08. Structure verified in preview (4 sections, all blocks decor
 | Section | Block | Reuse | Content model |
 |---------|-------|-------|---------------|
 | 1 Hero | `hero` (`hero-cover` variant) | boilerplate `hero`, new variant | 2 cells: [picture] + [metadata `<p>` list (6 lines) → 2× `<h1>` display title]. Full-bleed cover. |
-| 2 Index grid | `grid` | boilerplate `cards` **renamed → `grid`** as-is | 12 rows, each [cover cell] + [title `<p>`, description `<p>`, type-tag `<p>`]. Cover cell = a picture OR author-typed text (→ typographic cover: black card, white display text). Decorates to `<ul>`/`<li>` (classes `grid-card-image`/`grid-card-body`; text cover adds `grid-card-cover`). |
+| 2 Index grid | `projects` | boilerplate `cards` **renamed → `grid` → `projects`** as-is | 12 rows, each [cover cell] + [title `<p>`, description `<p>`, type-tag `<p>`]. Cover cell = a picture OR author-typed text (→ typographic cover: black card, white display text). Decorates to `<ul>`/`<li>` (classes `projects-card-image`/`projects-card-body`; text cover adds `projects-card-cover`). |
 | 3 Issue banner | `columns` + **dark section** | boilerplate `columns` + `Style: Dark` section metadata | 1 row, 2 cells: [2× `<h2>`, credits `<p>`, About CTA `<strong><a>`] + [picture]. Inverted CTA via dark-section rule. |
 | 4 Search table | `search-table` (**NEW block**) | new — shared with Search page | Content = ONLY the 7-col `<table>` (header row + data rows). The **search input + Clear button are injected by the block JS** (not authored) — see below. |
 
 Notes:
 - **Site nav is NOT page content** — the "Prada Index / Calendar / Projects / About" bar is the `header` block (from `/nav`), built in the later nav step, not authored into `index.plain.html`.
-- **`grid`** = the boilerplate `cards` block renamed 2026-07-08 (dir/files/classes → `grid`, `grid-card-image`, `grid-card-body`). Entry/type-tag styling (grey tag, bold title) belongs to `grid` block styling in Phase 2.
+- **`projects`** = the boilerplate `cards` block, renamed 2026-07-08 to `grid`, then renamed 2026-07-09 to `projects` (dir/files/classes → `projects`, `projects-card-image`, `projects-card-body`). Entry/type-tag styling (grey tag, bold title) belongs to `projects` block styling in Phase 2.
 - **`search-table`** = the boilerplate had no such block; created 2026-07-08 (was briefly `index-table`, renamed to `search-table`). **Search UI is functional + injected, not authored content:** `search-table.js` prepends a `.search-table-search` bar (an `<input type="search">` with placeholder "Search" + a "Clear" `<button>`) above the table, then live-filters data rows (`tr.hidden`) on input; Clear resets. Only the `<table>` is authored. Search bar styled to Figma (`1:13151`): bordered box `1px #707070`, 10px pad, uppercase 14px +1.4px tracking placeholder/clear, grey `#707070`. Verified functional in preview (10→1 rows on "Kojima", Clear restores). **Shared with the Search page** — reusable block, not Home-bespoke. Full editorial table styling comes in Phase 2.
 - **Images extracted from Figma** 2026-07-08 into `content/media/` (PNG). Extracted per-node via `get_design_context` (image-fill URLs from the S3 export): 9 grid entry images (marie, metabolic, harmonic, technique, wind, sensation, jokes, monster, dontlooknow) + the Issue cover. All decode + render (verified ~662px, zero broken).
-  - **3 grid entries have NO image — they are typographic covers** (black card, white 105px text): "The American Vernacular" (`1:13119`), "Cognitive Estrangement" (`1:13125`), "Two Poems" (`1:13137`). Modeled as image-less cards (empty image cell); the text-cover look is a Phase-2 `grid` variant drawn from the Entry Cover Templates set — do NOT fabricate images for these.
+  - **3 grid entries have NO image — they are typographic covers** (black card, white 105px text): "The American Vernacular" (`1:13119`), "Cognitive Estrangement" (`1:13125`), "Two Poems" (`1:13137`). Modeled as image-less cards (empty image cell); the text-cover look is a Phase-2 `projects` variant drawn from the Entry Cover Templates set — do NOT fabricate images for these.
   - **Hero background** — `dt 1` (`1:13093`) is an image *fill* Figma's export won't surface. Supplied by the user via URL 2026-07-08 (Dropbox) → `content/media/hero-satellites.jpg` (2880×1440 JPEG). Renders full-bleed under the hero; verified loaded + legible.
 - Hero metadata rows + display title split follows the Figma frame (`1:13094` / `1:13096`).
 
@@ -112,14 +112,14 @@ The scroll mechanic spans components that recur on the shared **Page Template** 
 
 | Frame | Node ID | EDS page path | Status |
 |-------|---------|---------------|--------|
-| Home | `1:13091` | `/` (index) | 🔲 first deliverable |
-| Calendar | `1:13698` | `/calendar` | 🔲 |
-| Projects | `1:13593` | `/projects` | 🔲 |
-| Project Detail | `14:10689` | `/projects/<slug>` | 🔲 |
+| Home | `1:13091` | `/` (index) | ✅ GATE 1 + GATE 2 (2026-07-08) |
+| Calendar | `1:13698` | `/calendar` | ✅ content authored (`event-list`), GATE 1 pending |
+| Projects | `1:13593` | `/projects` | ✅ content authored (`project-header` + `projects` pairs), GATE 1 pending |
+| Project Detail | `14:10689` | `/projects/helter-skelter` | ✅ content authored (`project-header` + hero + `event-list` + long-form entries + `projects`), GATE 1 pending |
 | Slideshow | `1:14709` | `/slideshow` (entry viewer) | 🔲 |
 | Search (state 1) | `1:13913` | `/search` | 🔲 |
 | Search (state 2) | `1:13994` | `/search` (results/alt state) | 🔲 |
-| About | `1:13576` | `/about` | 🔲 |
+| About | `1:13576` | `/about` | ✅ content authored (title + intro + `masthead` + `projects`), GATE 1 pending |
 | Overlay (nav/menu) | `1:12954` | header/menu overlay component | 🔲 |
 | Entry Cover Templates | `1:13733` | card-cover variant set (not a page) | 🔲 |
 

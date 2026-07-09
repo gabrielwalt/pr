@@ -113,9 +113,15 @@ function toggleMenu(nav, navSections, forceExpanded = null) {
  * @param {Element} block The header block element
  */
 export default async function decorate(block) {
-  // load nav as fragment
+  // load nav as fragment — auto-resolved, no per-page metadata needed.
+  // The nav lives at `<contentPrefix>/nav`, where contentPrefix is `/content`
+  // on the local `aem up` server (pages served under /content/…) and empty in
+  // production (root serving). An authored `nav` metadata value still overrides.
+  const contentPrefix = window.location.pathname.startsWith('/content/') ? '/content' : '';
   const navMeta = getMetadata('nav');
-  const navPath = navMeta ? new URL(navMeta, window.location).pathname : '/nav';
+  const navPath = navMeta
+    ? new URL(navMeta, window.location).pathname
+    : `${contentPrefix}/nav`;
   const fragment = await loadFragment(navPath);
 
   // decorate nav DOM
@@ -177,9 +183,13 @@ export default async function decorate(block) {
   // (Beat 2); the dark Issue section (higher stacking layer, styles.css z:5)
   // covers the whole grid section as it rises (Beat 3). Non-Home pages keep the
   // header in its normal <header> landmark position at the top.
+  //
+  // Gated on the `homepage` page template (body.homepage, set from the page's
+  // `template` metadata) — NOT on sniffing for `.hero-cover` — so the bespoke
+  // relocation runs ONLY on the homepage. The grid sheet is the second section.
   const main = document.querySelector('main');
-  const gridSection = main && main.querySelector('.hero-cover')
-    ? main.querySelector(':scope > .section:first-child + .section')
+  const gridSection = document.body.classList.contains('homepage')
+    ? main && main.querySelector(':scope > .section:first-child + .section')
     : null;
   const gridInner = gridSection && gridSection.querySelector(':scope > div');
   const headerEl = block.closest('header');

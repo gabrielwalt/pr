@@ -32,14 +32,15 @@
   }
 }
 
-/* Issue banner — columns inside a dark section (Prada Index Home).
-   The dark SECTION supplies the symmetric editorial insets (top = --page-padding
-   = 40, matching the horizontal gutter; bottom = --space-2xl = 80) — see
-   styles.css. So the block itself only owns the column gap and its internal
-   rhythm; the image reaches the top/bottom/right of the padded content box, its
-   top inset equalling its right inset. The text column carries a --page-padding
-   (40) right inset from the image, matching the Figma frame's pr-40 (1:13138). */
-.section.dark .columns > div > div:not(.columns-img-col) {
+/* Issue banner layout — identical in a regular or a dark section (only the colours
+   invert, from the section context). The section supplies the symmetric editorial
+   insets (top = --page-padding = 40, matching the horizontal gutter; bottom in the
+   dark Issue banner = --space-2xl = 80) — see styles.css. So the block itself only
+   owns the column gap and its internal rhythm; the image reaches the top/bottom/right
+   of the padded content box, its top inset equalling its right inset. The text column
+   carries a --page-padding (40) right inset from the image, matching the Figma frame's
+   pr-40 (1:13138). */
+.columns > div > div:not(.columns-img-col) {
   display: block;
   padding-right: var(--page-padding);
 }
@@ -48,20 +49,20 @@
    Bold-via-markup (per Prada): the heading is REGULAR; only the authored
    <strong> ("Issue 1") is bold — so "Fall 2026" reads lighter. The two lines
    sit close together (solid line-height) to match the Figma. */
-.section.dark .columns h2 {
+.columns h2 {
   font-weight: var(--weight-regular);
   line-height: var(--line-height-display);
   letter-spacing: -0.03em;
   font-synthesis: none;
 }
 
-.section.dark .columns h2 strong {
+.columns h2 strong {
   font-weight: var(--weight-bold);
   letter-spacing: -0.01em;
 }
 
 /* description = lead size (32/38), --space-xl (48) below the heading group */
-.section.dark .columns p:not(.button-wrapper) {
+.columns p:not(.button-wrapper) {
   margin-top: var(--space-xl);
   font-size: var(--heading-font-size-m);
   line-height: var(--line-height-heading);
@@ -69,11 +70,11 @@
 }
 
 /* About button — --space-l (36) below the description; square, --space-m (20) padding per Figma */
-.section.dark .columns p.button-wrapper {
+.columns p.button-wrapper {
   margin-top: var(--space-l);
 }
 
-.section.dark .columns p.button-wrapper a.button {
+.columns p.button-wrapper a.button {
   padding: var(--space-m);
 }
 
@@ -85,14 +86,14 @@
    The section height is driven by the TEXT column; the image is out of flow
    (absolute) so its intrinsic aspect doesn't inflate the row, then crops to fill,
    clipping top. */
-.section.dark .columns .columns-img-col {
+.columns .columns-img-col {
   align-self: stretch;
   position: relative;
   margin-bottom: calc(-1 * var(--page-padding));
   overflow: hidden;
 }
 
-.section.dark .columns .columns-img-col img {
+.columns .columns-img-col img {
   position: absolute;
   inset: 0;
   display: block;
@@ -105,7 +106,7 @@
 @media (width >= 900px) {
   /* row items stretch to equal height so the image matches the text column and
      reaches the section's padded bottom edge */
-  .section.dark .columns > div {
+  .columns > div {
     align-items: stretch;
     gap: var(--space-s);
   }

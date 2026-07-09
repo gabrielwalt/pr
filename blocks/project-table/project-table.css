@@ -1,4 +1,4 @@
-.search-table-search {
+.project-table-search {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -7,7 +7,7 @@
   border: 1px solid var(--border-color);
 }
 
-.search-table-input {
+.project-table-input {
   flex: 1;
   min-width: 0;
   border: 0;
@@ -20,16 +20,16 @@
   text-transform: uppercase;
 }
 
-.search-table-input::placeholder {
+.project-table-input::placeholder {
   color: var(--metadata-color);
   opacity: 1;
 }
 
-.search-table-input:focus {
+.project-table-input:focus {
   outline: none;
 }
 
-.search-table-clear {
+.project-table-clear {
   flex: none;
   border: 0;
   padding: 0;
@@ -42,20 +42,20 @@
   cursor: pointer;
 }
 
-.search-table-clear:hover {
+.project-table-clear:hover {
   color: var(--text-color);
 }
 
 /* editorial data table — 13px uppercase grey, 1px grey cell borders, tight rows */
-.search-table table {
+.project-table table {
   width: 100%;
   border-collapse: collapse;
   table-layout: fixed;
   margin-top: var(--page-padding);
 }
 
-.search-table th,
-.search-table td {
+.project-table th,
+.project-table td {
   padding: 6px 8px;
   border: 1px solid var(--border-color);
   color: var(--metadata-color);
@@ -70,20 +70,28 @@
   text-overflow: ellipsis;
 }
 
-.search-table tr:first-child > * {
+.project-table tr:first-child > * {
   border-top: 0;
+}
+
+/* producer logo (JS-swapped for the text): sized to the 13px cell text,
+   left-aligned like the wordmark it replaces in Figma. */
+.project-table td .producer-logo {
+  display: block;
+  height: 13px;
+  width: auto;
 }
 
 /* Beat 4 — the search bar + column-header row pin together for the rest of the page.
    The search bar sticks at top:0; the table's header row sticks just below it. */
-.search-table .search-table-search {
+.project-table .project-table-search {
   position: sticky;
   top: 0;
   z-index: 3;
   background-color: var(--background-color);
 }
 
-.search-table tr:first-child th {
+.project-table tr:first-child th {
   position: sticky;
   top: 39px; /* height of the sticky search bar above it */
   z-index: 2;
@@ -91,8 +99,8 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .search-table .search-table-search,
-  .search-table tr:first-child th {
+  .project-table .project-table-search,
+  .project-table tr:first-child th {
     position: static;
   }
 }

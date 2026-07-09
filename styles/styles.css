@@ -208,6 +208,14 @@ blockquote {
   line-height: var(--line-height-body);
 }
 
+/* lead paragraph: the intro `<p>` directly after a page's opening `<h1>` runs
+   large (32px/37px per Figma, e.g. the About page top). Scoped to a section
+   `> div` so it only hits page-opening default content, not block internals. */
+main > .section > div > h1 + p {
+  font-size: var(--heading-font-size-m);
+  line-height: 1.16;
+}
+
 code,
 pre {
   font-size: var(--body-font-size-s);
@@ -416,7 +424,7 @@ main .section.dark :focus-visible {
 
 /* ---- Home scroll choreography (bespoke) ----
    Beat 1: the hero-cover section pins, and the following section rises over it.
-   Beat 4: the search-table's header band pins for the rest of the page.
+   Beat 4: the project-table's header band pins for the rest of the page.
    Scoped to a main that contains a hero-cover so no other page is affected.
    (Beats 2 & 3 — nav pins with the sheet, then the dark section covers it — are
    pure native scroll: header.js relocates the <header> into the grid sheet and
@@ -475,22 +483,6 @@ body.homepage main > .section:first-child + .section > div {
    rising sheet covers the hero's content column in white (sides stay black). */
 body.homepage main > .section:first-child ~ .section:not(.dark) > div {
   background-color: var(--background-color);
-}
-
-/* dark Issue banner. TWO things here:
-   1. Beat 3 (reveal, not slide-off): it rises on a HIGHER layer than the pinned
-      nav (z:4, header.css) and climbs over it — same overlay mechanic the grid
-      uses on the hero. The nav stays put; the dark layer covers it as it rises.
-      z:5 > nav z:4 > grid z:1 > hero z:0.
-   2. Symmetric editorial insets (Figma node 1:13138): top inset = the base
-      module (40 = --page-padding), matching the horizontal content gutter so
-      the image's top gap equals its right gap; bottom breathes at --space-2xl
-      (80). The section's `> div` supplies the 40 horizontal gutter.
-   Selector mirrors the generic `~ .section` rule's shape (incl. `:first-child
-   ~`) so it out-specifies the z:1 default rather than losing the tie. */
-body.homepage main > .section:first-child ~ .section.dark {
-  z-index: 5;
-  padding: var(--page-padding) 0 var(--space-2xl);
 }
 
 /* hero content column is capped + centered too, matching the sheet's OUTER

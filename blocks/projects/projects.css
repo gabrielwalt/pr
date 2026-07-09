@@ -11,7 +11,17 @@
      read near-identically — one scrolls, one wraps. */
 
 /* base: horizontal scroller. Card width matches the grid's column so 4 sit in
-   view, the rest overflow to the right and are cut off at the content edge. */
+   view, the rest overflow to the right and are cut off at the content edge.
+   The block bleeds RIGHT past the section's --page-padding to the white column's
+   own edge (`margin-right: -(--page-padding)`), so the row appears to run under
+   that edge and the next card is clipped by it — a wordless cue that there's
+   more to scroll. The scrollbar itself is hidden (that clipped-card cue replaces
+   it). Card widths stay based on the padded content width, so the first 4 still
+   align to the grid columns; only the overflow slides under the bleed edge. */
+.projects:not(.grid) {
+  margin-right: calc(-1 * var(--page-padding));
+}
+
 .projects > ul {
   list-style: none;
   margin: 0;
@@ -21,10 +31,19 @@
   gap: var(--space-s);
   overflow-x: auto;
   overscroll-behavior-x: contain;
+  scrollbar-width: none;
 }
 
+.projects > ul::-webkit-scrollbar {
+  display: none;
+}
+
+/* Card width = one grid column of the PADDED content width. The block is 40px
+   wider than that (the right bleed above), so subtract --page-padding from 100%
+   before dividing by 4 — otherwise the extra bleed width would inflate each card
+   and the first four would no longer line up with the grid columns / header. */
 .projects > ul > li {
-  flex: 0 0 calc((100% - 3 * var(--space-s)) / 4);
+  flex: 0 0 calc((100% - var(--page-padding) - 3 * var(--space-s)) / 4);
   display: flex;
   flex-direction: column;
   gap: var(--space-s);

@@ -47,11 +47,10 @@
 }
 
 /* title block: two 42px display lines — project name (bold h2) over the
-   collaborators line (regular). Per-line tracking from Figma. */
+   collaborators line (regular). The two lines stack tight (no gap) via block
+   flow; their margins are zeroed below. Per-line tracking from Figma. */
 .project-header .project-header-title {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-m);
+  display: block;
 }
 
 .project-header .project-header-title h2 {

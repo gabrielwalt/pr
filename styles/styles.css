@@ -661,26 +661,53 @@ body.template-project-detail main > .event-list-container .default-content-wrapp
 
    IMPORTANT: the white content sheet (`> div`) must stay the SAME width on every
    section of the page — so DON'T narrow `> div`. Instead keep the sheet full and
-   cap the INNER content (`> div > *`) to the reading measure, centered. The extra
-   width becomes left/right padding on the white area, not a narrower sheet. */
-main .section.narrow > div > * {
+   cap the INNER content to the reading measure, centered. The extra width becomes
+   left/right padding on the white area, not a narrower sheet.
+
+   Narrow applies to the body TEXT and (by default) images — but NOT the heading:
+   entry titles always span the full sheet width (per Figma, the title is full-width
+   even when the body is a narrow column). An image row can opt BACK to full width
+   with `.image-pair`/`.image-full` (a side-by-side pair or a gallery, per Figma).
+
+   Two levels: content sits directly under the sheet (`> div > *`), OR — when the
+   section is ALSO `Expandable` — under the injected `.expandable-content` wrapper.
+   The wrapper itself stays full width (its children carry the reading measure). */
+main .section.narrow > div > :not(:is(h1, h2, h3, h4, h5, h6, .expandable-content)),
+main .section.narrow > div > .expandable-content > :not(:is(h1, h2, h3, h4, h5, h6)) {
   max-width: 700px;
   margin-inline: auto;
 }
 
+main .section.narrow > div > p.image-pair,
+main .section.narrow > div > p.image-full,
+main .section.narrow > div > .expandable-content > p.image-pair,
+main .section.narrow > div > .expandable-content > p.image-full {
+  max-width: none;
+}
+
 /* ---- Section style: `Expandable` ----
    Long content is clipped to a preview height behind a fade, with a JS-injected
-   "Read more" button that expands it. `expandable.js` adds `.is-collapsed` +
-   the button; `.is-expanded` removes the clip. Applied via `Style: Expandable`. */
-main .section.expandable.is-collapsed > div {
+   "Read more" button that expands it. `expandable.js` wraps ONLY the trailing TEXT
+   (the leading title + image(s) stay above the fold, so the crop never cuts an
+   image) in an `.expandable-content` div — that div clips, the white sheet and the
+   toggle below it stay unclipped (keeping the button on white). `.is-collapsed`
+   caps the text preview; `.is-expanded` removes the clip. Applied via
+   `Style: Expandable`. */
+main .section.expandable .expandable-content {
   position: relative;
-  max-height: 60vh;
   overflow: hidden;
+  transition: max-height 0.5s ease;
+}
+
+/* the collapsed preview shows only the first few lines of the TEXT (images are
+   already fully visible above), so this cap is small — a text teaser, not 60vh */
+main .section.expandable.is-collapsed .expandable-content {
+  max-height: 12em;
 }
 
 /* fade the clipped edge to WHITE (the sheet colour), not to the black page
    ground — an overlay gradient rather than a mask, so nothing turns transparent */
-main .section.expandable.is-collapsed > div::after {
+main .section.expandable.is-collapsed .expandable-content::after {
   content: '';
   position: absolute;
   inset: auto 0 0;
@@ -689,7 +716,7 @@ main .section.expandable.is-collapsed > div::after {
   pointer-events: none;
 }
 
-main .section.expandable.is-expanded > div {
+main .section.expandable.is-expanded .expandable-content {
   max-height: none;
 }
 

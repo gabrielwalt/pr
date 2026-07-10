@@ -1,0 +1,11 @@
+[
+  {
+    "path": "/*",
+    "headers": [
+      {
+        "key": "access-control-allow-origin",
+        "value": "https://da.live"
+      }
+    ]
+  }
+]
